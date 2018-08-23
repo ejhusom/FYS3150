@@ -1,6 +1,3 @@
-//  Created by Erik Johannes Husom on 26.06.2018.
-//  Copyright © 2018 Erik Johannes Husom. All rights reserved.
-
 #include <iostream>
 using namespace std;
 
@@ -20,6 +17,7 @@ int main ()
     int N;
     cout << "Insert N value";
     cin >> N;
+    double result;
     result = sum_up(N)
     cout << result
     return 0;
