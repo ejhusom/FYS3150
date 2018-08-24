@@ -17,8 +17,8 @@ ofstream dat1;
 
 int main()
 {
-    int n = 100;                   // number of mesh points
-    double h = 1/double(n);         // step length
+    int n = 10000;                   // number of mesh points
+    double h = 1/double(n+1);         // step length
 
     // initialize arrays
     double *a = new double[n+2];    // sub-diagonal
@@ -31,9 +31,9 @@ int main()
 
     // filling f-array
     for (int i=1; i<(n+1); i++){
-        f[i] = h*h*100*exp(-10*(double(i)*h));
+        f[i] = h*h*100*exp(-10*double(i)*h);
     }
-    f_[0] = f[0];       // setting first element of adjusted right-hand-side
+    f_[1] = f[1];       // setting first element of adjusted right-hand-side
 
     // filling tridiagonal matrix
     for (int i=1; i<(n+1); i++){
@@ -46,20 +46,19 @@ int main()
         c[i] = -1.;
     }
 
-//    for (int i=0; i<(n+3); i++){
-//        cout << setw(15) << setprecision(7) << a[i];
-//        cout << setw(15) << setprecision(7) << b[i];
-//        cout << setw(15) << setprecision(7) << c[i] << endl;
-//    }
-
     // forward substitution
     for (int i=2; i<(n+1); i++){
         b_[i] = b[i] - a[i-1]*c[i-1]/b_[i-1];
-        f_[i] = f[i] - a[i-1]*f[i-1]/b_[i-1];
+        f_[i] = f[i] - a[i-1]*f_[i-1]/b_[i-1];
     }
-    for (int i=0; i<(n+3); i++){
-        cout << b_[i] << endl;
-    }
+
+//    cout << "f - f_ - b_" << endl;
+//    // print out matrix
+//    for (int i=0; i<(n+3); i++){
+//        cout << setw(15) << setprecision(7) << f[i];
+//        cout << setw(15) << setprecision(7) << f_[i];
+//        cout << setw(15) << setprecision(7) << b_[i] << endl;
+//    }
 
     // setting first and last v-value
     v[0] = 0;
