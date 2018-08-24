@@ -25,7 +25,7 @@ def readFile(filename):
     return x, num, anal
 
 
-fileData = readFile("dat1.dat")
+fileData = readFile("dat4.dat")
 
 plt.plot(fileData[0], fileData[1], label='num')
 plt.plot(fileData[0], fileData[2], label='anal')

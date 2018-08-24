@@ -46,10 +46,19 @@ int main()
         c[i] = -1.;
     }
 
+//    for (int i=0; i<(n+3); i++){
+//        cout << setw(15) << setprecision(7) << a[i];
+//        cout << setw(15) << setprecision(7) << b[i];
+//        cout << setw(15) << setprecision(7) << c[i] << endl;
+//    }
+
     // forward substitution
     for (int i=2; i<(n+1); i++){
         b_[i] = b[i] - a[i-1]*c[i-1]/b_[i-1];
         f_[i] = f[i] - a[i-1]*f[i-1]/b_[i-1];
+    }
+    for (int i=0; i<(n+3); i++){
+        cout << b_[i] << endl;
     }
 
     // setting first and last v-value
