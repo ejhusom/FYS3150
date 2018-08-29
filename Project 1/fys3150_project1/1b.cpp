@@ -7,6 +7,9 @@
 //                  -u''(x) = f(x)
 //                  x = [0, 1]
 //                  u(0) = u(1) = 0
+//
+//                  This program gives a general algorithm for a tridiagonal
+//                  matrix.
 //==============================================================================
 #include <iostream>
 #include <fstream>
@@ -17,17 +20,19 @@ ofstream dat1;
 
 int main()
 {
-    int n = 10000;                   // number of mesh points
-    double h = 1/double(n+1);         // step length
+    int n;                              // number of mesh points
+    cout << "Insert number of mesh points";
+    cin >> n;                           // give number in command line
+    double h = 1/double(n+1);           // step length
 
     // initialize arrays
-    double *a = new double[n+2];    // sub-diagonal
-    double *b = new double[n+2];      // main diagonal
-    double *c = new double[n+2];    // super-diagonal
-    double *f = new double[n+2];      // right-hand-side vector
-    double *v = new double[n+2];      // numerical solution
-    double *b_ = new double[n+2];     // adjusted diagonal
-    double *f_ = new double[n+2];     // adjusted right-hand-side
+    double *a = new double[n+2];        // sub-diagonal
+    double *b = new double[n+2];        // main diagonal
+    double *c = new double[n+2];        // super-diagonal
+    double *f = new double[n+2];        // right-hand-side vector
+    double *v = new double[n+2];        // numerical solution
+    double *b_ = new double[n+2];       // adjusted diagonal
+    double *f_ = new double[n+2];       // adjusted right-hand-side
 
     // filling f-array
     for (int i=1; i<(n+1); i++){
