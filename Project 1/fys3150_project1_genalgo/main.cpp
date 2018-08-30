@@ -114,6 +114,7 @@ void specalgo(int n){
     double *v = new double[n+2];        // numerical solution
     double *b_ = new double[n+2];       // adjusted diagonal
     double *f_ = new double[n+2];       // adjusted right-hand-side
+    double *eps = new double[n+2];      // relative error
 
     // filling f-array
     double hh100 = h*h*100.;
@@ -152,15 +153,25 @@ void specalgo(int n){
     // analytical
     double *u = new double[n+2];
     for (int i=0; i<n+2; i++){
-        u[i] = 1-(1-exp(-10))*(double(i)*h) - exp(-10*i*h);
+        u[i] = 1-(1-exp(-10))*(i*h) - exp(-h10*i);
     }
+
+    eps[0] = 0.0;
+    for (int i=1; i<n+2; i++){
+        temp =
+        eps[i] = log10(fabs((v[i]-u[i])/u[i]));
+        if eps[]
+    }
+
+
 
     // WRITING TO FILE
     dat1.open ("specalgo.dat");
     for (int i=0; i<n+2; i++){
         dat1 << setw(15) << setprecision(7) << h*i;
         dat1 << setw(15) << setprecision(7) << v[i];
-        dat1 << setw(15) << setprecision(7) << u[i] << endl;
+        dat1 << setw(15) << setprecision(7) << u[i];
+        dat1 << setw(15) << setprecision(7) << eps[i] << endl;
     }
     dat1.close();
 
@@ -170,6 +181,7 @@ void specalgo(int n){
     delete [] b_;
     delete [] f_;
     delete [] u;
+    delete [] eps;
 
 }
 

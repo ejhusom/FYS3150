@@ -17,17 +17,20 @@ def readFile(filename):
     x = []
     num = []
     anal = []
+    eps = []
     for line in infile:
         a = line.split()
         x.append(float(a[0]))
         num.append(float(a[1]))
         anal.append(float(a[2]))
-    return x, num, anal
+        eps.append(float(a[3]))
+    return x, num, anal, eps
 
 
 fileData = readFile("specalgo.dat")
 
-plt.plot(fileData[0], fileData[1], 'ro', label='num')
-plt.plot(fileData[0], fileData[2], label='anal')
+# plt.plot(fileData[0], fileData[1], 'ro', label='num')
+# plt.plot(fileData[0], fileData[2], label='anal')
+plt.plot(fileData[0][:-1], fileData[3][:-1], label='eps')
 plt.legend()
 plt.show()
