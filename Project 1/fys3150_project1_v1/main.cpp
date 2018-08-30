@@ -48,17 +48,10 @@ int main()
 
     // forward substitution
     for (int i=2; i<(n+1); i++){
-        b_[i] = b[i] - a[i-1]*a[i-1]/b_[i-1];
-        f_[i] = f[i] - a[i-1]*f_[i-1]/b_[i-1];
+        double temp = a[i-1]/b_[i-1];   // reducing one FLOP
+        b_[i] = b[i] - temp*a[i-1];
+        f_[i] = f[i] - temp*f_[i-1];
     }
-
-//    cout << "f - f_ - b_" << endl;
-//    // print out matrix
-//    for (int i=0; i<(n+3); i++){
-//        cout << setw(15) << setprecision(7) << f[i];
-//        cout << setw(15) << setprecision(7) << f_[i];
-//        cout << setw(15) << setprecision(7) << b_[i] << endl;
-//    }
 
     // setting first and last v-value
     v[0] = 0;
@@ -77,9 +70,8 @@ int main()
     }
 
     // WRITING TO FILE
-    ofstream dat1;
     dat1.open ("dat1.dat");
-    for (int i=0; i<n; i++){
+    for (int i=0; i<n+2; i++){
         dat1 << setw(15) << setprecision(7) << h*i;
         dat1 << setw(15) << setprecision(7) << v[i];
         dat1 << setw(15) << setprecision(7) << u[i] << endl;

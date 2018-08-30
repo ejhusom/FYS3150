@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
+#include <armadillo>
 using namespace std;
 
 double derivatives(double x, double harray[], int N) {
