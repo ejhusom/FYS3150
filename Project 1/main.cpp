@@ -343,17 +343,17 @@ for(i = n - 1; i >= 0; i--) {
 }
 } // End: function lubksb()
 
-int main(int argc, char* argv[])
-{
-
+// int main(int argc, char* argv[])
+// {
+//
 //    int n = atoi(argv[1]);                    // number of mesh points
-
+//
 //    cout << "Generalized algorithm:" << endl;
 //    genalgo(n,1);
-
+//
 //    cout << "Specialized algorithm:" << endl;
 //    specalgo(n,1);
-
+//
 //    epsilons();
 
 
@@ -381,10 +381,10 @@ int main(int argc, char* argv[])
     }
 
 
-//    int nArray[5];
-//    for (int i=0; i<N; i++){
-//        nArray[i] = 1;
-//    }
+   int nArray[5];
+   for (int i=0; i<N; i++){
+       nArray[i] = 1;
+   }
 
     // filling f-array
     double *f = new double[N];
@@ -395,9 +395,9 @@ int main(int argc, char* argv[])
         f[i] = hh100*exp(-h10*i);
     }
 
-//    ludcmp(A, N, nArray, f);
+   ludcmp(A, N, nArray, f);
 
-    cout << "end" << endl;
+   cout << "end" << endl;
 
-//    return 0;
+   return 0;
 }
