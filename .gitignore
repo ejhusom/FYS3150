@@ -1,5 +1,9 @@
 # data-files
 *.dat
+# images
+*.png
+*.jpg
+*.jpeg
 # compiled files:
 *.o
 *.so
