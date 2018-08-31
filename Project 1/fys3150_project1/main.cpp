@@ -1,6 +1,6 @@
 //==============================================================================
 // Title:           FYS3150 Project 1 - General Algorithm
-// Author:          Erik Johannes B. L. f. Husom
+// Author:          Erik Johannes B. L. G. Husom
 // Date:            2018-08-30
 // Version:         1.0
 // Description:     One-dimensional Poisson equation:
@@ -8,9 +8,8 @@
 //                  x = [0, 1]
 //                  u(0) = u(1) = 0
 //
-//                  This program gives a general algorithm for a tridiagonal
-//                  matrix which can have any elements on the super-, sub- and
-//                  lead diagonals
+// The program gives a general and a specific algorithm for solving the equation,
+// in addition to computing the error for the specific algorithm.
 //==============================================================================
 #include <iostream>
 #include <fstream>
@@ -19,7 +18,6 @@
 #include "time.h"
 using namespace std;
 ofstream dat1;
-ofstream dat2;
 
 void genalgo(int n, int print){
 
@@ -94,8 +92,8 @@ void genalgo(int n, int print){
         dat1.open ("genalgo.dat");
         for (int i=0; i<n+2; i++){
             dat1 << setw(30) << setprecision(15) << h*i;
-            dat1 << setw(30) << setprecision(15) << v[i];
             dat1 << setw(30) << setprecision(15) << u[i];
+            dat1 << setw(30) << setprecision(15) << v[i];
             dat1 << setw(30) << setprecision(15) << eps[i] << endl;
         }
         dat1.close();
@@ -182,8 +180,8 @@ double specalgo(int n, int print){
             dat1.open ("specalgo.dat");
             for (int i=0; i<n+2; i++){
                 dat1 << setw(30) << setprecision(15) << h*i;
-                dat1 << setw(30) << setprecision(15) << v[i];
                 dat1 << setw(30) << setprecision(15) << u[i];
+                dat1 << setw(30) << setprecision(15) << v[i];
                 dat1 << setw(30) << setprecision(15) << eps[i] << endl;
             }
             dat1.close();
@@ -210,14 +208,14 @@ void epsilons(){
     }
 
     // write to file
-    dat2.open ("epsilons.dat");
-    for (int i=0; i<8; i++){
+    dat1.open ("epsilons.dat");
+    for (int i=1; i<8; i++){
         int n = int(pow(10,i));
         double h = 1/(double(n)+1);
-        dat2 << setw(20) << setprecision(10) << log10(h);
-        dat2 << setw(20) << setprecision(10) << epsilons[i] << endl;
+        dat1 << setw(20) << setprecision(10) << log10(h);
+        dat1 << setw(20) << setprecision(10) << epsilons[i] << endl;
     }
-    dat2.close();
+    dat1.close();
 
     delete [] epsilons;
 }

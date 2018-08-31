@@ -4,48 +4,24 @@
 # Title:            Data Plot
 # Author:           Erik Johannes B. L. G. Husom
 # Date:             2018-08-24
-# Version:          1.0
+# Version:          2.0
 # Python version:   Python 3.6.4
-# Description:      Plotting data from .dat-files, specialized for FYS3150
-#                   project 1
+# Description: Plotting data from .dat-files, specialized for FYS3150 project 1
 #==============================================================================
 # IMPORT STATEMENTS
 import numpy as np
 import matplotlib.pyplot as plt
 
-def readFile(filename):
-    infile = open(filename, "r")
-    x = []
-    num = []
-    anal = []
-    eps = []
-    for line in infile:
-        a = line.split()
-        x.append(float(a[0]))
-        num.append(float(a[1]))
-        anal.append(float(a[2]))
-        eps.append(float(a[3]))
-    return x, num, anal, eps
+# LOAD DATA
+data = np.loadtxt('specalgo.dat')
+x, u, v, eps = data[:,0], data[:,1], data[:,2], data[:,3]
 
-
-
-fileData = readFile("specalgo.dat")
-
-x,v,u,eps = fileData
-
-x = np.array(x)
-v = np.array(v)
-u = np.array(u)
-eps = np.array(eps)
-
-# Python calculation of relative errors
-e = np.log10(abs((v-u)/u))
-
-# plt.plot(fileData[0], fileData[1], label='num', LineWidth=4)
-# plt.plot(fileData[0], fileData[2], label='anal')
-# plt.legend()
-# plt.show()
-plt.plot(x[1:-1], e[1:-1], label='python')
-plt.plot(fileData[0][1:-1], fileData[3][1:-1], label='c++')
+# PLOT NUMERICAL VS ANALYTICAL
+plt.plot(x,v,label='numerical',LineWidth=3.0)
+plt.plot(x,u,label='analytical')
+plt.legend()
+plt.show()
+# PLOT ERROR
+plt.plot(x[1:-1],eps[1:-1])
 plt.legend()
 plt.show()

@@ -1,3 +1,5 @@
+*.exe
+build*
 # data-files
 *.dat
 # images

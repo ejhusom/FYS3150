@@ -4,29 +4,22 @@
 # Title:            Data Plot of Error
 # Author:           Erik Johannes B. L. G. Husom
 # Date:             2018-08-24
-# Version:          0.1
+# Version:          2.0
 # Python version:   Python 3.6.4
-# Description:      Plotting data from error-file in FYS3150
-#                   project 1
+# Description: Plotting data from error-file in FYS3150 project 1
 #==============================================================================
 # IMPORT STATEMENTS
 import numpy as np
 import matplotlib.pyplot as plt
 
-def readFile(filename):
-    infile = open(filename, "r")
-    log10h = []
-    eps = []
-    for line in infile:
-        a = line.split()
-        log10h.append(float(a[0]))
-        eps.append(float(a[1]))
-    return log10h, eps
+# LOAD DATA
+data = np.loadtxt('epsilons.dat')
+log10h = data[:,0]
+eps = data[:,1]
 
-
-
-data = readFile("epsilons.dat")
-
-plt.plot(data[0], data[1], 'ro-')
+# PLOT EPSILON VS H on a log-scale
+plt.plot(log10h,eps, 'b-o')
+plt.xlabel('$log_{10}(h)$')
+plt.ylabel('$log_{10}(\epsilon)$')
 plt.legend()
 plt.show()
