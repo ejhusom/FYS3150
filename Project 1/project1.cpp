@@ -224,6 +224,92 @@ void epsilons(){
 
 /*
 ** The function
+**       ludcmp()
+** takes as input a two-dimensional matrix a[][] of dimension n and
+** replaces it by the LU decomposition of a rowwise permutation of
+** itself. The results is stored in a[][] in the form given by
+** eq. (2.3.14) in "Numerical Recipe", sect. 2.3, page 45. The vector
+** indx[] records the row permutation effected by the partial pivoting;
+** d is output as +1 or -1 depending on whether the number of row
+** interchanges was even or odd, respectively. This routine is used in
+** combination with the function lubksb() to solve linear equations or
+** invert a matrix. The function is slightly modified from the version
+** in in Numerical recipe and uses memory allocation functions in the
+** present module.
+*/
+
+void ludcmp(double **a, int n, int *indx, double *d)
+{
+int      i, imax, j, k;
+double   big, dum, sum, temp, *vv;
+
+vv = new(nothrow) double [n];
+if(!vv) {
+printf("\n\nError in function ludcm():");
+printf("\nNot enough memory for vv[%d]\n",n);
+exit(1);
+}
+
+*d = 1.0;                              // no row interchange yet
+for(i = 0; i < n; i++) {     // loop over rows to get scaling information
+  big = 0.0;
+  for(j = 0; j < n; j++) {
+     if((temp = fabs(a[i][j])) > big) big = temp;
+  }
+  if(big == 0.0) {
+     printf("\n\nSingular matrix in routine ludcmp()\n");
+     exit(1);
+  }
+  vv[i] = 1.0/big;                 // save scaling */
+} // end i-loop */
+
+for(j = 0; j < n; j++) {     // loop over columns of Crout's method
+  for(i = 0; i< j; i++) {   // not i = j
+     sum = a[i][j];
+for(k = 0; k < i; k++) sum -= a[i][k]*a[k][j];
+a[i][j] = sum;
+  }
+  big = 0.0;   // initialization for search for largest pivot element
+  for(i = j; i< n; i++) {
+     sum = a[i][j];
+for(k = 0; k < j; k++) sum -= a[i][k]*a[k][j];
+a[i][j] = sum;
+if((dum = vv[i]*fabs(sum)) >= big) {
+    big = dum;
+  imax = i;
+}
+  } // end i-loop
+  if(j != imax) {    // do we need to interchange rows ?
+     for(k = 0;k< n; k++) {       // yes
+  dum        = a[imax][k];
+  a[imax][k] = a[j][k];
+  a[j][k]    = dum;
+}
+(*d)    *= -1;            // and change the parit of d
+vv[imax] = vv[j];         // also interchange scaling factor
+  }
+  indx[j] = imax;
+  if(fabs(a[j][j]) < 0.0)  a[j][j] = 0.0;
+
+    /*
+    ** if the pivot element is 0.0 the matrix is singular
+    ** (at least to the precision of the algorithm). For
+    ** some application of singular matrices, it is desirable
+    ** to substitute 0.0 for 0.0,
+    */
+
+  if(j < (n - 1)) {                   // divide by pivot element
+     dum = 1.0/a[j][j];
+for(i=j+1;i < n; i++) a[i][j] *= dum;
+  }
+} // end j-loop over columns
+
+delete [] vv;   // release local memory
+
+}  // End: function ludcmp()
+
+/*
+** The function
 **             lubksb()
 ** solves the set of linear equations A X = B of dimension n.
 ** a[][] is input, not as the matrix A[][] but rather as
@@ -239,120 +325,29 @@ void epsilons(){
 ** in Numerical recipe.
 */
 
-double* lubksb(double **a, int n, int *indx, double *b){
-   int        i, ii = -1, ip, j;
-   double     sum;
+void lubksb(double **a, int n, int *indx, double *b)
+{
+int        i, ii = -1, ip, j;
+double     sum;
 
-   for(i = 0; i< n; i++) {
-     ip    = indx[i];
-     sum   = b[ip];
-     b[ip] = b[i];
-     if(ii > -1)   for(j = ii; j < i; j++) sum -= a[i][j] * b[j];
-     else if(sum) ii = i;
-     b[i] = sum;
-   }
-   for(i = n - 1; i >= 0; i--) {
-     sum = b[i];
-     for(j = i+1; j < n; j++) sum -= a[i][j] * b[j];
-     b[i] = sum/a[i][i];
-   }
-
-   return b;
-
+for(i = 0; i< n; i++) {
+  ip    = indx[i];
+  sum   = b[ip];
+  b[ip] = b[i];
+  if(ii > -1)   for(j = ii; j < i; j++) sum -= a[i][j] * b[j];
+  else if(sum) ii = i;
+  b[i] = sum;
+}
+for(i = n - 1; i >= 0; i--) {
+  sum = b[i];
+  for(j = i+1; j < n; j++) sum -= a[i][j] * b[j];
+  b[i] = sum/a[i][i];
+}
 } // End: function lubksb()
-
-/*
-** The function
-**       ludcmp()
-** takes as input a two-dimensional matrix a[][] of dimension n and
-** replaces it by the LU decomposition of a rowwise permutation of
-** itself. The results is stored in a[][] in the form given by
-** eq. (2.3.14) in "Numerical Recipe", sect. 2.3, page 45. The vector
-** indx[] records the row permutation effected by the partial pivoting;
-** d is output as +1 or -1 depending on whether the number of row
-** interchanges was even or odd, respectively. This routine is used in
-** combination with the function lubksb() to solve linear equations or
-** invert a matrix. The function is slightly modified from the version
-** in in Numerical recipe and uses memory allocation functions in the
-** present module.
-*/
-
-double* ludcmp(double **a, int n, int *  indx, double *d){
-   int      i, imax, j, k;
-   double   big, dum, sum, temp, *vv;
-
-   vv = new(nothrow) double [n];
-   if(!vv) {
-   printf("\n\nError in function ludcm():");
-   printf("\nNot enough memory for vv[%d]\n",n);
-   exit(1);
-   }
-
-   *d = 1.0;                              // no row interchange yet
-   for(i = 0; i < n; i++) {     // loop over rows to get scaling information
-     big = 0.0;
-     for(j = 0; j < n; j++) {
-        if((temp = fabs(a[i][j])) > big) big = temp;
-     }
-     if(big == 0.0) {
-        printf("\n\nSingular matrix in routine ludcmp()\n");
-        exit(1);
-     }
-     vv[i] = 1.0/big;                 // save scaling */
-   } // end i-loop */
-
-   for(j = 0; j < n; j++) {     // loop over columns of Crout's method
-     for(i = 0; i< j; i++) {   // not i = j
-        sum = a[i][j];
-    for(k = 0; k < i; k++) sum -= a[i][k]*a[k][j];
-    a[i][j] = sum;
-     }
-     big = 0.0;   // initialization for search for largest pivot element
-     for(i = j; i< n; i++) {
-        sum = a[i][j];
-    for(k = 0; k < j; k++) sum -= a[i][k]*a[k][j];
-    a[i][j] = sum;
-    if((dum = vv[i]*fabs(sum)) >= big) {
-       big = dum;
-       imax = i;
-    }
-     } // end i-loop
-     if(j != imax) {    // do we need to interchange rows ?
-        for(k = 0;k< n; k++) {       // yes
-       dum        = a[imax][k];
-       a[imax][k] = a[j][k];
-       a[j][k]    = dum;
-    }
-    (*d)    *= -1;            // and change the parit of d
-    vv[imax] = vv[j];         // also interchange scaling factor
-     }
-     indx[j] = imax;
-     if(fabs(a[j][j]) < 0.0)  a[j][j] = 0.0;
-
-       /*
-       ** if the pivot element is 0.0 the matrix is singular
-       ** (at least to the precision of the algorithm). For
-       ** some application of singular matrices, it is desirable
-       ** to substitute 0.0 for 0.0,
-       */
-
-     if(j < (n - 1)) {                   // divide by pivot element
-        dum = 1.0/a[j][j];
-    for(i=j+1;i < n; i++) a[i][j] *= dum;
-     }
-   } // end j-loop over columns
-
-   double *B = lubksb(a, n, indx, d);
-
-   delete [] vv;   // release local memory
-
-   return B;
-
-}  // End: function ludcmp()
-
 
 int main(int argc, char* argv[]){
 
+//======================================================
    // int n = atoi(argv[1]);                    // number of mesh points
    //
    // cout << "Generalized algorithm:" << endl;
@@ -362,85 +357,58 @@ int main(int argc, char* argv[]){
    // specAlgo(n,1);
    //
    // epsilons();
+//=======================================================
 
+    int N = 10000;
+    double **A;
+    A = new double*[N];
+    for (int i = 0; i < N; i++){
+      A[i] = new double[N];
+    }
+    // initialize all elements to 0.0
+    for (int i=0; i<N; i++) {
+        for(int j=0 ; j< N ; j++){
+            A[i][j] = 0.0;
+        }
+    }
 
-   //  int N = 5;
-   //  double **A;
-   //  A = new double*[N];
-   //  for (int i = 0; i < N; i++){
-   //    A[i] = new double[N];
-   //  }
-   //  // initialize all elements to 0.0
-   //  for (int i=0; i<N; i++) {
-   //      for(int j=0 ; j< N ; j++){
-   //          A[i][j] = 0.0;
-   //      }
-   //  }
-   //
-   //  for(int i=0 ; i < N ; i++) {
-   //      for(int j=0 ; j < N ; j++) {
-   //          if(i==j){
-   //              A[i][j] = 2.0;
-   //          }
-   //          else if(i==j-1||i==j+1){
-   //              A[i][j] = -1.0;
-   //          }
-   //          cout << A[i][j] << " ";
-   //      }
-   //
-   //      cout << endl;
-   //  }
-   //
-   //
-   // int nArray[5];
-   // for (int i=0; i<N; i++){
-   //     nArray[i] = 1;
-   // }
-   //
-   // // filling f-array
-   // // double *f = new double[N];
-   // double f[N];
-   // double h = 1/N;
-   // double hh100 = h*h*100.0;
-   // double h10 = 10*h;
-   // for (int i=1; i<(N+1); i++){
-   //    f[i] = hh100*exp(-h10*i);
-   // }
-   // double *sol = ludcmp(A, N, nArray, f);
-   // // delete [] f;
-   // delete [] A;
-   //
-   // cout << "LU solution" << endl;
-   // for (int i=0; i<N; i++){
-   //    cout << sol[i] << endl;
-   // }
+    for(int i=0 ; i < N ; i++) {
+        for(int j=0 ; j < N ; j++) {
+            if(i==j){
+                A[i][j] = 2.0;
+            }
+            else if(i==j-1||i==j+1){
+                A[i][j] = -1.0;
+            }
+            // cout << A[i][j] << " ";
+        }
+        // cout << endl;
+    }
 
-   int N = 5;
-   mat A(N,N);
-   for(int i=0 ; i < N ; i++) {
-       for(int j=0 ; j < N ; j++) {
-          if(i==j){
-             A(i,j) = 2.0;
-          }
-          else if(i==j-1||i==j+1){
-               A(i,j) = -1.0;
-          }
-          cout << A(i,j) << " ";
-       }
-
-       cout << endl;
+   int *indx = new int[N];
+   double *d = new double[N];
+   // filling f-array
+   double *f = new double[N];
+   double h = 1/double(N);
+   double hh100 = h*h*100.0;
+   double h10 = 10*h;
+   for (int i=0; i<double(N); i++){
+      f[i] = hh100*exp(-h10*i);
    }
 
-   mat L, U, P;
+   ludcmp(A, N, indx, d);
+   lubksb(A, N, indx, f);
 
-   // lu(L, U, P, A);
-   lu(L, U , A);
+   // write to file
+   dat1.open ("lud.dat");
+   for (int i=0; i<N; i++){
+     dat1 << setw(26) << setprecision(13) << h*i;
+     dat1 << setw(26) << setprecision(13) << f[i] << endl;
+   }
+   dat1.close();
 
-   // mat B = P.t()*L*U;
-
-   // B.print();
-
-   cout << "carmen";
+   delete [] A;
+   delete [] f;
 
    return 0;
 }
