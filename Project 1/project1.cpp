@@ -1,7 +1,7 @@
 /*==============================================================================
 Title:           FYS3150 Project 1 - General Algorithm
 Author:          Erik Johannes B. L. G. Husom (functions ludcmp and lubksb
-                 is written by Morten Hjorth-Jensen)
+                 are written by Morten Hjorth-Jensen)
 Date:            2018-08-30
 Version:         4.0
 DESCRIPTION:
