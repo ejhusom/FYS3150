@@ -1,28 +1,33 @@
-//==============================================================================
-// Title:           FYS3150 Project 1 - General Algorithm
-// Author:          Erik Johannes B. L. G. Husom
-// Date:            2018-08-30
-// Version:         1.0
-// Description:     One-dimensional Poisson equation:
-//                  -u''(x) = f(x)
-//                  x = [0, 1]
-//                  u(0) = u(1) = 0
-//
-// The program gives a general and a specific algorithm for solving the equation,
-// in addition to computing the error for the specific algorithm.
-//==============================================================================
+/*==============================================================================
+Title:           FYS3150 Project 1 - General Algorithm
+Author:          Erik Johannes B. L. G. Husom (functions ludcmp and lubksb
+                 is written by Morten Hjorth-Jensen)
+Date:            2018-08-30
+Version:         4.0
+DESCRIPTION:
+One-dimensional Poisson equation:
+                 -u''(x) = f(x)
+                 x = [0, 1]
+                 u(0) = u(1) = 0
+
+The program gives a general and a specific algorithm for solving the equation,
+in addition to computing the error for the specific algorithm.
+
+USAGE:
+The executable takes an integer (0 or 1) as a command line argument:
+- 0: Runs general and specialized algorithm for different step lengths
+- 1: Prints timing information for the algorithms
+==============================================================================*/
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <iomanip>
 #include "time.h"
-#include <armadillo>
 using namespace std;
-using namespace arma;
 ofstream dat1;
 
 // Solve the equation for a general tridiagonal matrix
-void genAlgo(int n, int print){
+void genAlgo(int n, int print, int time){
 
     double h = 1/double(n+1);           // step length
 
@@ -74,9 +79,10 @@ void genAlgo(int n, int print){
 
     finish = clock();
     double timeused = (double) (finish - start)/(CLOCKS_PER_SEC );
-    cout << setiosflags(ios::showpoint | ios::uppercase);
-    cout << setprecision(10) << setw(20) << "Time used= " << timeused  << endl;
-
+    if (time>0){
+      cout << setiosflags(ios::showpoint | ios::uppercase);
+      cout << setprecision(10) << setw(20) << "Time used= " << timeused  << endl;
+    }
     // analytical
     double *u = new double[n+2];
     for (int i=0; i<n+2; i++){
@@ -92,7 +98,7 @@ void genAlgo(int n, int print){
 
     // WRITING TO FILE
     if (print>0){
-        dat1.open ("genalgo.dat");
+        dat1.open ("genalgo" + to_string(n) + ".dat");
         for (int i=0; i<n+2; i++){
             dat1 << setw(30) << setprecision(15) << h*i;
             dat1 << setw(30) << setprecision(15) << u[i];
@@ -101,6 +107,8 @@ void genAlgo(int n, int print){
         }
         dat1.close();
     }
+
+
 
     // deleting from memory
     delete [] a;
@@ -116,7 +124,7 @@ void genAlgo(int n, int print){
 }
 
 // Solve the equation for our specific case
-double specAlgo(int n, int print){
+double specAlgo(int n, int print, int time){
 
     double h = 1/double(n+1);           // step length
 
@@ -136,13 +144,16 @@ double specAlgo(int n, int print){
 
     b_[1] = 2.0;       // setting first element of adjusted diagonal
 
+    for (int i=2; i<(n+1); i++){
+      b_[i] = (double(i)+1)/double(i);
+    }
+
     clock_t start, finish;
     start = clock();
 
     // forward substitution
     for (int i=2; i<(n+1); i++){
-        b_[i] = 2 - 1/b_[i-1];
-        f_[i] = f[i] + f_[i-1]/b_[i-1];
+      f_[i] = f[i] + f_[i-1]/b_[i-1];
     }
 
     // setting first and last v-value
@@ -157,8 +168,10 @@ double specAlgo(int n, int print){
     }
     finish = clock();
     double timeused = (double) (finish - start)/(CLOCKS_PER_SEC );
-    cout << setiosflags(ios::showpoint | ios::uppercase);
-    cout << setprecision(10) << setw(20) << "Time used= " << timeused  << endl;
+    if (time>0){
+      cout << setiosflags(ios::showpoint | ios::uppercase);
+      cout << setprecision(10) << setw(20) << "Time used= " << timeused  << endl;
+    }
 
     // analytical
     double *u = new double[n+2];
@@ -179,7 +192,7 @@ double specAlgo(int n, int print){
 
     // WRITING TO FILE
     if (print>0){
-            dat1.open ("specalgo.dat");
+            dat1.open ("specalgo" + to_string(n) + ".dat");
             for (int i=0; i<n+2; i++){
                 dat1 << setw(30) << setprecision(15) << h*i;
                 dat1 << setw(30) << setprecision(15) << u[i];
@@ -206,7 +219,7 @@ void epsilons(){
     double *epsilons = new double[7];
     for (int i=0; i<8; i++){
         int n = int(pow(10,i));
-        epsilons[i] = specAlgo(n,0);
+        epsilons[i] = specAlgo(n,0,0);
     }
 
     // write to file
@@ -238,73 +251,72 @@ void epsilons(){
 ** present module.
 */
 
-void ludcmp(double **a, int n, int *indx, double *d)
-{
-int      i, imax, j, k;
-double   big, dum, sum, temp, *vv;
+void ludcmp(double **a, int n, int *indx, double *d){
+  int      i, imax, j, k;
+  double   big, dum, sum, temp, *vv;
 
-vv = new(nothrow) double [n];
-if(!vv) {
-printf("\n\nError in function ludcm():");
-printf("\nNot enough memory for vv[%d]\n",n);
-exit(1);
-}
-
-*d = 1.0;                              // no row interchange yet
-for(i = 0; i < n; i++) {     // loop over rows to get scaling information
-  big = 0.0;
-  for(j = 0; j < n; j++) {
-     if((temp = fabs(a[i][j])) > big) big = temp;
+  vv = new(nothrow) double [n];
+  if(!vv) {
+  printf("\n\nError in function ludcm():");
+  printf("\nNot enough memory for vv[%d]\n",n);
+  exit(1);
   }
-  if(big == 0.0) {
-     printf("\n\nSingular matrix in routine ludcmp()\n");
-     exit(1);
-  }
-  vv[i] = 1.0/big;                 // save scaling */
-} // end i-loop */
 
-for(j = 0; j < n; j++) {     // loop over columns of Crout's method
-  for(i = 0; i< j; i++) {   // not i = j
-     sum = a[i][j];
-for(k = 0; k < i; k++) sum -= a[i][k]*a[k][j];
-a[i][j] = sum;
-  }
-  big = 0.0;   // initialization for search for largest pivot element
-  for(i = j; i< n; i++) {
-     sum = a[i][j];
-for(k = 0; k < j; k++) sum -= a[i][k]*a[k][j];
-a[i][j] = sum;
-if((dum = vv[i]*fabs(sum)) >= big) {
-    big = dum;
-  imax = i;
-}
-  } // end i-loop
-  if(j != imax) {    // do we need to interchange rows ?
-     for(k = 0;k< n; k++) {       // yes
-  dum        = a[imax][k];
-  a[imax][k] = a[j][k];
-  a[j][k]    = dum;
-}
-(*d)    *= -1;            // and change the parit of d
-vv[imax] = vv[j];         // also interchange scaling factor
-  }
-  indx[j] = imax;
-  if(fabs(a[j][j]) < 0.0)  a[j][j] = 0.0;
+  *d = 1.0;                              // no row interchange yet
+  for(i = 0; i < n; i++) {     // loop over rows to get scaling information
+    big = 0.0;
+    for(j = 0; j < n; j++) {
+       if((temp = fabs(a[i][j])) > big) big = temp;
+    }
+    if(big == 0.0) {
+       printf("\n\nSingular matrix in routine ludcmp()\n");
+       exit(1);
+    }
+    vv[i] = 1.0/big;                 // save scaling */
+  } // end i-loop */
 
-    /*
-    ** if the pivot element is 0.0 the matrix is singular
-    ** (at least to the precision of the algorithm). For
-    ** some application of singular matrices, it is desirable
-    ** to substitute 0.0 for 0.0,
-    */
-
-  if(j < (n - 1)) {                   // divide by pivot element
-     dum = 1.0/a[j][j];
-for(i=j+1;i < n; i++) a[i][j] *= dum;
+  for(j = 0; j < n; j++) {     // loop over columns of Crout's method
+    for(i = 0; i< j; i++) {   // not i = j
+       sum = a[i][j];
+  for(k = 0; k < i; k++) sum -= a[i][k]*a[k][j];
+  a[i][j] = sum;
+    }
+    big = 0.0;   // initialization for search for largest pivot element
+    for(i = j; i< n; i++) {
+       sum = a[i][j];
+  for(k = 0; k < j; k++) sum -= a[i][k]*a[k][j];
+  a[i][j] = sum;
+  if((dum = vv[i]*fabs(sum)) >= big) {
+      big = dum;
+    imax = i;
   }
-} // end j-loop over columns
+    } // end i-loop
+    if(j != imax) {    // do we need to interchange rows ?
+       for(k = 0;k< n; k++) {       // yes
+    dum        = a[imax][k];
+    a[imax][k] = a[j][k];
+    a[j][k]    = dum;
+  }
+  (*d)    *= -1;            // and change the parit of d
+  vv[imax] = vv[j];         // also interchange scaling factor
+    }
+    indx[j] = imax;
+    if(fabs(a[j][j]) < 0.0)  a[j][j] = 0.0;
 
-delete [] vv;   // release local memory
+      /*
+      ** if the pivot element is 0.0 the matrix is singular
+      ** (at least to the precision of the algorithm). For
+      ** some application of singular matrices, it is desirable
+      ** to substitute 0.0 for 0.0,
+      */
+
+    if(j < (n - 1)) {                   // divide by pivot element
+       dum = 1.0/a[j][j];
+  for(i=j+1;i < n; i++) a[i][j] *= dum;
+    }
+  } // end j-loop over columns
+
+  delete [] vv;   // release local memory
 
 }  // End: function ludcmp()
 
@@ -325,90 +337,113 @@ delete [] vv;   // release local memory
 ** in Numerical recipe.
 */
 
-void lubksb(double **a, int n, int *indx, double *b)
-{
-int        i, ii = -1, ip, j;
-double     sum;
+void lubksb(double **a, int n, int *indx, double *b){
+  int        i, ii = -1, ip, j;
+  double     sum;
 
-for(i = 0; i< n; i++) {
-  ip    = indx[i];
-  sum   = b[ip];
-  b[ip] = b[i];
-  if(ii > -1)   for(j = ii; j < i; j++) sum -= a[i][j] * b[j];
-  else if(sum) ii = i;
-  b[i] = sum;
-}
-for(i = n - 1; i >= 0; i--) {
-  sum = b[i];
-  for(j = i+1; j < n; j++) sum -= a[i][j] * b[j];
-  b[i] = sum/a[i][i];
-}
+  for(i = 0; i< n; i++) {
+    ip    = indx[i];
+    sum   = b[ip];
+    b[ip] = b[i];
+    if(ii > -1)   for(j = ii; j < i; j++) sum -= a[i][j] * b[j];
+    else if(sum) ii = i;
+    b[i] = sum;
+  }
+  for(i = n - 1; i >= 0; i--) {
+    sum = b[i];
+    for(j = i+1; j < n; j++) sum -= a[i][j] * b[j];
+    b[i] = sum/a[i][i];
+  }
 } // End: function lubksb()
 
 int main(int argc, char* argv[]){
 
-//======================================================
-   // int n = atoi(argv[1]);                    // number of mesh points
-   //
-   // cout << "Generalized algorithm:" << endl;
-   // genAlgo(n,1);
-   //
-   // cout << "Specialized algorithm:" << endl;
-   // specAlgo(n,1);
-   //
-   // epsilons();
+  if (atoi(argv[1])==1){
+    cout << "Generalized algorithm - timing:" << endl;
+    for (int i=1; i<4; i++){
+      cout << "   n=10^" << i << endl;
+      for (int j=0; j<10; j++){
+        genAlgo(int(pow(10,i)),0,1);
+      }
+    }
+
+    cout << "Specialized algorithm - timing:" << endl;
+    for (int i=1; i<7; i++){
+      cout << "   n=10^" << i << endl;
+      for (int j=0; j<10; j++){
+        specAlgo(int(pow(10,i)),0,1);
+      }
+    }
+  }
+  else {
+    // RUNNING THE GENERAL AND SPECIALIZED ALGORITHM
+    // AND WRITING DATA TO FILE
+      for (int i=1; i<4; i++){
+        genAlgo(int(pow(10,i)),1,0);
+      }
+      cout << "General algorithm: Data is written to file" << endl;
+
+      for (int i=1; i<7; i++){
+        specAlgo(int(pow(10,i)),1,0);
+      }
+      cout << "Specialized algorithm: Data is written to file" << endl;
+
+      epsilons();
+  }
+
 //=======================================================
-
-    int N = 10000;
-    double **A;
-    A = new double*[N];
-    for (int i = 0; i < N; i++){
-      A[i] = new double[N];
-    }
-    // initialize all elements to 0.0
-    for (int i=0; i<N; i++) {
-        for(int j=0 ; j< N ; j++){
-            A[i][j] = 0.0;
-        }
-    }
-
-    for(int i=0 ; i < N ; i++) {
-        for(int j=0 ; j < N ; j++) {
-            if(i==j){
-                A[i][j] = 2.0;
-            }
-            else if(i==j-1||i==j+1){
-                A[i][j] = -1.0;
-            }
-            // cout << A[i][j] << " ";
-        }
-        // cout << endl;
-    }
-
-   int *indx = new int[N];
-   double *d = new double[N];
-   // filling f-array
-   double *f = new double[N];
-   double h = 1/double(N);
-   double hh100 = h*h*100.0;
-   double h10 = 10*h;
-   for (int i=0; i<double(N); i++){
-      f[i] = hh100*exp(-h10*i);
-   }
-
-   ludcmp(A, N, indx, d);
-   lubksb(A, N, indx, f);
-
-   // write to file
-   dat1.open ("lud.dat");
-   for (int i=0; i<N; i++){
-     dat1 << setw(26) << setprecision(13) << h*i;
-     dat1 << setw(26) << setprecision(13) << f[i] << endl;
-   }
-   dat1.close();
-
-   delete [] A;
-   delete [] f;
+   //
+   //  int N = 1000;
+   //  double **A;
+   //  A = new double*[N];
+   //  for (int i = 0; i < N; i++){
+   //    A[i] = new double[N];
+   //  }
+   //  // initialize all elements to 0.0
+   //  for (int i=0; i<N; i++) {
+   //      for(int j=0 ; j< N ; j++){
+   //          A[i][j] = 0.0;
+   //      }
+   //  }
+   //
+   //  for(int i=0 ; i < N ; i++) {
+   //      for(int j=0 ; j < N ; j++) {
+   //          if(i==j){
+   //              A[i][j] = 2.0;
+   //          }
+   //          else if(i==j-1||i==j+1){
+   //              A[i][j] = -1.0;
+   //          }
+   //          // cout << A[i][j] << " ";
+   //      }
+   //      // cout << endl;
+   //  }
+   //
+   // int *indx = new int[N];
+   // double *d = new double[N];
+   // // filling f-array
+   // double *f = new double[N];
+   // double h = 1/double(N);
+   // double hh100 = h*h*100.0;
+   // double h10 = 10*h;
+   // for (int i=0; i<double(N); i++){
+   //    f[i] = hh100*exp(-h10*i);
+   // }
+   //
+   // // Creating and solving with LU-decomposition
+   // ludcmp(A, N, indx, d);
+   // lubksb(A, N, indx, f);
+   //
+   // // write to file
+   // dat1.open ("lud.dat");
+   // for (int i=0; i<N; i++){
+   //   dat1 << setw(26) << setprecision(13) << h*i;
+   //   dat1 << setw(26) << setprecision(13) << f[i] << endl;
+   // }
+   // dat1.close();
+   //
+   // delete [] A;
+   // delete [] f;
 
    return 0;
 }
