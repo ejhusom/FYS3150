@@ -23,7 +23,7 @@ outfile.write("""# Benchmark timings of project 1
 - Processor: Intel® Core™ M-5Y71 CPU @ 1.20GHz × 4
 - Memory: 8 GB DDR3L SDRAM @ 1600 MHz - PC3L-12800
 
-|n    |General algorithm (s) |Specialized algorithm (s)|LU decomposition (s)|
+|n    |General algorithm [s] |Specialized algorithm [s]|LU decomposition [s]|
 |-----|----------------------|-------------------------|----------------|\n""")
 for i in range(6):
     outfile.write("|10^{:d} ".format(i+1))
