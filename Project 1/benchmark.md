@@ -3,7 +3,7 @@
 - Processor: Intel® Core™ M-5Y71 CPU @ 1.20GHz × 4
 - Memory: 8 GB DDR3L SDRAM @ 1600 MHz - PC3L-12800
 
-|n    |General algorithm (s) |Specialized algorithm (s)|LU decomposition (s)|
+|n    |General algorithm [s] |Specialized algorithm [s]|LU decomposition [s]|
 |-----|----------------------|-------------------------|----------------|
 |10^1 | 0.0000019 | 0.0000009 | 0.0000045 |
 |10^2 | 0.0000051 | 0.0000023 | 0.0015549 |
