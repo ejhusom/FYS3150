@@ -34,6 +34,7 @@ for i in range(6):
     else:
         outfile.write("| - |")
     outfile.write("\n")
+outfile.write("\n")
 outfile.write("Run time recorded: ")
 outfile.write("{:}".format(now.strftime("%Y-%m-%d %H:%M")))
 outfile.close()
