@@ -429,11 +429,11 @@ void makemat(int N, int print, int time){
    dat1 << setprecision(10) << setw(20) << timeused  << endl;
    dat1.close();
  }
-
+ // f[N+1] = 0;
  // write to file
  if (print>0){
    dat1.open ("lud" + to_string(N) + ".dat");
-   for (int i=0; i<N; i++){
+   for (int i=0; i<N+1; i++){
      dat1 << setw(26) << setprecision(13) << h*i;
      dat1 << setw(26) << setprecision(13) << f[i] << endl;
    }
