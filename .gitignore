@@ -47,10 +47,6 @@ Trash
 
 *.exerinfo
 
-doc/Projects/2016/Project2/.out.copyright
-
-doc/Projects/2016/Project2/.project2_2016.copyright
-
 *.exerinfo
 
 *.dlog
@@ -58,5 +54,3 @@ doc/Projects/2016/Project2/.project2_2016.copyright
 
 
 *.user
-
-doc/Programs/ParallelizationMPI/dill10
