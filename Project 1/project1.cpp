@@ -1,8 +1,8 @@
 /*==============================================================================
-Title:           FYS3150 Project 1 - General Algorithm
+Title:           FYS3150 Project 1
 Author:          Erik Johannes B. L. G. Husom (functions ludcmp and lubksb
                  are written by Morten Hjorth-Jensen)
-Date:            2018-08-30
+Date:            2018-09-09
 Version:         4.0
 DESCRIPTION:
 One-dimensional Poisson equation:
@@ -10,13 +10,29 @@ One-dimensional Poisson equation:
                  x = [0, 1]
                  u(0) = u(1) = 0
 
-The program gives a general and a specific algorithm for solving the equation,
-in addition to computing the error for the specific algorithm.
+The program contains six functions:
+- genAlgo: Solving the equation with a General Thomas Algorithm.
+- specAlgo: Solving the equation with a specialized algorithm.
+- epsilons: Computes the max relative error for different step lengths
+- ludcmp: LU decomposition of a matrix (made by Jensen)
+- lubksb: Backward substitution of an LU decomposition (made by Jensen)
+- makemat: Creates a matrix that is sent to ludcmp and lubksb.
+
+The main function calculates the solution for different number of mesh points N,
+writes all the data to files and writes all the run times of the three different
+algorithms to a separate file (used for benchmarks).
 
 USAGE:
 The executable takes an integer (0 or 1) as a command line argument:
-- 0: Runs general and specialized algorithm for different step lengths
-- 1: Prints timing information for the algorithms
+- 0: Runs everything and writes data to file.
+- 1: Records the run time of all the algorithms (but does not write the acutal
+     data to file). The run times are appended to "timings.dat", which means
+     that you need to delete the old timing-file before producing a new one.
+
+POTENTIAL IMPROVEMENTS:
+- Somehow avoid the need to delete "timings.dat" before producing a new
+  timing-file.
+- Improve general program structure.
 ==============================================================================*/
 #include <iostream>
 #include <fstream>
@@ -79,9 +95,12 @@ void genAlgo(int n, int print, int time){
 
     finish = clock();
     double timeused = (double) (finish - start)/(CLOCKS_PER_SEC );
+    // dat1.open("timings.dat");
     if (time>0){
-      cout << setiosflags(ios::showpoint | ios::uppercase);
-      cout << setprecision(10) << setw(20) << "Time used= " << timeused  << endl;
+      dat1.open("timings.dat",ios_base::app);
+      dat1 << setiosflags(ios::showpoint | ios::uppercase);
+      dat1 << setprecision(10) << setw(20) << timeused  << endl;
+      dat1.close();
     }
     // analytical
     double *u = new double[n+2];
@@ -169,8 +188,10 @@ double specAlgo(int n, int print, int time){
     finish = clock();
     double timeused = (double) (finish - start)/(CLOCKS_PER_SEC );
     if (time>0){
-      cout << setiosflags(ios::showpoint | ios::uppercase);
-      cout << setprecision(10) << setw(20) << "Time used= " << timeused  << endl;
+      dat1.open("timings.dat",ios_base::app);
+      dat1 << setiosflags(ios::showpoint | ios::uppercase);
+      dat1 << setprecision(10) << setw(20) << timeused  << endl;
+      dat1.close();
     }
 
     // analytical
@@ -356,94 +377,115 @@ void lubksb(double **a, int n, int *indx, double *b){
   }
 } // End: function lubksb()
 
+void makemat(int N, int print, int time){
+  double **A;
+  A = new double*[N];
+  for (int i = 0; i < N; i++){
+    A[i] = new double[N];
+  }
+  // initialize all elements to 0.0
+  for (int i=0; i<N; i++) {
+      for(int j=0 ; j< N ; j++){
+          A[i][j] = 0.0;
+      }
+  }
+
+  for(int i=0 ; i < N ; i++) {
+      for(int j=0 ; j < N ; j++) {
+          if(i==j){
+              A[i][j] = 2.0;
+          }
+          else if(i==j-1||i==j+1){
+              A[i][j] = -1.0;
+          }
+          // cout << A[i][j] << " ";
+      }
+      // cout << endl;
+  }
+
+ int *indx = new int[N];
+ double *d = new double[N];
+ // filling f-array
+ double *f = new double[N];
+ double h = 1/double(N);
+ double hh100 = h*h*100.0;
+ double h10 = 10*h;
+ for (int i=0; i<double(N); i++){
+    f[i] = hh100*exp(-h10*i);
+ }
+
+ clock_t start, finish;
+ start = clock();
+
+ // Creating and solving with LU-decomposition
+ ludcmp(A, N, indx, d);
+ lubksb(A, N, indx, f);
+
+ finish = clock();
+ double timeused = (double) (finish - start)/(CLOCKS_PER_SEC );
+ if (time>0){
+   dat1.open("timings.dat",ios_base::app);
+   dat1 << setiosflags(ios::showpoint | ios::uppercase);
+   dat1 << setprecision(10) << setw(20) << timeused  << endl;
+   dat1.close();
+ }
+
+ // write to file
+ if (print>0){
+   dat1.open ("lud" + to_string(N) + ".dat");
+   for (int i=0; i<N; i++){
+     dat1 << setw(26) << setprecision(13) << h*i;
+     dat1 << setw(26) << setprecision(13) << f[i] << endl;
+   }
+ }
+ dat1.close();
+
+ delete [] A;
+ delete [] f;
+}
+
 int main(int argc, char* argv[]){
 
   if (atoi(argv[1])==1){
-    cout << "Generalized algorithm - timing:" << endl;
-    for (int i=1; i<4; i++){
-      cout << "   n=10^" << i << endl;
+    cout << "Generalized algorithm - recording run time..." << endl;
+    for (int i=1; i<7; i++){
       for (int j=0; j<10; j++){
         genAlgo(int(pow(10,i)),0,1);
       }
     }
-
-    cout << "Specialized algorithm - timing:" << endl;
+    cout << "Specialized algorithm - recording run time..." << endl;
     for (int i=1; i<7; i++){
-      cout << "   n=10^" << i << endl;
       for (int j=0; j<10; j++){
         specAlgo(int(pow(10,i)),0,1);
       }
     }
+    cout << "LU decomposition - recording run time..." << endl;
+    for (int i=1; i<4; i++){
+      for (int j=0; j<10; j++){
+        makemat(int(pow(10,i)),0,1);
+      }
+    }
+    cout << "Computing done! Have a nice day!" << endl;
   }
   else {
     // RUNNING THE GENERAL AND SPECIALIZED ALGORITHM
     // AND WRITING DATA TO FILE
-      for (int i=1; i<4; i++){
+      cout << "General algorithm: Computing and writing..." << endl;
+      for (int i=1; i<7; i++){
         genAlgo(int(pow(10,i)),1,0);
       }
-      cout << "General algorithm: Data is written to file" << endl;
-
+      cout << "Specialized algorithm: Computing and writing..." << endl;
       for (int i=1; i<7; i++){
         specAlgo(int(pow(10,i)),1,0);
       }
-      cout << "Specialized algorithm: Data is written to file" << endl;
-
+      cout << "LU decomposition: Computing and writing..." << endl;
+      for (int i=1; i<4; i++){
+        makemat(int(pow(10,i)),1,0);
+      }
+      cout << "Relative error: Computing and writing..." << endl;
       epsilons();
+      cout << "Computing done! Have a nice day!" << endl;
   }
-
-//=======================================================
-   //
-   //  int N = 1000;
-   //  double **A;
-   //  A = new double*[N];
-   //  for (int i = 0; i < N; i++){
-   //    A[i] = new double[N];
-   //  }
-   //  // initialize all elements to 0.0
-   //  for (int i=0; i<N; i++) {
-   //      for(int j=0 ; j< N ; j++){
-   //          A[i][j] = 0.0;
-   //      }
-   //  }
-   //
-   //  for(int i=0 ; i < N ; i++) {
-   //      for(int j=0 ; j < N ; j++) {
-   //          if(i==j){
-   //              A[i][j] = 2.0;
-   //          }
-   //          else if(i==j-1||i==j+1){
-   //              A[i][j] = -1.0;
-   //          }
-   //          // cout << A[i][j] << " ";
-   //      }
-   //      // cout << endl;
-   //  }
-   //
-   // int *indx = new int[N];
-   // double *d = new double[N];
-   // // filling f-array
-   // double *f = new double[N];
-   // double h = 1/double(N);
-   // double hh100 = h*h*100.0;
-   // double h10 = 10*h;
-   // for (int i=0; i<double(N); i++){
-   //    f[i] = hh100*exp(-h10*i);
-   // }
-   //
-   // // Creating and solving with LU-decomposition
-   // ludcmp(A, N, indx, d);
-   // lubksb(A, N, indx, f);
-   //
-   // // write to file
-   // dat1.open ("lud.dat");
-   // for (int i=0; i<N; i++){
-   //   dat1 << setw(26) << setprecision(13) << h*i;
-   //   dat1 << setw(26) << setprecision(13) << f[i] << endl;
-   // }
-   // dat1.close();
-   //
-   // delete [] A;
-   // delete [] f;
 
    return 0;
 }
