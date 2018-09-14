@@ -57,6 +57,8 @@ void jacobi_method(int n){
       // cout << endl;
   }
 
+  
+
   int k, l;
   double tolerance = 1e-10;
   double max_iterations = double(n)*double(n)*double(n);
