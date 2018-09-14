@@ -2,7 +2,7 @@
 Title:           FYS3150 Project 2 - Eigenvalue Problems
 Author:          Erik Johannes B. L. G. Husom
 Date:            2018-09-13
-Version:         0.1
+Version:         1.0
 Description: For solving exercises in project 2.
 USAGE:
 - Program takes number of mesh poitns as command line argument
@@ -14,6 +14,7 @@ USAGE:
 #include <cmath>
 #include <iomanip>
 #include <chrono>
+#include <algorithm>
 #include <armadillo>
 using namespace std;
 using namespace std::chrono;
@@ -22,16 +23,11 @@ using namespace arma;
 void jacobi_method(int n);
 void rotate(double **A, int k, int l, int n);
 double maxoffdiag(double **A, int *k, int *l, int n);
-void arma_eigen(int N);
 
 int main(int argc, char *argv[])
-{
-  // taking number of mesh points as command line argument
+{ // taking number of mesh points as command line argument
   int n = atoi(argv[1]);
-
   jacobi_method(n);
-  arma_eigen(n);
-
   return 0;
 } // end of main function
 
@@ -56,9 +52,9 @@ void jacobi_method(int n){
           else if(i==j-1||i==j+1){
               A[i][j] = -1.0;
           }
-          cout << A[i][j] << " ";
+          // cout << A[i][j] << " ";
       }
-      cout << endl;
+      // cout << endl;
   }
 
   int k, l;
@@ -79,16 +75,34 @@ void jacobi_method(int n){
 
   cout << "Number of iterations:" << iterations << endl;
 
-  cout << "=========" << endl;
-  cout << "Calculated eigenvalues:" << endl;
+  // extracting the eigenvalues
+  double eigenvalues[n];
   for(int i=0 ; i < n ; i++) {
     for(int j=0 ; j < n ; j++) {
       if(i==j){
-        cout << A[i][j] << endl;
+        eigenvalues[i] = A[i][j];
       }
     }
   }
+  sort(eigenvalues, eigenvalues + n);
   delete [] A;
+
+  // Checking against armadillo
+  vec main = 2*ones<vec>(n);
+  vec sub = -1*ones<vec>(n-1);
+  vec super = -1*ones<vec>(n-1);
+  mat A_ = diagmat(main);
+  mat B = diagmat(super,1);
+  mat C = diagmat(sub,-1);
+  A_ = A_+B+C;
+
+  cout << "=========" << endl;
+  cout << setw(12) << setprecision(6) << "Calc. eig.";
+  cout << setw(12) << setprecision(6) << "Arma. eig." << endl;
+  for (int i=0; i<n; i++){
+    cout << setw(12) << setprecision(6) << eigenvalues[i];
+    cout << setw(12) << setprecision(6) << eig_sym(A_)[i] << endl;
+  }
 } // end of jacobi__method function
 
 // Function to update matrix elements
@@ -140,19 +154,3 @@ double maxoffdiag(double **A, int *k, int *l, int n){
   }
   return max;
 } // end of maxoffdiag function
-
-// Function for using armadillo to find eigenvaules for comparison
-void arma_eigen(int N){
-  // creating tridiagonal matrix
-  vec main = 2*ones<vec>(N);
-  vec sub = -1*ones<vec>(N-1);
-  vec super = -1*ones<vec>(N-1);
-  mat A_ = diagmat(main);
-  mat B = diagmat(super,1);
-  mat C = diagmat(sub,-1);
-  A_ = A_+B+C;
-
-  cout << "========" << endl;
-  cout << "Eigenvalues from armadillo:" << endl;
-  cout << eig_sym(A_);
-} // end of function arma_eigen
