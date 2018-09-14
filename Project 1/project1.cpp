@@ -32,6 +32,7 @@ The executable takes an integer (0 or 1) as a command line argument:
 POTENTIAL IMPROVEMENTS:
 - Somehow avoid the need to delete "timings.dat" before producing a new
   timing-file.
+- Use high_resolution_clock instead of clock
 - Improve general program structure.
 ==============================================================================*/
 #include <iostream>
