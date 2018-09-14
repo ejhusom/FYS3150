@@ -5,7 +5,9 @@ Date:            2018-09-13
 Version:         0.1
 Description: For solving exercises in project 2.
 USAGE:
-Compile with: c++ -o project2.exe project2.cpp -Wall -larmadillo (if using armadillo functions)
+- Program takes number of mesh poitns as command line argument
+- Remember to link armadillo when compiling:
+  c++ -o project2.exe project2.cpp -Wall -larmadillo
 ==============================================================================*/
 #include <iostream>
 #include <fstream>
@@ -16,11 +18,23 @@ Compile with: c++ -o project2.exe project2.cpp -Wall -larmadillo (if using armad
 using namespace std;
 using namespace arma;
 
+void jacobi_method(int n);
 void rotate(double **A, int k, int l, int n);
 double maxoffdiag(double **A, int *k, int *l, int n);
+void arma_eigen(int N);
 
-void jacobi_method(){
-  int n = 4;
+int main(int argc, char *argv[])
+{
+  // taking number of mesh points as command line argument
+  int n = atoi(argv[1]);
+
+  jacobi_method(n);
+  arma_eigen(n);
+
+  return 0;
+} // end of main function
+
+void jacobi_method(int n){
   double **A;
   A = new double*[n];
   for (int i = 0; i < n; i++){
@@ -32,7 +46,7 @@ void jacobi_method(){
           A[i][j] = 0.0;
       }
   }
-
+  // fill tridiagonal (also printing the matrix)
   for(int i=0 ; i < n ; i++) {
       for(int j=0 ; j < n ; j++) {
           if(i==j){
@@ -45,24 +59,26 @@ void jacobi_method(){
       }
       cout << endl;
   }
+
   int k, l;
   double tolerance = 1e-10;
-  // double max_iterations = double(n)*double(n)*double(n);
-  // int iterations = 0;
+  double max_iterations = double(n)*double(n)*double(n);
+  int iterations = 0;
   double max_ = maxoffdiag(A, &k, &l, n);
-  while (max_ > tolerance){ // && iterations < max_iterations){
+  while (max_ > tolerance && iterations < max_iterations){
     max_ = maxoffdiag(A, &k, &l, n);
     rotate(A, k, l, n);
-    // iterations++;
+    iterations++;
   }
 
   cout << "=========" << endl;
-  cout << "Result matrix:" << endl;
+  cout << "Calculated eigenvalues:" << endl;
   for(int i=0 ; i < n ; i++) {
-      for(int j=0 ; j < n ; j++) {
-          cout << A[i][j] << " ";
+    for(int j=0 ; j < n ; j++) {
+      if(i==j){
+        cout << A[i][j] << endl;
       }
-      cout << endl;
+    }
   }
   delete [] A;
 } // end of jacobi__method function
@@ -117,31 +133,18 @@ double maxoffdiag(double **A, int *k, int *l, int n){
   return max;
 } // end of maxoffdiag function
 
-
-int main(int argc, char *argv[])
-{
-
-  // generate random symmetric matrix
-  // int n = 2;
-  // mat T = randu<mat>(n,n);
-  // mat A = symmatu(T);
-  // A.print();
-
-  jacobi_method();
-
+// Function for using armadillo to find eigenvaules for comparison
+void arma_eigen(int N){
   // creating tridiagonal matrix
-  int n = 4;
-  vec main = 2*ones<vec>(n);
-  vec sub = -1*ones<vec>(n-1);
-  vec super = -1*ones<vec>(n-1);
+  vec main = 2*ones<vec>(N);
+  vec sub = -1*ones<vec>(N-1);
+  vec super = -1*ones<vec>(N-1);
   mat A_ = diagmat(main);
   mat B = diagmat(super,1);
   mat C = diagmat(sub,-1);
   A_ = A_+B+C;
-  // test
-  // A_.print();
-  cout << "========" << endl;
-  cout << eig_sym(A_);
 
-  return 0;
-} // end of main function
+  cout << "========" << endl;
+  cout << "Eigenvalues from armadillo:" << endl;
+  cout << eig_sym(A_);
+} // end of function arma_eigen
