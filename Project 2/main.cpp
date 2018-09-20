@@ -63,6 +63,13 @@ int main(int argc, char *argv[])
       }
   }
 
+  for (int i=0; i<n; i++){
+      for (int j=0; j<n; j++){
+        cout << setw(8) << setprecision(4) << A[i][j];
+      }
+    cout << endl;
+  }
+
   // SOLVING EQUATION
   jacobi_method(A,R,n);
 
