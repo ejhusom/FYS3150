@@ -5,8 +5,8 @@ CPPflags= c++ -Wall
 LIB = -larmadillo -llapack -lblas
 # Here we define the name of the executable
 PROG= project2.exe
-${PROG} :	   	jacobi_method.o  maxoffdiag.o rotate.o main.o
-			${CPPflags} jacobi_method.o maxoffdiag.o rotate.o main.o ${LIB} -o ${PROG}
+${PROG} :	   	jacobi_method.o  maxoffdiag.o rotate.o main.o testcode.o
+			${CPPflags} jacobi_method.o maxoffdiag.o rotate.o main.o testcode.o ${LIB} -o ${PROG}
 
 jacobi_method.o :			jacobi_method.cpp
 		        	${CPPflags} -c jacobi_method.cpp
@@ -19,3 +19,6 @@ rotate.o :		rotate.cpp
 
 main.o :			main.cpp
 							${CPPflags} -c main.cpp
+
+testcode.o :	testcode.cpp
+							${CPPflags} -c testcode.cpp
