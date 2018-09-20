@@ -3,7 +3,7 @@ Title:           FYS3150 Project 2 - Eigenvalue Problems
 Author:          Erik Johannes B. L. G. Husom
 Date:            2018-09-13
 Version:         1.0
-Description: For solving exercises in project 2.
+Description: For solving exercises in project 2, eigenvalue problems.
 USAGE:
 - Program takes number of mesh poitns as command line argument
 - Remember to link armadillo when compiling:
@@ -20,45 +20,54 @@ using namespace std;
 using namespace std::chrono;
 using namespace arma;
 
-void jacobi_method(int n);
-void rotate(double **A, int k, int l, int n);
+void jacobi_method(double **A, double **R, int n);
+void rotate(double **A, double **R, int k, int l, int n);
 double maxoffdiag(double **A, int *k, int *l, int n);
 
 int main(int argc, char *argv[])
-{ // taking number of mesh points as command line argument
+{
+  // taking number of mesh points as command line argument
   int n = atoi(argv[1]);
-  jacobi_method(n);
-  return 0;
-} // end of main function
 
-void jacobi_method(int n){
-  double **A;
-  A = new double*[n];
+  // creating array
+  double **A = new double*[n];
+  double **R = new double*[n];
   for (int i = 0; i < n; i++){
     A[i] = new double[n];
-  }
-  // initialize all elements to 0.0
-  for (int i=0; i<n; i++) {
-      for(int j=0 ; j< n ; j++){
-          A[i][j] = 0.0;
-      }
+    R[i] = new double[n];
   }
   // fill tridiagonal (also printing the matrix)
   for(int i=0 ; i < n ; i++) {
       for(int j=0 ; j < n ; j++) {
           if(i==j){
-              A[i][j] = 2.0;
+            A[i][j] = 2.0;
+            R[i][j] = 1.0;
           }
           else if(i==j-1||i==j+1){
-              A[i][j] = -1.0;
+            A[i][j] = -1.0;
+            R[i][j] = 0.0;
+          }
+          else {
+            A[i][j] = 0.0;
+            R[i][j] = 0.0;
           }
           // cout << A[i][j] << " ";
       }
       // cout << endl;
   }
 
-  
+  // A[n-2][n-1] = 100;
 
+  jacobi_method(A,R,n);
+
+  // delete allocated memory
+  for (int i = 0; i < n; i++) delete [] A[i];
+
+
+  return 0;
+} // end of main function
+
+void jacobi_method(double **A, double **R, int n){
   int k, l;
   double tolerance = 1e-10;
   double max_iterations = double(n)*double(n)*double(n);
@@ -68,14 +77,23 @@ void jacobi_method(int n){
   high_resolution_clock::time_point t1 = high_resolution_clock::now();
   while (max_ > tolerance && iterations < max_iterations){
     max_ = maxoffdiag(A, &k, &l, n);
-    rotate(A, k, l, n);
+    // Uncomment below if you want to print outs
+    // for(int i=0 ; i < n ; i++) {
+    //     for(int j=0 ; j < n ; j++) {
+    //         cout << A[i][j] << " ";
+    //     }
+    //     cout << endl;
+    // }
+    // cout << "Max: " << max_ << endl;
+    // cout << "===========" << endl;
+    rotate(A, R, k, l, n);
     iterations++;
   }
   high_resolution_clock::time_point t2 = high_resolution_clock::now();
   duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
   cout << "Time used: " << time_span.count() << " seconds." << endl;
 
-  cout << "Number of iterations:" << iterations << endl;
+  cout << "Number of iterations: " << iterations << endl;
 
   // extracting the eigenvalues
   double eigenvalues[n];
@@ -87,9 +105,9 @@ void jacobi_method(int n){
     }
   }
   sort(eigenvalues, eigenvalues + n);
-  delete [] A;
 
-  // Checking against armadillo
+  //=========================================================================
+  // UNIT TEST No. 1: Checking eigenvalues against Armadillo
   vec main = 2*ones<vec>(n);
   vec sub = -1*ones<vec>(n-1);
   vec super = -1*ones<vec>(n-1);
@@ -97,18 +115,34 @@ void jacobi_method(int n){
   mat B = diagmat(super,1);
   mat C = diagmat(sub,-1);
   A_ = A_+B+C;
+  // A_(n-2,n-1) = 100;
 
-  cout << "=========" << endl;
-  cout << setw(12) << setprecision(6) << "Calc. eig.";
-  cout << setw(12) << setprecision(6) << "Arma. eig." << endl;
   for (int i=0; i<n; i++){
-    cout << setw(12) << setprecision(6) << eigenvalues[i];
-    cout << setw(12) << setprecision(6) << eig_sym(A_)[i] << endl;
+    if (fabs(eigenvalues[i]-eig_sym(A_)[i]) > tolerance){
+      cout << "WARNING! Numerical eigenvalues not matching eigenvalues from Armadillo" << endl;
+      break;
+    }
+  }
+
+  // print out eigenvalues
+  // cout << "=============================" << endl;
+  // cout << setw(12) << setprecision(6) << "Calc. eig.";
+  // cout << setw(12) << setprecision(6) << "Arma. eig." << endl;
+  // for (int i=0; i<n; i++){
+  //   cout << setw(12) << setprecision(6) << eigenvalues[i];
+  //   cout << setw(12) << setprecision(6) << eig_sym(A_)[i] << endl;
+  // }
+
+  //=========================================================================
+  // UNIT TEST No. 2: Checking orthogonality of eigenvectors
+  double sum = 0.0;
+  for (int j=0; j<n; i++){
+    sum += R[0][j]*R[1][j];
   }
 } // end of jacobi__method function
 
 // Function to update matrix elements
-void rotate(double **A, int k, int l, int n){
+void rotate(double **A, double **R, int k, int l, int n){
   double tau, t, c, s;
   if (A[k][l] != 0.0){
     tau = (A[l][l]-A[k][k])/(2*A[k][l]);
@@ -124,7 +158,7 @@ void rotate(double **A, int k, int l, int n){
     c = 1.0; s = 0.0;
   }
 
-  double a_kk, a_ll, a_ik, a_il;
+  double a_kk, a_ll, a_ik, a_il, r_ik, r_il;
   a_kk = A[k][k];
   a_ll = A[l][l];
   A[k][k] = a_kk*c*c - 2*A[k][l]*c*s + a_ll*s*s;
@@ -140,6 +174,11 @@ void rotate(double **A, int k, int l, int n){
       A[i][l] = a_il*c + a_ik*s;
       A[l][i] = A[i][l];
     }
+  // Compute new eigenvectors
+  r_ik = R[i][k];
+  r_il = R[i][l];
+  R[i][k] = r_ik*c - r_il*s;
+  R[i][l] = r_il*c + r_ik*s;
   }
 } // end of function rotate
 
@@ -150,7 +189,6 @@ double maxoffdiag(double **A, int *k, int *l, int n){
     for (int j=i+1; j<n; j++){
       if (fabs(A[i][j])>max){
         max = fabs(A[i][j]); *k = i; *l = j;
-
       }
     }
   }
