@@ -12,13 +12,14 @@ POTENTIAL IMPROVEMENTS:
 - Better structure of the two unit tests in jacobi_method.cpp
 ==============================================================================*/
 #include "jacobi_method.h"
+#include <iostream>
 
 int main(int argc, char *argv[])
 {
   // taking number of mesh points as command line argument
   int n = atoi(argv[1]);
 
-  // creating array
+  // CREATING MATRIX
   double **A = new double*[n];
   double **R = new double*[n];
   for (int i = 0; i < n; i++){
@@ -43,10 +44,14 @@ int main(int argc, char *argv[])
       }
   }
 
+  // SOLVING EQUATION
   jacobi_method(A,R,n);
 
   // delete allocated memory
   for (int i = 0; i < n; i++) delete [] A[i];
+
+
+
 
   return 0;
 } // end of main function

@@ -76,4 +76,7 @@ void jacobi_method(double **A, double **R, int n){
   for (int j=0; j<n; j++){
     sum += R[0][j]*R[1][j];
   }
+  if (sum > tolerance){
+    cout << "WARNING! Numerical eigenvectors not matching eigenvectors from Armadillo" << endl;
+  }
 } // end of jacobi__method function
