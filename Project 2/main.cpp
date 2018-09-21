@@ -101,8 +101,6 @@ int main(int argc, char *argv[])
   // SOLVING EQUATION
   double timing; int it;
   jacobi_method(A,R,n,&timing,&it);
-  cout << "Return:\n" << timing << endl << it << endl;
-
   // Extracting and sorting the eigenvalues
   double eigenvalues[n];
   for(int i=0 ; i < n ; i++) {
@@ -113,6 +111,10 @@ int main(int argc, char *argv[])
     }
   }
   sort(eigenvalues, eigenvalues + n);
+
+  // Finding eigenvalues with Armadillo
+  double timing_arma; double eigs[n];
+  eigenarma(n,eigs,rho_n,omega,&timing_arma);
 
   // Printing eigenvalues
   cout << "The four first calculated eigenvalues:" << endl;

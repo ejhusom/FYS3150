@@ -1,4 +1,6 @@
+# executables
 *.exe
+*.x
 build*
 # data-files
 *.dat

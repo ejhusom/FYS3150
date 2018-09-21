@@ -5,7 +5,7 @@ using namespace arma;
 using namespace std::chrono;
 
 // Get eigenvectors and -values from Armadillo and writes them to file
-void eigenarma(int n, double rho_n=0, double omega=0){
+void eigenarma(int n, double *eigs, double rho_n=0, double omega=0, double *timing_arma=0){
   // Determine parameters
   vec rho = zeros<vec>(n);
   vec V = zeros<vec>(n);
@@ -40,14 +40,21 @@ void eigenarma(int n, double rho_n=0, double omega=0){
   vec eigval;
   mat eigvec;
 
+  // Solving and timing
   high_resolution_clock::time_point t1 = high_resolution_clock::now();
   eig_sym(eigval, eigvec, A);
   high_resolution_clock::time_point t2 = high_resolution_clock::now();
   duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
-  // cout << "Time used: " << time_span.count() << " seconds." << endl;
+  // Returning eigenvalues and timing
+  *timing_arma = double(time_span.count());
+  // double eigs[n];
+  for (int i = 0; i < n; i++) {
+    eigs[i] = eigval(i);
+  }
 
   // Save results for plotting
   eigvec.save("eigvec.dat",raw_ascii);
   eigval.save("eigval.dat",raw_ascii);
   rho.save("rho.dat",raw_ascii);
+
 }

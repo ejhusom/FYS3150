@@ -10,7 +10,7 @@
 using namespace std;
 using namespace std::chrono;
 
-void jacobi_method(double **A, double **R, int n, double *timing, int *it){
+void jacobi_method(double **A, double **R, int n, double *timing=0, int *it=0){
   int k, l;
   double tolerance = 1e-10;
   double max_iterations = double(n)*double(n)*double(n);
