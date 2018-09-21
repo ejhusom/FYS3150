@@ -6,7 +6,8 @@ Version:         2.0
 Description: For solving exercises in project 2, eigenvalue problems.
 USAGE:
 - 1. cmd arg: Number of mesh points
-- 2. cmd arg: Rho_Max. If set to zero, then there is no potential.
+- 2. cmd arg: rho_Max (spherical coordinates)
+- 3. cmd arg: omega (strength of oscillator potential)
 - Compile by running "make" in terminal
 - Unit tests are run by calling testcode(n) in the main function
 
@@ -28,20 +29,36 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-  // Taking number of mesh points and rho_n as command line argument
-  int n = atoi(argv[1]);
-  double rho_n = atof(argv[2]);
+  // Taking command line arguments
+  int n = 0; double rho_n = 0; double omega = 0;
+  switch (argc) {
+    case 1: cout << "=================================================" << endl;
+            cout << "USAGE:" << endl;
+            cout << "- 1. cmd arg: Number of mesh points" << endl;
+            cout << "- 2. cmd arg: rho_Max, spherical coordinates (optional)" << endl;
+            cout << "- 3. cmd arg: omega, strength of oscillator potential (optional)" << endl;
+            return 1;
+    case 4: omega = atof(argv[3]);
+    case 3: rho_n = atof(argv[2]);
+    case 2: n = atoi(argv[1]);
+  }
 
   // Initialize parameters
-  double V[n] = {0}; double Diag; double NonDiag;
+  double V[n] = {0}; double rho[n] = {0};
+  double Diag; double NonDiag;
   if (rho_n != 0){
     double h = rho_n/double(n+1);
     Diag = 2.0/(h*h);
     NonDiag = -1.0/(h*h);
-    double rho[n];
     for (int i=0; i<n; i++){
       rho[i] = (i+1)*h;
       V[i] = rho[i]*rho[i];
+    }
+    if (omega > 0){
+      double omega2 = omega*omega;
+      for (int i=0; i<n; i++){
+        V[i] = V[i]*omega2 + 1/rho[i];
+      }
     }
   } else {
     Diag = 2.0;
@@ -88,7 +105,7 @@ int main(int argc, char *argv[])
   sort(eigenvalues, eigenvalues + n);
 
   // Printing eigenvalues
-  cout << "The four first calculated eigenvalues (should be 3, 7, 11, 15):" << endl;
+  cout << "The four first calculated eigenvalues:" << endl;
   for (int i=0; i<4; i++){
     cout << setw(8) << setprecision(4) << eigenvalues[i] << endl;
   }

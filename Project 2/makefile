@@ -4,7 +4,7 @@ CPPflags= c++ -Wall
 # Here we define the library functions we nee
 LIB = -larmadillo -llapack -lblas
 # Here we define the name of the executable
-PROG= project2.exe
+PROG= project2.x
 ${PROG} :	   	jacobi_method.o  maxoffdiag.o rotate.o eigenarma.o main.o testcode.o
 			${CPPflags} jacobi_method.o maxoffdiag.o rotate.o eigenarma.o main.o testcode.o ${LIB} -o ${PROG}
 

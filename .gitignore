@@ -2,6 +2,7 @@
 build*
 # data-files
 *.dat
+*.txt
 # images
 *.png
 *.jpg
@@ -51,6 +52,6 @@ Trash
 
 *.dlog
 
-
-
 *.user
+
+makeproject.py
