@@ -5,12 +5,10 @@ Date:            2018-09-13
 Version:         2.0
 Description: For solving exercises in project 2, eigenvalue problems.
 USAGE:
-- Program takes number of mesh poitns as command line argument
+- 1. cmd arg: Number of mesh points
+- 2. cmd arg: Rho_Max. If set to zero, then there is no potential.
 - Compile by running "make" in terminal
 - Unit tests are run by calling testcode(n) in the main function
-
-TODO:
-- Finish eigenarma-function
 
 POTENTIAL IMPROVEMENTS:
 - Move creation of matrix into jacobi_method.cpp, and send in the elements of
@@ -24,16 +22,17 @@ POTENTIAL IMPROVEMENTS:
 #include <fstream>
 #include "jacobi_method.h"
 #include "testcode.h"
-#include "creatematrix.h"
+#include "eigenarma.h"
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
-  // taking number of mesh points and rho_n as command line argument
+  // Taking number of mesh points and rho_n as command line argument
   int n = atoi(argv[1]);
   double rho_n = atof(argv[2]);
 
+  // Initialize parameters
   double V[n] = {0}; double Diag; double NonDiag;
   if (rho_n != 0){
     double h = rho_n/double(n+1);
@@ -49,6 +48,7 @@ int main(int argc, char *argv[])
     NonDiag = -1.0;
   }
 
+  // Create matrix
   double **A = new double*[n];
   double **R = new double*[n];
   for (int i = 0; i < n; i++){
@@ -73,51 +73,31 @@ int main(int argc, char *argv[])
       }
   }
 
-  for (int i=0; i<n; i++){
-      for (int j=0; j<n; j++){
-        cout << setw(8) << setprecision(4) << A[i][j];
+  // SOLVING EQUATION
+  jacobi_method(A,R,n);
+
+  // Extracting and sorting the eigenvalues
+  double eigenvalues[n];
+  for(int i=0 ; i < n ; i++) {
+    for(int j=0 ; j < n ; j++) {
+      if(i==j){
+        eigenvalues[i] = A[i][j];
       }
-    cout << endl;
+    }
+  }
+  sort(eigenvalues, eigenvalues + n);
+
+  // Printing eigenvalues
+  cout << "The four first calculated eigenvalues (should be 3, 7, 11, 15):" << endl;
+  for (int i=0; i<4; i++){
+    cout << setw(8) << setprecision(4) << eigenvalues[i] << endl;
   }
 
-
-  //
-  // // SOLVING EQUATION
-  // jacobi_method(A,R,n);
-  //
-  // extracting the eigenvalues
-  // double eigenvalues[n];
-  // for(int i=0 ; i < n ; i++) {
-  //   for(int j=0 ; j < n ; j++) {
-  //     if(i==j){
-  //       eigenvalues[i] = A[i][j];
-  //     }
-  //   }
-  // }
-  //
-  // // ofstream outfile;
-  // // outfile.open ("eigenvectors.dat");
-  // // for (int i=0; i<n; i++){
-  // //   outfile << setw(20) << setprecision(10) << eigenvalues[i];
-  // //   for (int j=0; j<n; j++){
-  // //     outfile << setw(20) << setprecision(10) << R[i][j];
-  // //   }
-  // //   outfile << endl;
-  // // }
-  // // outfile.close();
-  //
-  // sort(eigenvalues, eigenvalues + n);
-  // // Printing eigenvalues
-  // for (int i=0; i<4; i++){
-  //   cout << setw(8) << setprecision(4) << eigenvalues[i] << endl;
-  // }
-  //
-  //
-  // // delete allocated memory
-  // for (int i = 0; i < n; i++){
-  //   delete [] A[i];
-  //   delete [] R[i];
-  // }
+  // delete allocated memory
+  for (int i = 0; i < n; i++){
+    delete [] A[i];
+    delete [] R[i];
+  }
 
   return 0;
 } // end of main function
