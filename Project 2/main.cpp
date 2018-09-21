@@ -5,22 +5,21 @@ Date:            2018-09-13
 Version:         2.0
 Description: For solving exercises in project 2, eigenvalue problems.
 USAGE:
+- No cmd arg: Running tests and giving usage information
 - 1. cmd arg: Number of mesh points
 - 2. cmd arg: rho_Max (spherical coordinates)
 - 3. cmd arg: omega (strength of oscillator potential)
 - Compile by running "make" in terminal
-- Unit tests are run by calling testcode(n) in the main function
 
 POTENTIAL IMPROVEMENTS:
-- Move creation of matrix into jacobi_method.cpp, and send in the elements of
-  the diagonals as arguments to the function
-- Better structure of the unit tests, testcode.cpp
 ==============================================================================*/
 #include <iostream>
 #include <iomanip>
 #include <cmath>
 #include <algorithm>
 #include <fstream>
+#include <sys/ioctl.h>
+#include <unistd.h>
 #include "jacobi_method.h"
 #include "testcode.h"
 #include "eigenarma.h"
@@ -29,15 +28,24 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
+  struct winsize size;
+  ioctl(STDOUT_FILENO,TIOCGWINSZ,&size);
   // Taking command line arguments
   int n = 0; double rho_n = 0; double omega = 0;
   switch (argc) {
-    case 1: cout << "=================================================" << endl;
+    case 1: struct winsize size;
+            ioctl(STDOUT_FILENO,TIOCGWINSZ,&size);
+            for (int i = 0; i < size.ws_col; i++) {
+              cout << "=";
+            }
+            cout << endl;
             cout << "USAGE:" << endl;
+            cout << "- No cmd arg: Running tests" << endl;
             cout << "- 1. cmd arg: Number of mesh points" << endl;
             cout << "- 2. cmd arg: rho_Max, spherical coordinates (optional)" << endl;
             cout << "- 3. cmd arg: omega, strength of oscillator potential (optional)" << endl;
-            return 1;
+            testcode(40);
+            return 0;
     case 4: omega = atof(argv[3]);
     case 3: rho_n = atof(argv[2]);
     case 2: n = atoi(argv[1]);
@@ -91,7 +99,9 @@ int main(int argc, char *argv[])
   }
 
   // SOLVING EQUATION
-  jacobi_method(A,R,n);
+  double timing; int it;
+  jacobi_method(A,R,n,&timing,&it);
+  cout << "Return:\n" << timing << endl << it << endl;
 
   // Extracting and sorting the eigenvalues
   double eigenvalues[n];

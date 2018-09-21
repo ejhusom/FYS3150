@@ -3,11 +3,14 @@
 #include <cmath>
 #include <algorithm>
 #include <armadillo>
+#include <sys/ioctl.h>
 #include "jacobi_method.h"
 
 using namespace std;
 using namespace arma;
 
+// Function for testing the jacobi method
+// Both unit tests have passed for tolerance >= 1e-13
 void testcode(int n){
   // CREATING TOEPLITZ MATRIX
   double **A = new double*[n];   // toeplitz matrix
@@ -23,7 +26,6 @@ void testcode(int n){
             A[i][j] = 2.0;
             R[i][j] = 1.0;
           }
-          // else if(i==j-1||i==j+1){
           else if(i==j-1||i==j+1){
             A[i][j] = -1.0;
             R[i][j] = 0.0;
@@ -36,7 +38,8 @@ void testcode(int n){
   }
 
   // SOLVING EQUATION
-  jacobi_method(A,R,n);
+  double timing; int it;
+  jacobi_method(A,R,n,&timing,&it);
 
   // extracting the eigenvalues
   double eigenvalues[n];
@@ -48,7 +51,15 @@ void testcode(int n){
     }
   }
   sort(eigenvalues, eigenvalues + n);
-  //=========================================================================
+
+  // Get size of terminal for nice print formatting
+  struct winsize size;
+  ioctl(STDOUT_FILENO,TIOCGWINSZ,&size);
+  for (int i = 0; i < size.ws_col; i++) {
+    cout << "=";
+  }
+  cout << endl;
+//=========================================================================
   // UNIT TEST No. 1: Checking eigenvalues against analytical solution
   double lambda[n];
   double d = 2.0;
@@ -59,32 +70,41 @@ void testcode(int n){
   }
   // Checking analytical eigenvalues against numerical eigenvalues
   double tolerance = 1e-10;
+  double success = 0;
   for (int i=0; i<n; i++){
     if (fabs(eigenvalues[i]-lambda[i]) > tolerance){
-      cout << "WARNING! Numerical eigenvalues not matching analytical eigenvalues" << endl;
+      cout << left << setw(35) << "TEST: correct eigenvalues";
+      cout << left << " | \033[1;31mFAILED\033[0m" << endl;
+      success++;
       break;
     }
   }
-  // Printing eigenvalues
-  for (int i=0; i<n; i++){
-    cout << setw(8) << setprecision(4) << lambda[i];
-    cout << setw(8) << setprecision(4) << eigenvalues[i] << endl;
+  if (success == 0){
+    cout << left << setw(35) << "TEST: correct eigenvalues";
+    cout << left << " | \033[1;32mPASSED\033[0m" << endl;
   }
-
-
   //=========================================================================
   // UNIT TEST No. 2: Checking orthogonality of eigenvectors.
-  double sum = 0.0;
+  double sum; bool failure = false;
   for (int k=0; k<n; k++){
     for (int j=k; j<n; j++){
+      sum = 0.0;
       for (int i=0; i<n; i++){
         sum += R[i][j]*R[i][j+1];
       }
+      if (sum > tolerance){
+        failure = true;
+      }
     }
   }
-  if (sum > tolerance){
-    cout << "WARNING! Numerical eigenvectors not matching analytical eigenvectors" << endl;
+  if (failure){
+    cout << left << setw(35) << "TEST: orthogonality of eigenvectors",
+    cout << left << " | \033[1;31mFAILED\033[0m" << endl;
+  } else {
+    cout << left << setw(35) << "TEST: orthogonality of eigenvectors",
+    cout << left << " | \033[1;32mPASSED\033[0m" << endl;
   }
+
   // delete allocated memory
   for (int i = 0; i < n; i++){
     delete [] A[i];

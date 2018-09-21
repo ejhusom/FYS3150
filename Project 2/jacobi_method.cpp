@@ -10,7 +10,7 @@
 using namespace std;
 using namespace std::chrono;
 
-void jacobi_method(double **A, double **R, int n){
+void jacobi_method(double **A, double **R, int n, double *timing, int *it){
   int k, l;
   double tolerance = 1e-10;
   double max_iterations = double(n)*double(n)*double(n);
@@ -26,8 +26,7 @@ void jacobi_method(double **A, double **R, int n){
   }
   high_resolution_clock::time_point t2 = high_resolution_clock::now();
   duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
-  cout << "Time used: " << time_span.count() << " seconds." << endl;
-
-  cout << "Number of iterations: " << iterations << endl;
-
+  // Return timing of algorithm and number of iterations
+  *timing = double(time_span.count());
+  *it = iterations;
 } // end of jacobi__method function
