@@ -5,11 +5,12 @@ Date:            2018-09-13
 Version:         2.0
 Description: For solving exercises in project 2, eigenvalue problems.
 USAGE:
+Compile by running "make" in terminal
+The executable can be run with no or several command line arguments:
 - No cmd arg: Running tests and giving usage information
-- 1. cmd arg: Number of mesh points
-- 2. cmd arg: rho_Max (spherical coordinates)
-- 3. cmd arg: omega (strength of oscillator potential)
-- Compile by running "make" in terminal
+- First cmd arg: Number of mesh points.
+- Second cmd arg: rho_Max, spherical coordinates, (optional).
+- Third cmd arg: omega, strength of oscillator potential, (optional).
 
 TODO: Write data to file
 TODO: Plot data
@@ -31,8 +32,6 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-  struct winsize size;
-  ioctl(STDOUT_FILENO,TIOCGWINSZ,&size);
   // Taking command line arguments
   int n = 0; double rho_n = 0; double omega = 0;
   switch (argc) {
