@@ -11,6 +11,9 @@ USAGE:
 - 3. cmd arg: omega (strength of oscillator potential)
 - Compile by running "make" in terminal
 
+TODO: Write data to file
+TODO: Plot data
+
 POTENTIAL IMPROVEMENTS:
 ==============================================================================*/
 #include <iostream>
