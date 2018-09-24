@@ -34,12 +34,10 @@ int main(int argc, char *argv[])
 {
   // Taking command line arguments
   int n = 0; double rho_n = 0; double omega = 0;
+  struct winsize size;
+  ioctl(STDOUT_FILENO,TIOCGWINSZ,&size);
   switch (argc) {
-    case 1: struct winsize size;
-            ioctl(STDOUT_FILENO,TIOCGWINSZ,&size);
-            for (int i = 0; i < size.ws_col; i++) {
-              cout << "=";
-            }
+    case 1: for (int i = 0; i < size.ws_col; i++) cout << "=";
             cout << endl;
             cout << "USAGE:" << endl;
             cout << "- No cmd arg: Running tests" << endl;
@@ -101,9 +99,25 @@ int main(int argc, char *argv[])
   }
 
   // SOLVING EQUATION
-  double timing; int it;
+  double timing; int it; double timing_arma; double eigs[n];
+  // Finding eigenvalues with Jacobi method
   jacobi_method(A,R,n,&timing,&it);
-  // Extracting and sorting the eigenvalues
+  // Finding eigenvalues with Armadillo
+  eigenarma(n,eigs,rho_n,omega,&timing_arma);
+
+  // double mean_j = 0; double mean_a = 0;
+  // double timing; int it; double timing_arma; double eigs[n];
+  // for (int i = 0; i < 10; i++) {
+  //   // Finding eigenvalues with Jacobi method
+  //   jacobi_method(A,R,n,&timing,&it);
+  //   // Finding eigenvalues with Armadillo
+  //   eigenarma(n,eigs,rho_n,omega,&timing_arma);
+  //   // Adding to mean
+  //   mean_j += timing/10;
+  //   mean_a += timing_arma/10;
+  // }
+
+  // Extracting and sorting the eigenvalues from Jacobi method
   double eigenvalues[n];
   for(int i=0 ; i < n ; i++) {
     for(int j=0 ; j < n ; j++) {
@@ -114,15 +128,19 @@ int main(int argc, char *argv[])
   }
   sort(eigenvalues, eigenvalues + n);
 
-  // Finding eigenvalues with Armadillo
-  double timing_arma; double eigs[n];
-  eigenarma(n,eigs,rho_n,omega,&timing_arma);
-
-  // Printing eigenvalues
-  cout << "The four first calculated eigenvalues:" << endl;
-  for (int i=0; i<4; i++){
-    cout << setw(8) << setprecision(4) << eigenvalues[i] << endl;
+  // Printing results
+  for (int i = 0; i < size.ws_col; i++) cout << "=";
+  cout << "Three first eigenvalues\n";
+  cout << setw(12) << "Jacobi" << setw(12) << "Arma." << endl;
+  for (int i=0; i<3; i++){
+    cout << setw(12) << setprecision(4) << eigenvalues[i] << setw(12) << setprecision(4) << eigs[i] << endl;
   }
+  for (int i = 0; i < size.ws_col; i++) cout << "-";
+  cout << "Timing\n";
+  cout << setw(12) << "Jacobi" << setw(12) << "Arma." << endl;
+  cout << setw(12) << setprecision(4) << timing << setw(12) << setprecision(4) << timing_arma << endl;
+  for (int i = 0; i < size.ws_col; i++) cout << "-";
+  cout << "Number of iterations (Jacobi): " << it << endl;
 
   // delete allocated memory
   for (int i = 0; i < n; i++){

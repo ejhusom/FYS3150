@@ -20,9 +20,11 @@ w = 5; h = 2.5
 plt.figure(figsize=(w,h))
 rho = np.loadtxt('rho.dat')
 eigvec = np.loadtxt('eigvec.dat')
-vec1 = eigvec[:,0]
+vec1, vec2, vec3 = eigvec[:,0],eigvec[:,1],eigvec[:,2]
 plt.plot(rho,vec1**2)
-plt.axis([0,4.6,0.0, 0.025])
+plt.plot(rho,vec2**2)
+plt.plot(rho,vec3**2)
+# plt.axis([0,4.6,0.0, 0.025])
 plt.xlabel(r'$r$')
 plt.ylabel(r'Radial probability $r^2|R(r)|^2$')
 plt.tight_layout()

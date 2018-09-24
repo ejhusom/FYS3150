@@ -29,4 +29,6 @@ void jacobi_method(double **A, double **R, int n, double *timing=0, int *it=0){
   // Return timing of algorithm and number of iterations
   *timing = double(time_span.count());
   *it = iterations;
+  cout << iterations << endl;
+  
 } // end of jacobi__method function
