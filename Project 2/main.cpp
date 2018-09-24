@@ -12,8 +12,11 @@ The executable can be run with no or several command line arguments:
 - Second cmd arg: rho_Max, spherical coordinates, (optional).
 - Third cmd arg: omega, strength of oscillator potential, (optional).
 
-TODO: Write data to file
-TODO: Plot data
+TODO: Record run time
+TODO: Plot run time
+TODO: Plot iterations
+TODO: Plot psi
+TODO: Check eigenvalues 2e
 
 POTENTIAL IMPROVEMENTS:
 ==============================================================================*/
@@ -30,8 +33,7 @@ POTENTIAL IMPROVEMENTS:
 
 using namespace std;
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
   // Taking command line arguments
   int n = 0; double rho_n = 0; double omega = 0;
   struct winsize size;
@@ -105,18 +107,6 @@ int main(int argc, char *argv[])
   // Finding eigenvalues with Armadillo
   eigenarma(n,eigs,rho_n,omega,&timing_arma);
 
-  // double mean_j = 0; double mean_a = 0;
-  // double timing; int it; double timing_arma; double eigs[n];
-  // for (int i = 0; i < 10; i++) {
-  //   // Finding eigenvalues with Jacobi method
-  //   jacobi_method(A,R,n,&timing,&it);
-  //   // Finding eigenvalues with Armadillo
-  //   eigenarma(n,eigs,rho_n,omega,&timing_arma);
-  //   // Adding to mean
-  //   mean_j += timing/10;
-  //   mean_a += timing_arma/10;
-  // }
-
   // Extracting and sorting the eigenvalues from Jacobi method
   double eigenvalues[n];
   for(int i=0 ; i < n ; i++) {
@@ -141,6 +131,12 @@ int main(int argc, char *argv[])
   cout << setw(12) << setprecision(4) << timing << setw(12) << setprecision(4) << timing_arma << endl;
   for (int i = 0; i < size.ws_col; i++) cout << "-";
   cout << "Number of iterations (Jacobi): " << it << endl;
+
+  ofstream dat1;
+  dat1.open("timings.dat",ios_base::app);
+  dat1 << setiosflags(ios::showpoint | ios::uppercase);
+  dat1 << setprecision(10) << setw(20) << timing << setprecision(10) << setw(20) << timing_arma << endl;
+  dat1.close();
 
   // delete allocated memory
   for (int i = 0; i < n; i++){
