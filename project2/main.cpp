@@ -133,11 +133,11 @@ int main(int argc, char *argv[]){
   cout << "Number of iterations (Jacobi): " << it << endl;
 
   // Uncomment the next lines for writing timing data to file
-  ofstream dat1;
-  dat1.open("timingsn400.dat",ios_base::app);
-  dat1 << setiosflags(ios::showpoint | ios::uppercase);
-  dat1 << setprecision(10) << setw(20) << timing << setprecision(10) << setw(20) << timing_arma << endl;
-  dat1.close();
+  // ofstream dat1;
+  // dat1.open("timingsn10.dat",ios_base::app);
+  // dat1 << setiosflags(ios::showpoint | ios::uppercase);
+  // dat1 << setprecision(10) << setw(20) << timing << setprecision(10) << setw(20) << timing_arma << endl;
+  // dat1.close();
 
   // delete allocated memory
   for (int i = 0; i < n; i++){

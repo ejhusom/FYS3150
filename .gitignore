@@ -5,10 +5,12 @@ build*
 # data-files
 *.dat
 *.txt
+*.csv
 # images
 *.png
 *.jpg
 *.jpeg
+*.pdf
 # compiled files:
 *.o
 *.so

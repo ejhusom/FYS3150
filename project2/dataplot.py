@@ -7,6 +7,8 @@
 # Version:          3.0
 # Python version:   Python 3.6.4
 # Description: Plotting data from .dat-files, specialized for FYS3150 project 2
+# USAGE:
+# Requires files with run time recordings, which may be produced by main.cpp.
 #==============================================================================
 # IMPORT STATEMENTS
 import numpy as np
@@ -46,14 +48,30 @@ for i in range(np.size(n)):
     time_A[i] = np.mean(A)
     std_A[i] = np.std(A)
 
-# iterations of Jacobi method
-it = np.array([154, 640, 1488, 2657, 4112, 16401, 36570, 64509, 143659, 252793])
 plt.figure(figsize=(w,h))
-plt.plot(n,time_J, '-', label="Jacobi")
+plt.plot(n,time_J, '-o', label="Jacobi")
 plt.plot(n,time_A, '-', label="Armadillo")
 plt.xlabel("No. of mesh points $n$")
-plt.ylabel("Run time $[s]$")
+plt.ylabel("No. of iterations")
 plt.legend()
 plt.tight_layout()
 plt.savefig("runtime.pdf",dpi=300)
-    plt.show()
+# plt.show()
+
+# iterations of Jacobi method
+# it = np.array([154, 640, 1488, 2657, 4112, 16401, 36570, 64509, 143659, 252793])
+it = np.array([154, 4112, 16401, 36570, 64509, 143659, 252793])
+n = np.array([10,50,100,150,200,300,400])
+plt.figure(figsize=(w,h))
+plt.plot(n,it, '-o')
+plt.xlabel("No. of mesh points $n$")
+plt.ylabel("No. of iterations")
+plt.tight_layout()
+plt.savefig("iterations.pdf",dpi=300)
+# plt.show()
+
+# Save mean and std of run times to .csv-file
+n = np.array([10,20,30,40,50,100,150,200,300,400])
+a = np.zeros((10,5))
+a[:,0], a[:,1], a[:,2], a[:,3], a[:,4] = n, time_J, std_J, time_A, std_A
+np.savetxt("runtime.csv", a, delimiter=' & ', fmt='%2.2e', newline=' \\\\\n')
