@@ -70,16 +70,16 @@ void testcode(int n){
   }
   // Checking analytical eigenvalues against numerical eigenvalues
   double tolerance = 1e-10;
-  double success = 0;
+  double success = true;
   for (int i=0; i<n; i++){
     if (fabs(eigenvalues[i]-lambda[i]) > tolerance){
       cout << left << setw(35) << "TEST: correct eigenvalues";
       cout << left << " | \033[1;31mFAILED\033[0m" << endl;
-      success++;
+      success = false;
       break;
     }
   }
-  if (success == 0){
+  if (success){
     cout << left << setw(35) << "TEST: correct eigenvalues";
     cout << left << " | \033[1;32mPASSED\033[0m" << endl;
   }

@@ -12,9 +12,6 @@ The executable can be run with no or several command line arguments:
 - Second cmd arg: rho_Max, spherical coordinates, (optional).
 - Third cmd arg: omega, strength of oscillator potential, (optional).
 
-TODO: Record run time
-TODO: Plot run time
-TODO: Plot iterations
 TODO: Plot psi
 TODO: Check eigenvalues 2e
 
@@ -46,7 +43,7 @@ int main(int argc, char *argv[]){
             cout << "- 1. cmd arg: Number of mesh points" << endl;
             cout << "- 2. cmd arg: rho_Max, spherical coordinates (optional)" << endl;
             cout << "- 3. cmd arg: omega, strength of oscillator potential (optional)" << endl;
-            testcode(40);
+            testcode(10);
             return 0;
     case 4: omega = atof(argv[3]);
     case 3: rho_n = atof(argv[2]);
@@ -122,8 +119,8 @@ int main(int argc, char *argv[]){
   for (int i = 0; i < size.ws_col; i++) cout << "=";
   cout << "Three first eigenvalues\n";
   cout << setw(12) << "Jacobi" << setw(12) << "Arma." << endl;
-  for (int i=0; i<3; i++){
-    cout << setw(12) << setprecision(4) << eigenvalues[i] << setw(12) << setprecision(4) << eigs[i] << endl;
+  for (int i=0; i<4; i++){
+    cout << setw(12) << setprecision(5) << eigenvalues[i] << setw(12) << setprecision(5) << eigs[i] << endl;
   }
   for (int i = 0; i < size.ws_col; i++) cout << "-";
   cout << "Timing\n";
@@ -131,13 +128,6 @@ int main(int argc, char *argv[]){
   cout << setw(12) << setprecision(4) << timing << setw(12) << setprecision(4) << timing_arma << endl;
   for (int i = 0; i < size.ws_col; i++) cout << "-";
   cout << "Number of iterations (Jacobi): " << it << endl;
-
-  // Uncomment the next lines for writing timing data to file
-  // ofstream dat1;
-  // dat1.open("timingsn10.dat",ios_base::app);
-  // dat1 << setiosflags(ios::showpoint | ios::uppercase);
-  // dat1 << setprecision(10) << setw(20) << timing << setprecision(10) << setw(20) << timing_arma << endl;
-  // dat1.close();
 
   // delete allocated memory
   for (int i = 0; i < n; i++){
