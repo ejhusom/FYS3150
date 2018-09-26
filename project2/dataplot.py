@@ -24,8 +24,8 @@ w = 5; h = 2.5
 #==============================================================================
 # PLOT THE WAVE FUNCTION
 # plt.figure(figsize=(w,h))
-# omega = np.array([0.01,0.5,1.0,5.0])
-# for i in range(4):
+# omega = np.array([0.0,0.01,0.5,1.0,5.0])
+# for i in range(5):
 #     rho = np.loadtxt('rho_o{:.6f}.dat'.format(omega[i]))
 #     eigvec = np.loadtxt('eigvec_o{:.6f}.dat'.format(omega[i]))
 #     vec1 = eigvec[:,0]
