@@ -69,7 +69,7 @@ void testcode(int n){
     lambda[j-1] = d + 2*a*cos(j*acos(-1)/(n+1));
   }
   // Checking analytical eigenvalues against numerical eigenvalues
-  double tolerance = 1e-10;
+  double tolerance = 1e-13;
   double success = true;
   for (int i=0; i<n; i++){
     if (fabs(eigenvalues[i]-lambda[i]) > tolerance){

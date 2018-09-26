@@ -5,4 +5,6 @@ The functions of this project is split into multiple source files. Obtain an exe
 - Second cmd arg: rho_Max, spherical coordinates, (optional).
 - Third cmd arg: omega, strength of oscillator potential, (optional).
 
+The python script ```dataplot.py``` creates all the plots of the project results, but requires certain pre-produced data files, which are not included in this repository.
+
 All source code in this project is developed for Ubuntu 18.04 with C++ and Python 3.6.

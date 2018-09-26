@@ -8,7 +8,8 @@
 # Python version:   Python 3.6.4
 # Description: Plotting data from .dat-files, specialized for FYS3150 project 2
 # USAGE:
-# Requires files with run time recordings, which may be produced by main.cpp.
+# Requires various data files, which may be produced by main.cpp.
+# Uncomment the parts which you want to plot.
 #==============================================================================
 # IMPORT STATEMENTS
 import numpy as np
@@ -21,18 +22,19 @@ plt.rc('text', usetex=True)
 plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
 w = 5; h = 2.5
 #==============================================================================
-# # PLOT PSI
+# PLOT THE WAVE FUNCTION
 # plt.figure(figsize=(w,h))
-# rho = np.loadtxt('rho.dat')
-# eigvec = np.loadtxt('eigvec.dat')
-# vec1, vec2, vec3 = eigvec[:,0],eigvec[:,1],eigvec[:,2]
-# plt.plot(rho,vec1**2)
-# plt.plot(rho,vec2**2)
-# plt.plot(rho,vec3**2)
-# plt.xlabel(r'$r$')
-# plt.ylabel(r'Radial probability $r^2|R(r)|^2$')
+# omega = np.array([0.01,0.5,1.0,5.0])
+# for i in range(4):
+#     rho = np.loadtxt('rho_o{:.6f}.dat'.format(omega[i]))
+#     eigvec = np.loadtxt('eigvec_o{:.6f}.dat'.format(omega[i]))
+#     vec1 = eigvec[:,0]
+#     plt.plot(rho,vec1**2,label='$\omega_r={:g}$'.format(omega[i]))
+# plt.xlabel(r'$\rho$')
+# plt.ylabel(r'Radial probability $|R(\rho)|^2$')
+# plt.legend()
 # plt.tight_layout()
-# # plt.savefig("eigenvectors.png",dpi=300)
+# plt.savefig("wavefunction.pdf",dpi=400)
 # plt.show()
 #==============================================================================
 # PLOT RUN TIME AND ITERATIONS
@@ -61,13 +63,17 @@ w = 5; h = 2.5
 # # plt.show()
 #
 # iterations of Jacobi method
-# it = np.array([154, 640, 1488, 2657, 4112, 16401, 36570, 64509, 143659, 252793])
 # it = np.array([154, 4112, 16401, 36570, 64509, 143659, 252793])
 # n = np.array([10,50,100,150,200,300,400])
+# deg,res,v1,v2,v3 = np.polyfit(n,it,5,full=True);
+# p = np.poly1d(deg);
+# xp = np.linspace(10,400,400)
 # plt.figure(figsize=(w,h))
-# plt.plot(n,it, '-o')
+# plt.plot(n,it, 'o',label="recorded number of iterations")
+# plt.plot(xp,p(xp),label="least squares fit of second degree")
 # plt.xlabel("$\\text{No. of mesh points} \hspace{0.2cm} n$")
 # plt.ylabel("$\\text{No. of iterations}$")
+# plt.legend()
 # plt.tight_layout()
 # plt.savefig("iterations.pdf",dpi=400)
 # plt.show()
@@ -109,18 +115,18 @@ w = 5; h = 2.5
 # plt.legend()
 # plt.savefig("accuracy_rho_n200.pdf",dpi=400)
 # # plt.show()
-data = np.loadtxt('accuracy_n_rho5_v2.dat')
-lambda0, lambda1, lambda2, lambda3 = data[:,0], data[:,1], data[:,2], data[:,3]
-n = np.linspace(10,400,40)
-plt.figure(figsize=(w,h))
-plt.plot(n,lambda0,label="$\lambda_0$")
-plt.plot(n,lambda1,label="$\lambda_1$")
-plt.plot(n,lambda2,label="$\lambda_2$")
-plt.plot(n,lambda3,label="$\lambda_3$")
-plt.xlabel("$\\text{No. of mesh points} \hspace{0.2cm} n$")
-plt.ylabel("$\\text{Ratio} \hspace{0.3cm}\lambda_\mathrm{c}/\lambda_\mathrm{a}$")
-plt.axis([100,400,0.999, 1.001])
-plt.tight_layout()
-plt.legend()
-plt.savefig("accuracy_n_rho5.pdf",dpi=400)
-plt.show()
+# data = np.loadtxt('accuracy_n_rho5_v2.dat')
+# lambda0, lambda1, lambda2, lambda3 = data[:,0], data[:,1], data[:,2], data[:,3]
+# n = np.linspace(10,400,40)
+# plt.figure(figsize=(w,h))
+# plt.plot(n,lambda0,label="$\lambda_0$")
+# plt.plot(n,lambda1,label="$\lambda_1$")
+# plt.plot(n,lambda2,label="$\lambda_2$")
+# plt.plot(n,lambda3,label="$\lambda_3$")
+# plt.xlabel("$\\text{No. of mesh points} \hspace{0.2cm} n$")
+# plt.ylabel("$\\text{Ratio} \hspace{0.3cm}\lambda_\mathrm{c}/\lambda_\mathrm{a}$")
+# plt.axis([100,400,0.999, 1.001])
+# plt.tight_layout()
+# plt.legend()
+# plt.savefig("accuracy_n_rho5.pdf",dpi=400)
+# plt.show()
