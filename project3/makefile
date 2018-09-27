@@ -4,7 +4,7 @@
 # Date:            2018-09-27
 # Version:         0.1
 # =============================================
-EXEC 			= runproject3
+EXEC 			= runproject3.x
 CPP 			= c++
 CPPflags 	= -Wall -O3
 LIB 			= -larmadillo -llapack -lblas
