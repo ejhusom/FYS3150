@@ -7,7 +7,7 @@
 EXEC 			= project2.x
 CPP 			= c++
 CPPflags 	= -Wall -O3
-LIB = -larmadillo -llapack -lblas
+LIB 			= -larmadillo -llapack -lblas
 
 SRC_DIR		= ./src
 INC_DIR		= -I./include
@@ -23,11 +23,12 @@ $(EXEC): $(OBJ)
 	@echo $(EXEC) "ready to run!"
 
 $(OBJ): $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cpp
+	@mkdir -p $(BUILD_DIR)
 	@$(CPP) $(CPPFLAGS) $(INC_DIR) -c $< -o $@
 	@echo "Compiled "$<" successfully!"
 
 clean:
-	@rm -f $(OBJ) $(EXEC)
+	@rm -rf $(OBJ) $(EXEC) $(BUILD_DIR)
 	@echo "Cleanup complete!"
 
 removedat:
