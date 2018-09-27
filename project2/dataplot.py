@@ -23,9 +23,23 @@ plt.rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
 w = 5; h = 2.5
 #==============================================================================
 # PLOT THE WAVE FUNCTION
+plt.figure(figsize=(w,h))
+omega = np.array([0.0,0.01,0.5,1.0,5.0])
+for i in range(5):
+    rho = np.loadtxt('rho_om{:.6f}.dat'.format(omega[i]))
+    vec1 = np.loadtxt('eigvec_om{:.6f}.dat'.format(omega[i]))
+    plt.plot(rho,vec1**2,label='$\omega_r={:g}$'.format(omega[i]))
+plt.xlabel(r'$\rho$')
+plt.ylabel(r'Radial probability $|R(\rho)|^2$')
+plt.legend()
+plt.tight_layout()
+plt.savefig("wavefunction.pdf",dpi=400)
+plt.show()
+#==============================================================================
+# PLOT THE WAVE FUNCTION NUMBER 2
 # plt.figure(figsize=(w,h))
-# omega = np.array([0.0,0.01,0.5,1.0,5.0])
-# for i in range(5):
+# omega = np.array([0.01,0.5,1.0,5.0])
+# for i in range(4):
 #     rho = np.loadtxt('rho_o{:.6f}.dat'.format(omega[i]))
 #     eigvec = np.loadtxt('eigvec_o{:.6f}.dat'.format(omega[i]))
 #     vec1 = eigvec[:,0]
@@ -34,8 +48,21 @@ w = 5; h = 2.5
 # plt.ylabel(r'Radial probability $|R(\rho)|^2$')
 # plt.legend()
 # plt.tight_layout()
-# plt.savefig("wavefunction.pdf",dpi=400)
+# plt.savefig("wavefunction2.pdf",dpi=400)
 # plt.show()
+#==============================================================================
+# PLOT THE WAVE FUNCTION NUMBER 3
+omega = 0.25
+plt.figure(figsize=(w,h))
+rho = np.loadtxt('rho_om{:.6f}.dat'.format(omega))
+vec1 = np.loadtxt('eigvec_om{:.6f}.dat'.format(omega))
+plt.plot(rho,vec1**2,label='$\omega_r={:g}$'.format(omega))
+plt.xlabel(r'$\rho$')
+plt.ylabel(r'Radial probability $|R(\rho)|^2$')
+plt.legend()
+plt.tight_layout()
+plt.savefig("wavefunction3.pdf",dpi=400)
+plt.show()
 #==============================================================================
 # PLOT RUN TIME AND ITERATIONS
 # mesh points

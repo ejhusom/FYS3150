@@ -104,6 +104,10 @@ int main(int argc, char *argv[]){
   // Finding eigenvalues with Armadillo
   eigenarma(n,eigs,rho_n,omega,&timing_arma);
 
+
+
+
+
   // Extracting and sorting the eigenvalues from Jacobi method
   double eigenvalues[n];
   for(int i=0 ; i < n ; i++) {
@@ -113,8 +117,32 @@ int main(int argc, char *argv[]){
       }
     }
   }
-  sort(eigenvalues, eigenvalues + n);
 
+  // Finding the lowest eigenvector for plotting
+  double min = 1000;
+  int ind = 0;
+  for (int i = 0; i < n; i++) {
+    if (eigenvalues[i] < min){
+      ind = i;
+      min = eigenvalues[i];
+    }
+  }
+  // Writing the lowest eigenvector to file
+  cout << " min: " << min << endl;
+  ofstream outfile;
+  outfile.open ("rho_om" + to_string(omega) + ".dat");
+  for (int i=0; i<n; i++){
+    outfile << setw(30) << setprecision(15) << rho[i] << endl;
+  }
+  outfile.close();
+  ofstream outfile2;
+  outfile2.open ("eigvec_om" + to_string(omega) + ".dat");
+  for (int i=0; i<n; i++){
+    outfile2 << setw(30) << setprecision(15) << R[i][ind] << endl;
+  }
+  outfile2.close();
+
+  sort(eigenvalues, eigenvalues + n);
   // Printing results
   for (int i = 0; i < size.ws_col; i++) cout << "=";
   cout << "Three first eigenvalues\n";

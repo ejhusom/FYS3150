@@ -55,7 +55,7 @@ void eigenarma(int n, double *eigs, double rho_n=0, double omega=0, double *timi
   }
 
   // Save results for plotting
-  eigvec.save("eigvec_o" + to_string(omega) + ".dat",raw_ascii);
-  eigval.save("eigval_o" + to_string(omega) + ".dat",raw_ascii);
-  rho.save("rho_o" + to_string(omega) + ".dat",raw_ascii);
+  // eigvec.save("eigvec_o" + to_string(omega) + ".dat",raw_ascii);
+  // eigval.save("eigval_o" + to_string(omega) + ".dat",raw_ascii);
+  // rho.save("rho_o" + to_string(omega) + ".dat",raw_ascii);
 }
