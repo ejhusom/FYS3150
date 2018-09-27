@@ -12,6 +12,7 @@ build*
 *.jpeg
 *.pdf
 # compiled files:
+obj
 *.o
 *.so
 *.a
