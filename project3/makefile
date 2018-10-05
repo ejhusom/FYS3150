@@ -7,7 +7,7 @@
 EXEC 			= runproject3.x
 CPP 			= c++
 CPPflags 	= -Wall -O3
-LIB 			= 
+LIB 			=
 
 SRC_DIR		= ./src
 INC_DIR		= -I./include
@@ -34,3 +34,7 @@ clean:
 removedat:
 	@rm -f *.dat
 	@echo ".dat-files removed!"
+
+removepdf:
+	@rm -f *.pdf
+	@echo ".pdf-files removed!"
