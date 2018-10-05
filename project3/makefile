@@ -7,7 +7,7 @@
 EXEC 			= runproject3.x
 CPP 			= c++
 CPPflags 	= -Wall -O3
-LIB 			= -larmadillo -llapack -lblas
+LIB 			= 
 
 SRC_DIR		= ./src
 INC_DIR		= -I./include

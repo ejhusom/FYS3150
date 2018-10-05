@@ -2,10 +2,14 @@
 #define ODESOLVER_H
 
 class odesolver{
-public:
-  double mass;
 
-  void VelocityVerlet(int meshpoints, double time_f);
+public:
+  odesolver() {}
+
+  void initialize(int MeshPoints, double TimeFinal);
+  void VelocityVerlet(int MeshPoints, double TimeFinal);
+  void ForwardEuler(int MeshPoints, double TimeFinal);
+
 };
 
 #endif
