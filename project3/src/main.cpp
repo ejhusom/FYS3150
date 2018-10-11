@@ -4,9 +4,10 @@ Author:          Erik Johannes B. L. G. Husom
 Date:            2018-10-04
 Version:         0.1
 Description:
-USAGE:
+- Uses classes AstronomicalObject and VelocityVerlet to simulate the solar system
 - Mass given in Solar Mass
 - Distance given in Astronomical Unit (AU)
+USAGE:
 ==============================================================================*/
 #include <iostream>
 #include <fstream>
@@ -15,7 +16,6 @@ USAGE:
 #include <vector>
 #include "AstronomicalObject.h"
 #include "VelocityVerlet.h"
-#include "odesolver.h"
 using namespace std;
 
 int main(int argc, char *argv[]){
@@ -26,8 +26,6 @@ int main(int argc, char *argv[]){
     case 3: TimeFinal = atof(argv[2]);
     case 2: MeshPoints = atoi(argv[1]);
   }
-  // FUNCTION
-  // initialize(MeshPoints,TimeFinal, Method);
 
   // CLASS
   double solarMass = 1.9891e30;

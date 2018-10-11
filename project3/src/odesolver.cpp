@@ -1,3 +1,4 @@
+// NOT PART OF CLASS IMPLEMENTATION
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -44,7 +45,7 @@ void initialize(int MeshPoints, double TimeFinal, int Method){
 
       xPos[i+1] = xPos[i] + TimeStep*xVel[i] + xAcc[i]*TimeStepSqHalf;
       yPos[i+1] = yPos[i] + TimeStep*yVel[i] + yAcc[i]*TimeStepSqHalf;
-      
+
       rEarth[i+1] = sqrt(xPos[i+1]*xPos[i+1] + yPos[i+1]*yPos[i+1]);
       FPSDivrEarthCu = FourPiSq/(rEarth[i+1]*rEarth[i+1]*rEarth[i+1]);
 
