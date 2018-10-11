@@ -35,6 +35,6 @@ removedat:
 	@rm -f *.dat
 	@echo ".dat-files removed!"
 
-removepdf:
-	@rm -f *.pdf
-	@echo ".pdf-files removed!"
+removeim:
+	@rm -f *.pdf *.png *.jpg *.jpeg
+	@echo "Image files removed!"
