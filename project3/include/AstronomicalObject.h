@@ -6,11 +6,11 @@ class AstronomicalObject{
 public:
   // Properties
   double mass;
-  double position[2];
-  double velocity[2];
+  double position[3];
+  double velocity[33];
   // Initializers
   AstronomicalObject();
-  AstronomicalObject(double m, double x, double y, double vx, double vy);
+  AstronomicalObject(double m, double x, double y, double z, double vx, double vy, double vz);
   // Functions
   double distance(AstronomicalObject OtherObject);
   double acceleration(AstronomicalObject OtherObject, int axis);

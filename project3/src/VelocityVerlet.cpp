@@ -1,40 +1,53 @@
+// #include "VelocityVerlet.h"
+//
 // double TimeStep = TimeFinal/double(MeshPoints);
 // double TimeStepSq = TimeStep*TimeStep;
 // double TimeStepHalf = TimeStep/2;
 // double TimeStepSqHalf = TimeStepSq/2;
-// double FourPiSq = 4*M_PI*M_PI;
 // // Arrays
-// double *rEarth = new double[MeshPoints];
 // double *xPos = new double[MeshPoints];
 // double *yPos = new double[MeshPoints];
-// double *xVel = new double[MeshPoints];
-// double *yVel = new double[MeshPoints];
-// double *xAcc = new double[MeshPoints];
-// double *yAcc = new double[MeshPoints];
-// double *TimePoints = new double[MeshPoints];
-// double *KineticEnergy = new double[MeshPoints];
-// double *PotentialEnergy = new double[MeshPoints];
-// double *AngularMoment = new double[MeshPoints];
-// // Initial values
-// rEarth[0] = 1;
-// xPos[0] = 1;
-// yPos[0] = 0;
-// xVel[0] = 0;
-// yVel[0] = 2*M_PI;
-// TimePoints[0] = 0;
-// double FPSDivrEarthCu;
-//
+// double *zPos = new double[MeshPoints];
+// // Temporary acceleration values
+// double xAcc; double yAcc; double xAccNew; double yAccNew; double zAcc; double zAccNew;
+// // Open file for writing
+// ofstream outfile;
+// outfile.open ("ClassData33.dat");
+// // Integration loop for Earth
 // for (int i = 0; i < MeshPoints; i++) {
-//   FPSDivrEarthCu = FourPiSq/(rEarth[i]*rEarth[i]*rEarth[i]);
-//   xAcc[i] = -xPos[i]*FPSDivrEarthCu;
-//   yAcc[i] = -yPos[i]*FPSDivrEarthCu;
+//   for (int obj = 0; obj < AllObjects.size(); obj++) {
+//     xAcc = yAcc = xAccNew = yAccNew = zAcc = zAccNew = 0;
+//     // Acceleration
+//     for (int obj2 = 0; obj2 < AllObjects.size(); obj2++){
+//       xAcc += AllObjects[obj].acceleration(AllObjects[obj2],0);
+//       yAcc += AllObjects[obj].acceleration(AllObjects[obj2],1);
+//       zAcc += AllObjects[obj].acceleration(AllObjects[obj2],2);
+//     }
+//     // Storing position
+//     outfile << setw(30) << setprecision(15) << AllObjects[obj].position[0];
+//     outfile << setw(30) << setprecision(15) << AllObjects[obj].position[1];
+//     outfile << setw(30) << setprecision(15) << AllObjects[obj].position[2];
 //
-//   xPos[i+1] = xPos[i] + TimeStep*xVel[i] + xAcc[i]*TimeStepSqHalf;
-//   yPos[i+1] = yPos[i] + TimeStep*yVel[i] + yAcc[i]*TimeStepSqHalf;
-//   rEarth[i+1] = sqrt(xPos[i+1]*xPos[i+1] + yPos[i+1]*yPos[i+1]);
+//     AllObjects[obj].position[0] = AllObjects[obj].position[0] + TimeStep*AllObjects[obj].velocity[0] + xAcc*TimeStepSqHalf;
+//     AllObjects[obj].position[1] = AllObjects[obj].position[1] + TimeStep*AllObjects[obj].velocity[1] + yAcc*TimeStepSqHalf;
+//     AllObjects[obj].position[2] = AllObjects[obj].position[2] + TimeStep*AllObjects[obj].velocity[2] + zAcc*TimeStepSqHalf;
 //
-//   xAcc[i+1] = -xPos[i+1]*FPSDivrEarthCu;
-//   yAcc[i+1] = -yPos[i+1]*FPSDivrEarthCu;
-//   xVel[i+1] = xVel[i] + TimeStepHalf*(xAcc[i+1] + xAcc[i]);
-//   yVel[i+1] = yVel[i] + TimeStepHalf*(yAcc[i+1] + yAcc[i]);
+//     for (int obj2 = 0; obj2 < AllObjects.size(); obj2++){
+//       xAccNew += AllObjects[obj].acceleration(AllObjects[obj2],0);
+//       yAccNew += AllObjects[obj].acceleration(AllObjects[obj2],1);
+//       zAccNew += AllObjects[obj].acceleration(AllObjects[obj2],2);
+//     }
+//
+//     AllObjects[obj].velocity[0] = AllObjects[obj].velocity[0] + TimeStepHalf*(xAccNew + xAcc);
+//     AllObjects[obj].velocity[1] = AllObjects[obj].velocity[1] + TimeStepHalf*(yAccNew + yAcc);
+//     AllObjects[obj].velocity[2] = AllObjects[obj].velocity[2] + TimeStepHalf*(zAccNew + zAcc);
+//   }
+//   outfile << endl;
 // }
+//
+//
+// outfile.close();
+//
+// delete [] xPos;
+// delete [] yPos;
+// delete [] zPos;
