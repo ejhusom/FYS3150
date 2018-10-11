@@ -44,7 +44,9 @@ void initialize(int MeshPoints, double TimeFinal, int Method){
 
       xPos[i+1] = xPos[i] + TimeStep*xVel[i] + xAcc[i]*TimeStepSqHalf;
       yPos[i+1] = yPos[i] + TimeStep*yVel[i] + yAcc[i]*TimeStepSqHalf;
+      
       rEarth[i+1] = sqrt(xPos[i+1]*xPos[i+1] + yPos[i+1]*yPos[i+1]);
+      FPSDivrEarthCu = FourPiSq/(rEarth[i+1]*rEarth[i+1]*rEarth[i+1]);
 
       xAcc[i+1] = -xPos[i+1]*FPSDivrEarthCu;
       yAcc[i+1] = -yPos[i+1]*FPSDivrEarthCu;
@@ -65,7 +67,7 @@ void initialize(int MeshPoints, double TimeFinal, int Method){
   for (int i = 0; i < MeshPoints; i++) {
     KineticEnergy[i] = (xVel[i]*xVel[i] + yVel[i]*yVel[i]);
     PotentialEnergy[i] = -1/rEarth[i];
-    AngularMoment[i] = fabs(xPos[i]*xVel[i] - yPos[i]*yVel[i]);
+    AngularMoment[i] = fabs(xPos[i]*yVel[i] - yPos[i]*xVel[i]);
     TimePoints[i+1] = TimePoints[i] + TimeStep;
   }
 
