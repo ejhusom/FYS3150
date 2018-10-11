@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #==============================================================================
-# Title:           FYS3150 Project 3a
+# Title:           FYS3150 Project 3 - Plotting Solar System in 3D
 # Author:          Erik Johannes B. L. G. Husom
-# Date:            2018-00-00
-# Version:         0.1
+# Date:            2018-10-11
+# Version:         1.0
 # Python version:  Python 3.6.4
 # Description:
 # USAGE:
