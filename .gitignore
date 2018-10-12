@@ -3,6 +3,7 @@
 *.x
 # data-files
 *.dat
+!InitialConditions.dat
 *.txt
 *.csv
 # images
