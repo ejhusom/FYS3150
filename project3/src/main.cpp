@@ -14,20 +14,23 @@ USAGE:
 #include <iomanip>
 #include <cmath>
 #include <vector>
+#include <string>
 #include "AstronomicalObject.h"
 #include "VelocityVerlet.h"
+#include "Integrator.h"
 using namespace std;
 
 int main(int argc, char *argv[]){
-  int MeshPoints = 100000;
-  double TimeFinal = 1000.0;
+  int MeshPoints = 10000;
+  double TimeFinal = 100.0;
   int Method = 0;
   switch (argc) {
+    case 4: Method = atoi(argv[3]);
     case 3: TimeFinal = atof(argv[2]);
     case 2: MeshPoints = atoi(argv[1]);
   }
 
-  // CLASS
+  // Intialize all objects
   double solarMass = 1.9891e30;
   vector<AstronomicalObject> AllObjects;
   AstronomicalObject Sun = AstronomicalObject(1.0,0,0,0,0,0,0);
@@ -51,7 +54,8 @@ int main(int argc, char *argv[]){
   AllObjects.push_back(Neptune);
   AllObjects.push_back(Pluto);
 
-  VelocityVerlet Solver = VelocityVerlet(MeshPoints,TimeFinal,AllObjects);
+  // VelocityVerlet Solver = VelocityVerlet(MeshPoints,TimeFinal,AllObjects);
+  Integrator Solver = Integrator(MeshPoints,TimeFinal,AllObjects,Method);
   Solver.solve();
 
   return 0;

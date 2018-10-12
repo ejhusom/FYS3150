@@ -20,13 +20,13 @@ plt.rc("text", usetex=True)
 w = 15; h = 10
 
 # LOAD DATA
-ObjectPositions = np.loadtxt('SolarSystem.dat')
+ObjectPositions = np.loadtxt('SolarSystemPositionsVerlet.dat')
 objectNames = np.array(['Sun', 'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'])
 
 # PLOT
 fig = plt.figure(figsize=(w,h))
 ax = fig.gca(projection='3d')
-ax.set_aspect('equal')
+# ax.set_aspect('equal')
 
 for i in range(np.size(objectNames)):
     plt.plot(ObjectPositions[:,i*3], ObjectPositions[:,i*3+1], ObjectPositions[:,i*3+2], label=objectNames[i])

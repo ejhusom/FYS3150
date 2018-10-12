@@ -13,18 +13,13 @@ VelocityVerlet::VelocityVerlet(int n, double t_f, vector<AstronomicalObject> obj
 
 void VelocityVerlet::solve(){
   double TimeStep = TimeFinal/double(MeshPoints);
-  double TimeStepSq = TimeStep*TimeStep;
   double TimeStepHalf = TimeStep/2;
-  double TimeStepSqHalf = TimeStepSq/2;
-  // Arrays
-  double *xPos = new double[MeshPoints];
-  double *yPos = new double[MeshPoints];
-  double *zPos = new double[MeshPoints];
+  double TimeStepSqHalf = TimeStep*TimeStep/2;
   // Temporary acceleration values
   double xAcc; double yAcc; double xAccNew; double yAccNew; double zAcc; double zAccNew;
   // Open file for writing
   ofstream outfile;
-  outfile.open ("SolarSystem.dat");
+  outfile.open ("SolarSystemPositionsVerlet.dat");
   // Integration loop
   for (int i = 0; i < MeshPoints; i++) {
     for (int obj = 0; obj < AllObjects.size(); obj++) {
@@ -56,11 +51,6 @@ void VelocityVerlet::solve(){
     }
     outfile << endl;
   }
-
-
   outfile.close();
 
-  delete [] xPos;
-  delete [] yPos;
-  delete [] zPos;
 } // end of function solve
