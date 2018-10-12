@@ -21,15 +21,17 @@ plt.rc("text", usetex=True)
 w = 15; h = 10
 
 # USER INPUT
-print('================================')
+rows, columns = os.popen('stty size', 'r').read().split()
+for i in range(int(columns)):
+    print('=',end='')
 print("FYS3150 Project 3 - Simlaution of the Solar System")
-print('Run simulation and produce data files?')
-run = input('Y/n=')
+print('Run simulation and produce data files? Enter \'n\' to move on to plotting.')
+run = input('y/n=')
 
-if (run=="Y"):
+if (run=="y"):
     System = input('Both (0), Solar system (1) or Two body (2)=')
     MeshPoints = input('Number of mesh points (give zero to use default values)=')
-    if (MeshPoints!=0):
+    if (MeshPoints!='0'):
         TimeFinal = input('Number of years to simulate=')
         os.system('make')
         os.system('./runproject3.x ' + System + ' ' + MeshPoints + ' ' + TimeFinal)
@@ -37,14 +39,15 @@ if (run=="Y"):
         os.system('make')
         os.system('./runproject3.x ' + System)
 
-
-print('================================')
+for i in range(int(columns)):
+    print('=',end='')
 print("What do you want to plot? Give integer as input, among the following options:")
-print("0: Solar system in 3D, Verlet method")
-print("1: Two body problem (Sun and Earth) in 2D, Verlet and Euler method")
+print("0: Do not plot, exit program")
+print("1: Solar system in 3D, Verlet method")
+print("2: Two body problem (Sun and Earth) in 2D, Verlet and Euler method")
 choice = float(input('Input='))
 
-if (choice==0):
+if (choice==1):
     ObjectPositions = np.loadtxt('SolarSystemPositionsVerlet.dat')
     objectNames = np.array(['Sun', 'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'])
     # PLOT
@@ -63,7 +66,7 @@ if (choice==0):
     plt.tight_layout()
     plt.savefig("SolarSystemPositionsVerlet.pdf",dpi=300)
     plt.show()
-else:
+elif (choice==2):
     verlet = np.loadtxt('TwoBodyProblemVerlet.dat')
     TimePointsV, KEV, PEV, AngV, rEarthV, xPosV, yPosV = verlet[:,0], verlet[:,1], verlet[:,2], verlet[:,3], verlet[:,4], verlet[:,5], verlet[:,6]
     euler = np.loadtxt('TwoBodyProblemEuler.dat')
@@ -80,28 +83,25 @@ else:
     plt.tight_layout()
     plt.savefig("TwoBodyProblem.pdf",dpi=300)
     plt.show()
-    # # TOTAL ENERGY
-    # plt.figure()
-    # plt.plot(TimePointsV,PEV+KEV,label='Verlet')
-    # plt.plot(TimePointsE,PEE+KEE,'--',label='Euler')
-    # ax = plt.gca()
-    # ax.ticklabel_format(useOffset=False)
-    # plt.axis([0,1.1,0,70.1])
-    # plt.title('Total Energy Earth')
-    # plt.legend()
-    # plt.xlabel('time [year]')
-    # plt.ylabel('Energy per mass')
-    # plt.tight_layout()
-    # # plt.savefig("title.pdf",dpi=300)
-    # plt.show()
-    # # ANGULAR MOMENT
-    # plt.figure()
-    # plt.plot(TimePointsV,AngV,label='Verlet')
-    # plt.plot(TimePointsE,AngE,'--',label='Euler')
-    # plt.title('Angular moment')
-    # plt.xlabel('time [year]')
-    # plt.ylabel('Energy per mass')
-    # plt.legend()
-    # plt.tight_layout()
-    # # plt.savefig("title.pdf",dpi=300)
-    # plt.show()
+    # TOTAL ENERGY
+    plt.figure()
+    plt.plot(TimePointsV,PEV+KEV,label='Verlet')
+    plt.plot(TimePointsE,PEE+KEE,'--',label='Euler')
+    plt.title('Total Energy Earth')
+    plt.legend()
+    plt.xlabel('time [year]')
+    plt.ylabel('Total Energy')
+    plt.tight_layout()
+    plt.savefig("TwoBodyTotalEnergy.pdf",dpi=300)
+    plt.show()
+    # ANGULAR MOMENT
+    plt.figure()
+    plt.plot(TimePointsV,AngV,label='Verlet')
+    plt.plot(TimePointsE,AngE,'--',label='Euler')
+    plt.title('Angular moment')
+    plt.xlabel('time [year]')
+    plt.ylabel('')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig("TwoBodyAngular.pdf",dpi=300)
+    plt.show()

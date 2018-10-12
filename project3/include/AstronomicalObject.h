@@ -7,7 +7,7 @@ public:
   // Properties
   double mass;
   double position[3];
-  double velocity[33]
+  double velocity[3];
   // Initializers
   AstronomicalObject();
   AstronomicalObject(double m, double x, double y, double z, double vx, double vy, double vz);

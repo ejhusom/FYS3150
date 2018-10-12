@@ -6,9 +6,6 @@ AstronomicalObject::AstronomicalObject(){
   position[1] = 0.0;
   velocity[0] = 0.0;
   velocity[1] = 0.0;
-  KineticEnergy = 0;
-  PotentialEnergy = 0;
-  AngularMoment = 0;
 }
 
 AstronomicalObject::AstronomicalObject(double m, double x, double y, double z, double vx, double vy, double vz){
@@ -19,9 +16,6 @@ AstronomicalObject::AstronomicalObject(double m, double x, double y, double z, d
   velocity[0] = vx;
   velocity[1] = vy;
   velocity[2] = vz;
-  KineticEnergy = 0;
-  PotentialEnergy = 0;
-  AngularMoment = 0;
 }
 
 double AstronomicalObject::distance(AstronomicalObject OtherObject){
