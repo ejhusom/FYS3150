@@ -1,6 +1,6 @@
 // NOT PART OF CLASS IMPLEMENTATION
-#ifndef ODESOLVER_H
-#define ODESOLVER_H
+#ifndef TWOBODYPROBLEM_H
+#define TWOBODYPROBLEM_H
 
 void initialize(int MeshPoints, double TimeFinal, int Method);
 

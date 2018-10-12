@@ -19,7 +19,7 @@ public:
   double acceleration(AstronomicalObject OtherObject, int axis);
   double GetKineticEnergy();
   double GetPotentialEnergy(AstronomicalObject OtherObject);
-  // double GetAngularMoment();
+  double GetAngularMoment();
 
 };
 

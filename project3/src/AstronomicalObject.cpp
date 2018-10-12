@@ -46,6 +46,8 @@ double AstronomicalObject::GetPotentialEnergy(AstronomicalObject OtherObject){
   return -4*M_PI*M_PI*OtherObject.mass/(this->distance(OtherObject));
 }
 
-// double AstronomicalObject::GetAngularMoment(){
-//   return sqrt((y*vz - z*vy)*(y*vz - z*vy) + (x*vz-z*vx)*(x*vz-z*vx) + (x*vy-y*vx)*(x*vy-y*vx));
-// }
+double AstronomicalObject::GetAngularMoment(){
+  double x = this->position[0]; double y = this->position[0]; double z = this->position[0];
+  double vx = this->velocity[0]; double vy = this->velocity[0]; double vz = this->velocity[0];
+  return sqrt((y*vz - z*vy)*(y*vz - z*vy) + (x*vz-z*vx)*(x*vz-z*vx) + (x*vy-y*vx)*(x*vy-y*vx));
+}

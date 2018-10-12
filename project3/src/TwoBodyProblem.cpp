@@ -1,14 +1,14 @@
-// NOT PART OF CLASS IMPLEMENTATION
 #include <iostream>
 #include <fstream>
 #include <iomanip>
 #include <cmath>
 #include <string>
-#include "odesolver.h"
+#include "TwoBodyProblem.h"
 
 using namespace std;
 
 void initialize(int MeshPoints, double TimeFinal, int Method){
+  double EarthMass = 0.000003003; // in solar mass
   double TimeStep = TimeFinal/double(MeshPoints);
   double TimeStepSq = TimeStep*TimeStep;
   double TimeStepHalf = TimeStep/2;
@@ -37,7 +37,7 @@ void initialize(int MeshPoints, double TimeFinal, int Method){
   string filename;
   // Integration loop
   if (Method == 0) {
-    filename = "Verlet.dat";
+    filename = "TwoBodyProblemVerlet.dat";
     for (int i = 0; i < MeshPoints; i++) {
       FPSDivrEarthCu = FourPiSq/(rEarth[i]*rEarth[i]*rEarth[i]);
       xAcc[i] = -xPos[i]*FPSDivrEarthCu;
@@ -55,7 +55,7 @@ void initialize(int MeshPoints, double TimeFinal, int Method){
       yVel[i+1] = yVel[i] + TimeStepHalf*(yAcc[i+1] + yAcc[i]);
     }
   } else {
-    filename = "Euler.dat";
+    filename = "TwoBodyProblemEuler.dat";
     for (int i = 0; i < MeshPoints; i++) {
       FPSDivrEarthCu = FourPiSq/(rEarth[i]*rEarth[i]*rEarth[i]);
       xVel[i+1] = xVel[i] - xPos[i]*TimeStep*FPSDivrEarthCu;
@@ -66,9 +66,9 @@ void initialize(int MeshPoints, double TimeFinal, int Method){
     }
   }
   for (int i = 0; i < MeshPoints; i++) {
-    KineticEnergy[i] = (xVel[i]*xVel[i] + yVel[i]*yVel[i]);
-    PotentialEnergy[i] = -1/rEarth[i];
-    AngularMoment[i] = fabs(xPos[i]*yVel[i] - yPos[i]*xVel[i]);
+    KineticEnergy[i] = 0.5*EarthMass*(xVel[i]*xVel[i] + yVel[i]*yVel[i]);
+    PotentialEnergy[i] = -4*M_PI*M_PI*EarthMass/rEarth[i];
+    AngularMoment[i] = xPos[i]*yVel[i] - yPos[i]*xVel[i];
     TimePoints[i+1] = TimePoints[i] + TimeStep;
   }
 

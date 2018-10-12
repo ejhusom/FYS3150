@@ -4,10 +4,17 @@ Author:          Erik Johannes B. L. G. Husom
 Date:            2018-10-04
 Version:         0.1
 Description:
-- Uses classes AstronomicalObject and VelocityVerlet to simulate the solar system
+- Uses classes AstronomicalObject and Integrator to simulate the solar system
 - Mass given in Solar Mass
 - Distance given in Astronomical Unit (AU)
 USAGE:
+Compile by running "make" in terminal
+The executable can be run with no or several command line arguments:
+- No cmd arg: Producing data files for both two body problem and multi-body
+  problem (using Velocity Verlet method for the latter), with default values: Meshpoints=10000, TimeFinal=100.
+- First cmd arg: Both systems=0, Solar system=1, Two body problem=2
+- Second cmd arg: Number of mesh points.
+- Third cmd arg: Number of years for the simulation.
 ==============================================================================*/
 #include <iostream>
 #include <fstream>
@@ -16,21 +23,23 @@ USAGE:
 #include <vector>
 #include <string>
 #include "AstronomicalObject.h"
-#include "VelocityVerlet.h"
 #include "Integrator.h"
+#include "TwoBodyProblem.h"
 using namespace std;
 
 int main(int argc, char *argv[]){
   int MeshPoints = 10000;
   double TimeFinal = 100.0;
-  int Method = 0;
+  int Method = 0; // Method for Solar System: Verlet=0, Euler=1
+  int System = 0; // Both=0, Solar system=1, two body=2
   switch (argc) {
-    case 4: Method = atoi(argv[3]);
-    case 3: TimeFinal = atof(argv[2]);
-    case 2: MeshPoints = atoi(argv[1]);
+    case 4: TimeFinal = atof(argv[3]);
+    case 3: MeshPoints = atoi(argv[2]);
+    case 2: System = atoi(argv[1]);
   }
-
-  // Intialize all objects
+  initialize(MeshPoints,TimeFinal,0);
+  initialize(MeshPoints,TimeFinal,1);
+  // INITIALIZE SOLAR SYSTEM
   double solarMass = 1.9891e30;
   vector<AstronomicalObject> AllObjects;
   AstronomicalObject Sun = AstronomicalObject(1.0,0,0,0,0,0,0);
@@ -54,7 +63,6 @@ int main(int argc, char *argv[]){
   AllObjects.push_back(Neptune);
   AllObjects.push_back(Pluto);
 
-  // VelocityVerlet Solver = VelocityVerlet(MeshPoints,TimeFinal,AllObjects);
   Integrator Solver = Integrator(MeshPoints,TimeFinal,AllObjects,Method);
   Solver.solve();
 
