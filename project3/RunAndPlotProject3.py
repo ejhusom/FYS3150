@@ -81,7 +81,7 @@ elif (choice==2):
     plt.axis('equal')
     plt.legend()
     plt.tight_layout()
-    plt.savefig("TwoBodyProblem.pdf",dpi=300)
+    plt.savefig("TwoBodyProblemPosition.pdf",dpi=300)
     plt.show()
     # TOTAL ENERGY
     plt.figure()
@@ -92,7 +92,7 @@ elif (choice==2):
     plt.xlabel('time [year]')
     plt.ylabel('Total Energy')
     plt.tight_layout()
-    plt.savefig("TwoBodyTotalEnergy.pdf",dpi=300)
+    plt.savefig("TwoBodyProblemTotalEnergy.pdf",dpi=300)
     plt.show()
     # ANGULAR MOMENT
     plt.figure()
@@ -103,5 +103,5 @@ elif (choice==2):
     plt.ylabel('')
     plt.legend()
     plt.tight_layout()
-    plt.savefig("TwoBodyAngular.pdf",dpi=300)
+    plt.savefig("TwoBodyProblemAngular.pdf",dpi=300)
     plt.show()
