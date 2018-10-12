@@ -3,7 +3,7 @@
 All source-files in this project is located in the ```src``` folder, and all header files in the ```include``` folder.
 
 - Class ```AstronomicalObject``` creates objects representing the objects that are a part of the simulation.
-- Class ```VelocityVerlet``` is used to simulate the movement of the objects in the solar system.
+- Class ```Integrator``` is used to simulate the movement of the objects in the solar system. It is possible to choose both the Velocity Verlet method and the Euler method.
 - ```plotSolarSystem.py``` is used to generate a 3D-plot of the solar system.
 - The program ```odesolver.cpp``` is not a part of this class implementation.
 
