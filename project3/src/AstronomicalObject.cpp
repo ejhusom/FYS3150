@@ -30,3 +30,20 @@ double AstronomicalObject::acceleration(AstronomicalObject OtherObject, int axis
   if (r!=0) return -(this->position[axis]-OtherObject.position[axis])*4*M_PI*M_PI*OtherObject.mass/(r*r*r);
   else return 0;
 }
+
+double AstronomicalObject::GetKineticEnergy(){
+  double vv = this->velocity[0]*this->velocity[0] + this->velocity[1]*this->velocity[1] + this->velocity[2]*this->velocity[2];
+  return 0.5*this->mass*vv;
+}
+
+double AstronomicalObject::GetPotentialEnergy(AstronomicalObject OtherObject){
+  double r = this->distance(OtherObject);
+  if (r!=0) return -4*M_PI*M_PI*OtherObject.mass*this->mass/r;
+  else return 0;
+}
+
+double AstronomicalObject::GetAngularMoment(){
+  double x = this->position[0]; double y = this->position[0]; double z = this->position[0];
+  double vx = this->velocity[0]; double vy = this->velocity[0]; double vz = this->velocity[0];
+  return sqrt((y*vz - z*vy)*(y*vz - z*vy) + (x*vz-z*vx)*(x*vz-z*vx) + (x*vy-y*vx)*(x*vy-y*vx));
+}

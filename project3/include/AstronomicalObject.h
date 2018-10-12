@@ -14,6 +14,9 @@ public:
   // Functions
   double distance(AstronomicalObject OtherObject);
   double acceleration(AstronomicalObject OtherObject, int axis);
+  double GetKineticEnergy();
+  double GetPotentialEnergy(AstronomicalObject OtherObject);
+  double GetAngularMoment();
 
 };
 
