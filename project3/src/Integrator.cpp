@@ -19,14 +19,14 @@ void Integrator::solve(){
   // Temporary acceleration values
   double xAcc; double yAcc; double xAccNew; double yAccNew; double zAcc; double zAccNew;
   // Open file for writing
-  string filename;
+  string MethodName;
   if (this->Method == 1){
-    filename = "SolarSystemPositionsEuler.dat";
+    MethodName = "TwoBodyProblemEuler";
   } else {
-    filename = "SolarSystemPositionsVerlet.dat";
+    MethodName = "SolarSystemVerlet";
   }
-  ofstream outfile;
-  outfile.open (filename);
+  ofstream outposition;
+  outposition.open(MethodName + "Positions.dat");
   // Integration loop
   if (this->Method == 0) {
     for (int i = 0; i < MeshPoints; i++) {
@@ -39,9 +39,9 @@ void Integrator::solve(){
           zAcc += current.acceleration(other,2);
         }
         // Storing position
-        outfile << setw(30) << setprecision(15) << current.position[0];
-        outfile << setw(30) << setprecision(15) << current.position[1];
-        outfile << setw(30) << setprecision(15) << current.position[2];
+        outposition << setw(30) << setprecision(15) << current.position[0];
+        outposition << setw(30) << setprecision(15) << current.position[1];
+        outposition << setw(30) << setprecision(15) << current.position[2];
 
         current.position[0] = current.position[0] + TimeStep*current.velocity[0] + xAcc*TimeStepSqHalf;
         current.position[1] = current.position[1] + TimeStep*current.velocity[1] + yAcc*TimeStepSqHalf;
@@ -57,36 +57,35 @@ void Integrator::solve(){
         current.velocity[1] = current.velocity[1] + TimeStepHalf*(yAccNew + yAcc);
         current.velocity[2] = current.velocity[2] + TimeStepHalf*(zAccNew + zAcc);
       }
-      outfile << endl;
+      outposition << endl;
     }
-    outfile.close();
+    outposition.close();
   } else {
     for (int i = 0; i < MeshPoints; i++) {
-      for (int obj = 0; obj < AllObjects.size(); obj++) {
-        xAcc = yAcc = zAcc = 0;
+      xAcc = yAcc = zAcc = 0;
 
-        for (int obj2 = 0; obj2 < AllObjects.size(); obj2++){
-          xAcc += AllObjects[obj].acceleration(AllObjects[obj2],0);
-          yAcc += AllObjects[obj].acceleration(AllObjects[obj2],1);
-          zAcc += AllObjects[obj].acceleration(AllObjects[obj2],2);
-        }
-
-        AllObjects[obj].velocity[0] = AllObjects[obj].velocity[0] + TimeStep*xAcc;
-        AllObjects[obj].velocity[1] = AllObjects[obj].velocity[1] + TimeStep*yAcc;
-        AllObjects[obj].velocity[2] = AllObjects[obj].velocity[2] + zAcc;
-
-        AllObjects[obj].position[0] = AllObjects[obj].position[0] + TimeStep*AllObjects[obj].velocity[0];
-        AllObjects[obj].position[1] = AllObjects[obj].position[1] + TimeStep*AllObjects[obj].velocity[1];
-        AllObjects[obj].position[2] = AllObjects[obj].position[2] + TimeStep*AllObjects[obj].velocity[2];
-
-        // Storing position
-        outfile << setw(30) << setprecision(15) << AllObjects[obj].position[0];
-        outfile << setw(30) << setprecision(15) << AllObjects[obj].position[1];
-        outfile << setw(30) << setprecision(15) << AllObjects[obj].position[2];
+      for (AstronomicalObject &other : AllObjects){
+        xAcc += AllObjects[1].acceleration(other,0);
+        yAcc += AllObjects[1].acceleration(other,1);
+        zAcc += AllObjects[1].acceleration(other,2);
       }
-      outfile << endl;
+
+      AllObjects[1].velocity[0] = AllObjects[1].velocity[0] + TimeStep*xAcc;
+      AllObjects[1].velocity[1] = AllObjects[1].velocity[1] + TimeStep*yAcc;
+      AllObjects[1].velocity[2] = AllObjects[1].velocity[2] + zAcc;
+
+      AllObjects[1].position[0] = AllObjects[1].position[0] + TimeStep*AllObjects[1].velocity[0];
+      AllObjects[1].position[1] = AllObjects[1].position[1] + TimeStep*AllObjects[1].velocity[1];
+      AllObjects[1].position[2] = AllObjects[1].position[2] + TimeStep*AllObjects[1].velocity[2];
+
+      // Storing position
+      outposition << setw(30) << setprecision(15) << AllObjects[1].position[0];
+      outposition << setw(30) << setprecision(15) << AllObjects[1].position[1];
+      outposition << setw(30) << setprecision(15) << AllObjects[1].position[2];
+
+      outposition << endl;
     }
-    outfile.close();
+    outposition.close();
   }
 
 } // end of function solve

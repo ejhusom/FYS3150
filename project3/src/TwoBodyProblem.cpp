@@ -94,11 +94,11 @@ void initialize(int MeshPoints, double TimeFinal, int Method){
     cout << "=";
   }
   cout << endl;
-  if (Method == 0) cout << "Method: Velociy Verlet\n";
-  else cout << "Method: Euler\n";
-  double tolerance = 1e-6;
+  if (Method == 0) cout << "TWO BODY PROBLEM - Method: Velocity Verlet\n";
+  else cout << "TWO BODY PROBLEM - Method: Euler\n";
+  double tolerance = 1e-5;
   double success = true;
-  cout << left << setw(35) << "TEST: Conserved kinetic energy, " << setw(10) << "tol=1e-6";
+  cout << left << setw(35) << "TEST: Conserved kinetic energy, " << setw(10) << "tol=" << tolerance;
   for (int i=0; i<MeshPoints; i++){
     if (fabs(KineticEnergy[0]-KineticEnergy[i]) > tolerance){
       cout << left << " | \033[1;31mFAILED\033[0m" << endl;
@@ -111,9 +111,9 @@ void initialize(int MeshPoints, double TimeFinal, int Method){
   }
 
   // TEST No. 2: Checking conservation of potential energy
-  tolerance = 1e-6;
+  tolerance = 1e-5;
   success = true;
-  cout << left << setw(35) << "TEST: Conserved potential energy, " << setw(10) << "tol=1e-6";
+  cout << left << setw(35) << "TEST: Conserved potential energy, " << setw(10) << "tol=" << tolerance;
   for (int i=0; i<MeshPoints; i++){
     if (fabs(PotentialEnergy[0]-PotentialEnergy[i]) > tolerance){
       cout << left << " | \033[1;31mFAILED\033[0m" << endl;
@@ -128,7 +128,7 @@ void initialize(int MeshPoints, double TimeFinal, int Method){
   // TEST No. 3: Checking conservation of angular moment
   tolerance = 1e-10;
   success = true;
-  cout << left << setw(35) << "TEST: Conserved angular moment, " << setw(10) << "tol=1e-10";
+  cout << left << setw(35) << "TEST: Conserved angular moment, " << setw(10) << "tol=" << tolerance;
   for (int i=0; i<MeshPoints; i++){
     if (fabs(AngularMoment[0]-AngularMoment[i]) > tolerance){
       cout << left << " | \033[1;31mFAILED\033[0m" << endl;

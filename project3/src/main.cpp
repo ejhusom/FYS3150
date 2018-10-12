@@ -11,7 +11,8 @@ USAGE:
 Compile by running "make" in terminal
 The executable can be run with no or several command line arguments:
 - No cmd arg: Producing data files for both two body problem and multi-body
-  problem (using Velocity Verlet method for the latter), with default values: Meshpoints=10000, TimeFinal=100.
+  problem (using Velocity Verlet method for the latter), with default values:
+  Meshpoints=10000, TimeFinal=100.
 - First cmd arg: Both systems=0, Solar system=1, Two body problem=2
 - Second cmd arg: Number of mesh points.
 - Third cmd arg: Number of years for the simulation.
@@ -40,6 +41,7 @@ int main(int argc, char *argv[]){
   if (System==0 || System==2){
     initialize(MeshPoints,TimeFinal,0);
     initialize(MeshPoints,TimeFinal,1);
+
   }
   if (System==0 || System==1){
     // INITIALIZE SOLAR SYSTEM

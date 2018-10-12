@@ -48,7 +48,7 @@ print("2: Two body problem (Sun and Earth) in 2D, Verlet and Euler method")
 choice = float(input('Input='))
 
 if (choice==1):
-    ObjectPositions = np.loadtxt('SolarSystemPositionsVerlet.dat')
+    ObjectPositions = np.loadtxt('SolarSystemVerletPositions.dat')
     objectNames = np.array(['Sun', 'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'])
     # PLOT
     fig = plt.figure(figsize=(w,h))
@@ -64,7 +64,7 @@ if (choice==1):
     ax.set_zlabel('z axis [AU]')
     plt.legend()
     plt.tight_layout()
-    plt.savefig("SolarSystemPositionsVerlet.pdf",dpi=300)
+    plt.savefig("SolarSystemVerletPositions.pdf",dpi=300)
     plt.show()
 elif (choice==2):
     verlet = np.loadtxt('TwoBodyProblemVerlet.dat')
