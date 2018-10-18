@@ -2,20 +2,24 @@
 Title:           FYS3150 Project 3
 Author:          Erik Johannes B. L. G. Husom
 Date:            2018-10-04
-Version:         0.1
+Version:         2.0
 Description:
 - Uses classes AstronomicalObject and Integrator to simulate the solar system
 - Mass given in Solar Mass
 - Distance given in Astronomical Unit (AU)
 USAGE:
-Compile by running "make" in terminal
-The executable can be run with no or several command line arguments:
+Compile by running "make" in terminal. The executable can be run with no or
+several command line arguments:
 - No cmd arg: Producing data files for both two body problem and multi-body
   problem (using Velocity Verlet method for the latter), with default values:
-  Meshpoints=10000, TimeFinal=100.
+  Meshpoints=10000, TimeFinal= 400 (Solar System) or 100 (Two Body).
 - First cmd arg: Both systems=0, Solar system=1, Two body problem=2
 - Second cmd arg: Number of mesh points.
 - Third cmd arg: Number of years for the simulation.
+
+The whole simulation may also be run by executing the python script
+"RunAndPlotProject3.py", which will provide all information needed in the
+terminal, and also automatically compile the C++ program.
 ==============================================================================*/
 #include <iostream>
 #include <fstream>
@@ -30,18 +34,13 @@ using namespace std;
 
 int main(int argc, char *argv[]){
   int MeshPoints = 10000;
-  double TimeFinal = 100.0;
+  double TimeFinal = 400.0;
   int Method = 0; // Method for Solar System: Verlet=0, Euler=1
   int System = 0; // Both=0, Solar system=1, two body=2
   switch (argc) {
     case 4: TimeFinal = atof(argv[3]);
     case 3: MeshPoints = atoi(argv[2]);
     case 2: System = atoi(argv[1]);
-  }
-  if (System==0 || System==2){
-    initialize(MeshPoints,TimeFinal,0);
-    initialize(MeshPoints,TimeFinal,1);
-
   }
   if (System==0 || System==1){
     // INITIALIZE SOLAR SYSTEM
@@ -70,6 +69,11 @@ int main(int argc, char *argv[]){
 
     Integrator Solver = Integrator(MeshPoints,TimeFinal,AllObjects,Method);
     Solver.solve();
+  }
+  if (System==0 || System==2){
+    if (argc < 4) TimeFinal = 100;
+    initialize(MeshPoints,TimeFinal,0);
+    initialize(MeshPoints,TimeFinal,1);
   }
 
   return 0;
