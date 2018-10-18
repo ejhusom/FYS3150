@@ -8,7 +8,7 @@ Numerically solving the one-dimensional Poisson's Equation using the Three Point
 Numerical solver for eigenvalue problems, used on a buckling beam problem and the Schroedinger Equation for one and two electrons in a harmonic oscillator potential.
 
 ## Project 3
-N/A
+Simulating the movement of astronomical objects in the solar system, by using the Velocity Verlet Method.
 
 ## Project 4
 N/A
