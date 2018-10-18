@@ -4,10 +4,10 @@
 # Title:           FYS3150 Project 3 - Running and plotting Solar System
 # Author:          Erik Johannes B. L. G. Husom
 # Date:            2018-10-11
-# Version:         1.0
+# Version:         2.0
 # Python version:  Python 3.6.4
-# Description:
-# USAGE:
+# Description: Run and plot project 3.
+# USAGE: All info will be provided when script is run in the terminal.
 #==============================================================================
 # IMPORT STATEMENTS
 import numpy as np
@@ -30,7 +30,7 @@ run = input('y/n=')
 
 if (run=="y"):
     System = input('Both (0), Solar system (1) or Two body (2)=')
-    MeshPoints = input('Number of mesh points (give zero to use default values)=')
+    MeshPoints = input('Number of mesh points (give zero to use default values for mesh points and simulation years)=')
     if (MeshPoints!='0'):
         TimeFinal = input('Number of years to simulate=')
         os.system('make')
