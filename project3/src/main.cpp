@@ -35,8 +35,8 @@ using namespace std;
 int main(int argc, char *argv[]){
   int MeshPoints = 10000;
   double TimeFinal = 400.0;
-  int Method = 0; // Method for Solar System: Verlet=0, Euler=1
-  int System = 0; // Both=0, Solar system=1, two body=2
+  int Method = 0; // Method for Solar System: Verlet=0, Euler=1, Relativistic=2
+  int System = 0; // SS+ES=0, Solar system=1, Earth/Sun=2, Sun/Mercury=3
   switch (argc) {
     case 4: TimeFinal = atof(argv[3]);
     case 3: MeshPoints = atoi(argv[2]);
@@ -74,6 +74,29 @@ int main(int argc, char *argv[]){
     if (argc < 4) TimeFinal = 100;
     initialize(MeshPoints,TimeFinal,0);
     initialize(MeshPoints,TimeFinal,1);
+
+    // double solarMass = 1.9891e30;
+    // vector<AstronomicalObject> TwoObjects;
+    // AstronomicalObject Sun2 = AstronomicalObject(1,0,0,0,0,0,0);
+    // AstronomicalObject Earth2 = AstronomicalObject(5.972E24/solarMass,1,0,0,0,2*M_PI,0);
+    // TwoObjects.push_back(Sun2);
+    // TwoObjects.push_back(Earth2);
+    //
+    // TwoBodyProblemClass SolverEuler = TwoBodyProblemClass(MeshPoints,TimeFinal,TwoObjects,1);
+    // TwoBodyProblemClass SolverVerlet = TwoBodyProblemClass(MeshPoints,TimeFinal,TwoObjects,0);
+    // SolverEuler.solve();
+    // SolverVerlet.solve();
+  }
+  if (System==3){
+    double solarMass = 1.9891e30;
+    vector<AstronomicalObject> TwoObjects;
+    AstronomicalObject SunRel = AstronomicalObject(1,0,0,0,0,0,0);
+    AstronomicalObject MercuryRel = AstronomicalObject(1.307e22/solarMass,0.3975,0,0,0,12.44,0);
+    TwoObjects.push_back(SunRel);
+    TwoObjects.push_back(MercuryRel);
+
+    Integrator SolverRel = Integrator(100000000,100,TwoObjects,2);
+    SolverRel.solve();
   }
 
   return 0;

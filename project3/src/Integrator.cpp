@@ -22,11 +22,13 @@ void Integrator::solve(){
   string MethodName;
   if (this->Method == 1){
     MethodName = "TwoBodyProblemEuler";
-  } else {
+  } else if (this->Method == 0){
     MethodName = "SolarSystemVerlet";
+  } else {
+    MethodName = "MercuryPrecession";
   }
   ofstream outposition;
-  outposition.open(MethodName + "Positions.dat");
+  outposition.open(MethodName + ".dat");
   // Integration loop
   if (this->Method == 0) {
     for (int i = 0; i < MeshPoints; i++) {
@@ -60,7 +62,7 @@ void Integrator::solve(){
       outposition << endl;
     }
     outposition.close();
-  } else {
+  } else if(this->Method == 1) {
     for (int i = 0; i < MeshPoints; i++) {
       xAcc = yAcc = zAcc = 0;
 
@@ -72,7 +74,7 @@ void Integrator::solve(){
 
       AllObjects[1].velocity[0] = AllObjects[1].velocity[0] + TimeStep*xAcc;
       AllObjects[1].velocity[1] = AllObjects[1].velocity[1] + TimeStep*yAcc;
-      AllObjects[1].velocity[2] = AllObjects[1].velocity[2] + zAcc;
+      AllObjects[1].velocity[2] = AllObjects[1].velocity[2] + TimeStep*zAcc;
 
       AllObjects[1].position[0] = AllObjects[1].position[0] + TimeStep*AllObjects[1].velocity[0];
       AllObjects[1].position[1] = AllObjects[1].position[1] + TimeStep*AllObjects[1].velocity[1];
@@ -84,6 +86,47 @@ void Integrator::solve(){
       outposition << setw(30) << setprecision(15) << AllObjects[1].position[2];
 
       outposition << endl;
+    }
+    outposition.close();
+  } else if (this->Method == 2){
+    double r = 0; double rNew = 0; double rOld = 0;
+    double precession = 0;
+    for (int i = 0; i < MeshPoints; i++) {
+
+      r = AllObjects[1].distance(AllObjects[0]);
+      precession = AllObjects[1].GetPerihelionPrecession2D();
+
+      xAcc = yAcc = xAccNew = yAccNew = zAcc = zAccNew = 0;
+      // Acceleration
+      for (AstronomicalObject &other : AllObjects){
+        xAcc += AllObjects[1].accelerationRelativistic(other,0);
+        yAcc += AllObjects[1].accelerationRelativistic(other,1);
+        zAcc += AllObjects[1].accelerationRelativistic(other,2);
+      }
+
+      AllObjects[1].position[0] = AllObjects[1].position[0] + TimeStep*AllObjects[1].velocity[0] + xAcc*TimeStepSqHalf;
+      AllObjects[1].position[1] = AllObjects[1].position[1] + TimeStep*AllObjects[1].velocity[1] + yAcc*TimeStepSqHalf;
+      AllObjects[1].position[2] = AllObjects[1].position[2] + TimeStep*AllObjects[1].velocity[2] + zAcc*TimeStepSqHalf;
+
+      for (AstronomicalObject &other : AllObjects){
+        xAccNew += AllObjects[1].accelerationRelativistic(other,0);
+        yAccNew += AllObjects[1].accelerationRelativistic(other,1);
+        zAccNew += AllObjects[1].accelerationRelativistic(other,2);
+      }
+
+      AllObjects[1].velocity[0] = AllObjects[1].velocity[0] + TimeStepHalf*(xAccNew + xAcc);
+      AllObjects[1].velocity[1] = AllObjects[1].velocity[1] + TimeStepHalf*(yAccNew + yAcc);
+      AllObjects[1].velocity[2] = AllObjects[1].velocity[2] + TimeStepHalf*(zAccNew + zAcc);
+
+      rNew = AllObjects[1].distance(AllObjects[0]);
+
+      if (r < rNew && r < rOld){
+        outposition << setw(30) << setprecision(15) << i*TimeStep;
+        outposition << setw(30) << setprecision(15) << precession << endl;
+      }
+
+      rOld = r;
+
     }
     outposition.close();
   }

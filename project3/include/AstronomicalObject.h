@@ -18,6 +18,7 @@ public:
   double GetPotentialEnergy(AstronomicalObject OtherObject);
   double GetAngularMoment();
   double accelerationRelativistic(AstronomicalObject OtherObject, int axis);
+  double GetPerihelionPrecession2D();
 
 };
 

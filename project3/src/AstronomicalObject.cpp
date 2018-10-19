@@ -43,15 +43,19 @@ double AstronomicalObject::GetPotentialEnergy(AstronomicalObject OtherObject){
 }
 
 double AstronomicalObject::GetAngularMoment(){
-  double x = this->position[0]; double y = this->position[0]; double z = this->position[0];
-  double vx = this->velocity[0]; double vy = this->velocity[0]; double vz = this->velocity[0];
+  double x = this->position[0]; double y = this->position[1]; double z = this->position[2];
+  double vx = this->velocity[0]; double vy = this->velocity[1]; double vz = this->velocity[2];
   return sqrt((y*vz - z*vy)*(y*vz - z*vy) + (x*vz-z*vx)*(x*vz-z*vx) + (x*vy-y*vx)*(x*vy-y*vx));
 }
 
 double AstronomicalObject::accelerationRelativistic(AstronomicalObject OtherObject, int axis){
   double r = this->distance(OtherObject);
   double l = this->GetAngularMoment();
-  double c = 3e8;
+  double c = 63239.7263;
   if (r!=0) return -(1+3*l*l/(r*r*c*c))*(this->position[axis]-OtherObject.position[axis])*4*M_PI*M_PI*OtherObject.mass/(r*r*r);
   else return 0;
+}
+
+double AstronomicalObject::GetPerihelionPrecession2D(){
+  return this->position[1]/this->position[0];
 }
