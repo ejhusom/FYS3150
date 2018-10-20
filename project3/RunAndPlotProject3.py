@@ -11,7 +11,6 @@
 #==============================================================================
 # IMPORT STATEMENTS
 import numpy as np
-from scipy.signal import find_peaks
 import sys, os
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -124,6 +123,7 @@ elif (choice==3):
     p = np.poly1d(coeff)
 
     print("Perihelion precession per century: ", p(t[-1])-p(t[0]))
+    print(np.size(arcsec))
 
     # PRECESSION
     plt.figure()
