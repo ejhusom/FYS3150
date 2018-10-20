@@ -108,6 +108,7 @@ void Integrator::solve(){
       AllObjects[1].position[1] = AllObjects[1].position[1] + TimeStep*AllObjects[1].velocity[1] + yAcc*TimeStepSqHalf;
       AllObjects[1].position[2] = AllObjects[1].position[2] + TimeStep*AllObjects[1].velocity[2] + zAcc*TimeStepSqHalf;
 
+
       for (AstronomicalObject &other : AllObjects){
         xAccNew += AllObjects[1].accelerationRelativistic(other,0);
         yAccNew += AllObjects[1].accelerationRelativistic(other,1);
