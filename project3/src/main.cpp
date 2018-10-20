@@ -91,11 +91,11 @@ int main(int argc, char *argv[]){
     double solarMass = 1.9891e30;
     vector<AstronomicalObject> TwoObjects;
     AstronomicalObject SunRel = AstronomicalObject(1,0,0,0,0,0,0);
-    AstronomicalObject MercuryRel = AstronomicalObject(1.307e22/solarMass,0.3975,0,0,0,12.44,0);
+    AstronomicalObject MercuryRel = AstronomicalObject(1.307e22/solarMass,0.3075,0,0,0,12.44,0);
     TwoObjects.push_back(SunRel);
     TwoObjects.push_back(MercuryRel);
 
-    Integrator SolverRel = Integrator(100000000,100,TwoObjects,2);
+    Integrator SolverRel = Integrator(10000000,100,TwoObjects,2);
     SolverRel.solve();
   }
 
