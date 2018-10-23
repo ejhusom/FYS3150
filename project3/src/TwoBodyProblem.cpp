@@ -5,9 +5,10 @@
 #include <string>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <chrono>
 #include "TwoBodyProblem.h"
-
 using namespace std;
+using namespace std::chrono;
 
 void initialize(int MeshPoints, double TimeFinal, int Method){
   double EarthMass = 0.000003003; // in solar mass
@@ -37,9 +38,15 @@ void initialize(int MeshPoints, double TimeFinal, int Method){
   TimePoints[0] = 0;
   double FPSDivrEarthCu;
   string filename;
+  struct winsize size;
+  ioctl(STDOUT_FILENO,TIOCGWINSZ,&size);
+  for (int i = 0; i < size.ws_col; i++) {
+    cout << "=";
+  }
   // Integration loop
   if (Method == 0) {
     filename = "TwoBodyProblemVerlet.dat";
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     for (int i = 0; i < MeshPoints; i++) {
       FPSDivrEarthCu = FourPiSq/(rEarth[i]*rEarth[i]*rEarth[i]);
       xAcc[i] = -xPos[i]*FPSDivrEarthCu;
@@ -56,8 +63,12 @@ void initialize(int MeshPoints, double TimeFinal, int Method){
       xVel[i+1] = xVel[i] + TimeStepHalf*(xAcc[i+1] + xAcc[i]);
       yVel[i+1] = yVel[i] + TimeStepHalf*(yAcc[i+1] + yAcc[i]);
     }
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+    cout << "Time used by Velocity Verlet method on Earth-Sun system: " << time_span.count() << " seconds." << endl;
   } else {
     filename = "TwoBodyProblemEuler.dat";
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     for (int i = 0; i < MeshPoints; i++) {
       FPSDivrEarthCu = FourPiSq/(rEarth[i]*rEarth[i]*rEarth[i]);
       xVel[i+1] = xVel[i] - xPos[i]*TimeStep*FPSDivrEarthCu;
@@ -66,6 +77,9 @@ void initialize(int MeshPoints, double TimeFinal, int Method){
       yPos[i+1] = yPos[i] + TimeStep*yVel[i];
       rEarth[i+1] = sqrt(xPos[i+1]*xPos[i+1] + yPos[i+1]*yPos[i+1]);
     }
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+    cout << "Time used by Euler method on Earth-Sun system: " << time_span.count() << " seconds." << endl;
   }
   for (int i = 0; i < MeshPoints; i++) {
     KineticEnergy[i] = 0.5*EarthMass*(xVel[i]*xVel[i] + yVel[i]*yVel[i]);
@@ -88,15 +102,13 @@ void initialize(int MeshPoints, double TimeFinal, int Method){
   outfile.close();
 
   // TEST No. 1: Checking conservation of kinetic energy
-  struct winsize size;
-  ioctl(STDOUT_FILENO,TIOCGWINSZ,&size);
   for (int i = 0; i < size.ws_col; i++) {
     cout << "=";
   }
   cout << endl;
   if (Method == 0) cout << "TWO BODY PROBLEM - Method: Velocity Verlet\n";
   else cout << "TWO BODY PROBLEM - Method: Euler\n";
-  double tolerance = 1e-5;
+  double tolerance = 1e-10;
   double success = true;
   cout << left << setw(35) << "TEST: Conserved kinetic energy, " << setw(10) << "tol=" << tolerance;
   for (int i=0; i<MeshPoints; i++){
@@ -111,7 +123,7 @@ void initialize(int MeshPoints, double TimeFinal, int Method){
   }
 
   // TEST No. 2: Checking conservation of potential energy
-  tolerance = 1e-5;
+  tolerance = 1e-10;
   success = true;
   cout << left << setw(35) << "TEST: Conserved potential energy, " << setw(10) << "tol=" << tolerance;
   for (int i=0; i<MeshPoints; i++){
@@ -126,7 +138,7 @@ void initialize(int MeshPoints, double TimeFinal, int Method){
   }
 
   // TEST No. 3: Checking conservation of angular moment
-  tolerance = 1e-10;
+  tolerance = 1e-12;
   success = true;
   cout << left << setw(35) << "TEST: Conserved angular moment, " << setw(10) << "tol=" << tolerance;
   for (int i=0; i<MeshPoints; i++){

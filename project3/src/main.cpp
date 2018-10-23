@@ -33,7 +33,7 @@ terminal, and also automatically compile the C++ program.
 using namespace std;
 
 int main(int argc, char *argv[]){
-  int MeshPoints = 10000;
+  int MeshPoints = 100000;
   double TimeFinal = 400.0;
   int Method = 0; // Method for Solar System: Verlet=0, Euler=1, Relativistic=2
   int System = 0; // SS+ES=0, Solar system=1, Earth/Sun=2, Sun/Mercury=3
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]){
     // INITIALIZE SOLAR SYSTEM
     double solarMass = 1.9891e30;
     vector<AstronomicalObject> AllObjects;
-    AstronomicalObject Sun = AstronomicalObject(1.0,0,0,0,0,0,0);
+    AstronomicalObject Sun = AstronomicalObject(1.0, -7.175013564692218E-05, 7.222562851350428E-03, -7.457381690003485E-05, -7.559933970129715E-06*365.25, 365.25*2.681945562288024E-06, 365.25*1.889002113326395E-07);
     AstronomicalObject Mercury = AstronomicalObject(1.307e22/solarMass,-3.294363957786441E-01,-2.928799526088138E-01,5.618346324205380E-03,365.25*1.320405892727915E-02, 365.25*-1.952252048338632E-02, 365.25*-2.807294373094382E-03);
     AstronomicalObject Venus = AstronomicalObject(4.867E24/solarMass, 7.243545955158947E-01, -3.278712379892032E-02, -4.242728890559555E-02, 365.25*1.017391327967621E-03, 365.25* 2.010584861519629E-02, 365.25* 2.168289888508737E-04);
     AstronomicalObject Earth = AstronomicalObject(5.972E24/solarMass,9.837576984919719E-01,1.889233809711713E-01,-8.631011464030984E-05,-3.406523137555859E-03*365.25,1.686035619678342E-02*365.25,-1.194254105980157E-06*365.25);
@@ -56,6 +56,7 @@ int main(int argc, char *argv[]){
     AstronomicalObject Uranus = AstronomicalObject(8.681E25/solarMass, 1.719595695177778E+01,  9.965486713193039E+00, -1.857636424997038E-01, 365.25*-2.000761535443054E-03, 365.25* 3.219594226509228E-03, 365.25* 3.795711294500967E-05);
     AstronomicalObject Neptune = AstronomicalObject(1.024E26/solarMass, 2.891239407445751E+01, -7.753050308782163E+00, -5.066556247342422E-01, 365.25*7.926104454699854E-04, 365.25* 3.050689379330089E-03, 365.25*-8.139915196891708E-05);
     AstronomicalObject Pluto = AstronomicalObject(1.30900E22/solarMass, 1.161374129179143E+01, -3.157937303069106E+01,  1.979427629835602E-02, 365.25*3.006977217402132E-03, 365.25* 4.205759240708480E-04, 365.25*-9.057561756443009E-04);
+
     AllObjects.push_back(Sun);
     AllObjects.push_back(Mercury);
     AllObjects.push_back(Venus);
@@ -71,21 +72,9 @@ int main(int argc, char *argv[]){
     Solver.solve();
   }
   if (System==0 || System==2){
-    if (argc < 4) TimeFinal = 100;
+    if (argc < 4) TimeFinal = 10;
     initialize(MeshPoints,TimeFinal,0);
     initialize(MeshPoints,TimeFinal,1);
-
-    // double solarMass = 1.9891e30;
-    // vector<AstronomicalObject> TwoObjects;
-    // AstronomicalObject Sun2 = AstronomicalObject(1,0,0,0,0,0,0);
-    // AstronomicalObject Earth2 = AstronomicalObject(5.972E24/solarMass,1,0,0,0,2*M_PI,0);
-    // TwoObjects.push_back(Sun2);
-    // TwoObjects.push_back(Earth2);
-    //
-    // TwoBodyProblemClass SolverEuler = TwoBodyProblemClass(MeshPoints,TimeFinal,TwoObjects,1);
-    // TwoBodyProblemClass SolverVerlet = TwoBodyProblemClass(MeshPoints,TimeFinal,TwoObjects,0);
-    // SolverEuler.solve();
-    // SolverVerlet.solve();
   }
   if (System==3){
     double solarMass = 1.9891e30;
@@ -95,7 +84,7 @@ int main(int argc, char *argv[]){
     TwoObjects.push_back(SunRel);
     TwoObjects.push_back(MercuryRel);
 
-    Integrator SolverRel = Integrator(10000000,100,TwoObjects,2);
+    Integrator SolverRel = Integrator(100000000,100,TwoObjects,2);
     SolverRel.solve();
   }
 
