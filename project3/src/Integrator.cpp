@@ -128,7 +128,6 @@ void Integrator::solve(){
         outposition << setw(30) << setprecision(15) << i*TimeStep;
         outposition << setw(30) << setprecision(15) << precession << endl;
       }
-
       rOld = r;
 
     }

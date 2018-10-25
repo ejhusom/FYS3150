@@ -6,7 +6,7 @@
 # =============================================
 EXEC 			= runproject3.x
 CPP 			= c++
-CPPflags 	= -Wall -O3
+CPPflags 	= -Wall -O3 -g
 LIB 			=
 
 SRC_DIR		= ./src

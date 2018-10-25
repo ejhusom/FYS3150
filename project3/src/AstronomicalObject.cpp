@@ -1,7 +1,6 @@
 #include "AstronomicalObject.h"
 
 AstronomicalObject::AstronomicalObject(){
-
 }
 
 AstronomicalObject::AstronomicalObject(double m, double x, double y, double z, double vx, double vy, double vz){
