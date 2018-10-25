@@ -65,7 +65,7 @@ void Integrator::solve(){
       outposition << endl;
     }
     outposition.close();
-  } else if(this->Method == 1) {
+  } else if(this->Method == 1) { // Euler method is only implemented for a two-body problem
     for (int i = 0; i < MeshPoints; i++) {
       xAcc = yAcc = zAcc = 0;
 
