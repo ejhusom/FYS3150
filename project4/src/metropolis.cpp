@@ -52,7 +52,7 @@ void metropolis(int dim, int state, int nCycles, double T){
     double Emean = ExpectationValues[0]/nCycles;
     double E2mean = ExpectationValues[1]/nCycles;
 
-    cout << "<E>: " << Emean/nCycles << endl;
+    cout << "<E>: " << Emean << endl;
     cout << "CV: " << (E2mean - Emean*Emean)/(T*T) << endl;
 
     // deallocate memory
