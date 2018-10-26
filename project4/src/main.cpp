@@ -18,6 +18,7 @@ int main(int argc, char *argv[]){
   int nCycles = 100;
   double T = 1;
   switch (argc) {
+    case 5: T = atof(argv[4]);
     case 4: nCycles = atoi(argv[3]);
     case 3: state = atoi(argv[2]);
     case 2: dim = atoi(argv[1]);

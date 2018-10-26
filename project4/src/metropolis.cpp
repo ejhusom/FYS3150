@@ -5,8 +5,8 @@ void metropolis(int dim, int state, int nCycles, double T){
   std::mt19937_64 gen(rd());
   std::uniform_real_distribution<double> distribution(0.0,1.0);
 
-  double *ExpectationValues = new double[5];
-  for (size_t i = 0; i < 5; i++) ExpectationValues[i] = 0;
+  double *ExpecVal = new double[5];
+  for (size_t i = 0; i < 5; i++) ExpecVal[i] = 0;
   double E, M = 0;
   double **Lattice = new double*[dim+2];
   for (int i = 0; i < dim+2; i++){
@@ -39,27 +39,30 @@ void metropolis(int dim, int state, int nCycles, double T){
           E += (double) dE;     // update energy
         }
       }
-      ExpectationValues[0] += E;
-      ExpectationValues[1] += E*E;
-      ExpectationValues[2] += M;
-      ExpectationValues[3] += M*M;
-      ExpectationValues[4] += fabs(E);
+      ExpecVal[0] += E;
+      ExpecVal[1] += E*E;
+      ExpecVal[2] += M;
+      ExpecVal[3] += M*M;
+      ExpecVal[4] += fabs(E);
     }
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
     cout << "Time used: " << time_span.count() << " seconds." << endl;
 
-    double Emean = ExpectationValues[0]/nCycles;
-    double E2mean = ExpectationValues[1]/nCycles;
+    double EV_E = ExpecVal[0]/nCycles;
+    double EV_E2 = ExpecVal[1]/nCycles;
+    double EV_M = ExpecVal[2]/nCycles;
+    double EV_M2 = ExpecVal[3]/nCycles;
+    double EV_Mabs = ExpecVal[4]/nCycles;
 
-    cout << "<E>: " << Emean << endl;
-    cout << "CV: " << (E2mean - Emean*Emean)/(T*T) << endl;
+    cout << "<E>: " << EV_E << endl;
+    cout << "CV: " << (EV_E2 - EV_E*EV_E)/(T*T) << endl;
 
     // deallocate memory
     for (int i = 0; i < dim+2; i++){
       delete [] Lattice[i];
     }
     delete [] Lattice;
-    delete [] ExpectationValues;
+    delete [] ExpecVal;
     delete [] w;
 } // end of Metropolis function
