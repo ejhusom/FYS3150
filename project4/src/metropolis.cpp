@@ -55,6 +55,10 @@ void metropolis(int dim, int state, int nCycles, double T){
     double EV_M2 = ExpecVal[3]/nCycles;
     double EV_Mabs = ExpecVal[4]/nCycles;
 
+
+
+    cout << "Temperature: " << T << endl;
+    cout << "Number of cycles: " << nCycles << endl;
     cout << "<E>: " << EV_E << endl;
     cout << "CV: " << (EV_E2 - EV_E*EV_E)/(T*T) << endl;
 
