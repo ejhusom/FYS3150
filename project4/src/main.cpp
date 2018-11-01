@@ -9,24 +9,79 @@ USAGE:
 #include "metropolis.h"
 #include "analytical.h"
 using namespace std;
+ofstream outfile;
 
+void output(int dim, double temperature, double *ExpecVal, int nCycles, double timing){
+  double E_variance = (ExpecVal[1] - ExpecVal[0]*ExpecVal[0])/dim/dim;
+  double M_variance = (ExpecVal[3] - ExpecVal[2]*ExpecVal[2])/dim/dim;
+  outfile << setw(15) << setprecision(8) << temperature;
+  outfile << setw(15) << setprecision(8) << ExpecVal[0]/dim/dim;
+  outfile << setw(15) << setprecision(8) << ExpecVal[1]/dim/dim;
+  outfile << setw(15) << setprecision(8) << ExpecVal[2]/dim/dim;
+  outfile << setw(15) << setprecision(8) << ExpecVal[3]/dim/dim;
+  outfile << setw(15) << setprecision(8) << ExpecVal[4]/dim/dim;
+  outfile << setw(15) << setprecision(8) << M_variance/temperature;
+  outfile << setw(15) << setprecision(8) << E_variance/(temperature*temperature);
+  outfile << setw(15) << setprecision(8) << timing;
+  outfile << setw(15) << setprecision(8) << nCycles << endl;
+}
 
 int main(int argc, char *argv[]){
 
   int dim = 2;
   int state = 1; // 1: ordered initial state, else: random state
-  int nCycles = 100;
-  double T = 1;
-  switch (argc) {
-    case 5: T = atof(argv[4]);
-    case 4: nCycles = atoi(argv[3]);
-    case 3: state = atoi(argv[2]);
-    case 2: dim = atoi(argv[1]);
-  }
+  int nCycles = 1000000;
+  // switch (argc) {
+  //   case 5: T = atof(argv[4]);
+  //   case 4: nCycles = atoi(argv[3]);
+  //   case 3: state = atoi(argv[2]);
+  //   case 2: dim = atoi(argv[1]);
+  // }
 
-  metropolis(dim, state, nCycles, T);
-  analyticalEnergy(T);
-  analyticalSpecificHeat(T);
+  double temp_init = 2.0;
+  double temp_final = 3.0;
+  double temp_step = 0.1;
+
+  double *ExpecVal = new double[5];
+  double timing;
+
+  int numprocs, my_rank;
+
+  MPI_Init (&argc, &argv);
+  MPI_Comm_size (MPI_COMM_WORLD, &numprocs);
+  MPI_Comm_rank (MPI_COMM_WORLD, &my_rank);
+
+  MPI_Bcast (&dim, 1, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Bcast (&temp_init, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  MPI_Bcast (&temp_final, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  MPI_Bcast (&temp_step, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+  outfile.open("Lattices" + to_string(dim) + ".dat");
+  outfile << setw(15) << setprecision(8) << "T";
+  outfile << setw(15) << setprecision(8) << "E";
+  outfile << setw(15) << setprecision(8) << "E2";
+  outfile << setw(15) << setprecision(8) << "M";
+  outfile << setw(15) << setprecision(8) << "M2";
+  outfile << setw(15) << setprecision(8) << "M abs";
+  outfile << setw(15) << setprecision(8) << "M variance";
+  outfile << setw(15) << setprecision(8) << "C_V";
+  outfile << setw(15) << setprecision(8) << "Run time";
+  outfile << setw(15) << setprecision(8) << "No. of cycles" << endl;
+  for (double temperature = temp_init; temperature <= temp_final; temperature+=temp_step) {
+    metropolis(dim, state, nCycles, temperature, ExpecVal, &timing);
+    output(dim, temperature, ExpecVal, nCycles, timing);
+    cout << "T=" << temperature << " done...\n";
+  }
+  outfile.close();
+
+
+  MPI_Finalize ();
+
+  // double T = 1;
+  // analyticalEnergy(T);
+  // analyticalSpecificHeat(T);
+
+  delete [] ExpecVal;
 
   return 0;
 } // end of main function
