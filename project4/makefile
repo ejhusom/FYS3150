@@ -6,6 +6,8 @@
 # =============================================
 EXEC 			= runproject4.x
 CPP 			= c++
+# parallelization: mpic++
+# Run executable with mpirun -n 10 ./runproject4.x, where n is the number of processes
 CPPflags 	= -Wall -O3 -g
 LIB 			=
 
