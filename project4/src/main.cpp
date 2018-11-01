@@ -28,26 +28,7 @@ int main(int argc, char *argv[]){
   // analyticalEnergy(T);
   // analyticalSpecificHeat(T);
 
-  int a = 4;
-  int n = 4;
-  double array[n] = {1,2,3,4};
-  // double *pointerarray = new double[n];
-  double *pointerarray[n];
-  for (int i = 0; i < n; i++) {
-    pointerarray[i] = &array[i];
-  }
-  pointerarray[0] = &array[2];
-  cout << "Array / Pointerarray\n";
-  for (int i=0; i<n; i++){
-    cout << setw(12) << setprecision(6) << array[i];
-    cout << setw(12) << setprecision(6) << *pointerarray[i] << endl;
-  }
-  array[2] = 100;
-  cout << "=============\n";
-  for (int i=0; i<n; i++){
-    cout << setw(12) << setprecision(6) << array[i];
-    cout << setw(12) << setprecision(6) << *pointerarray[i] << endl;
-  }
+  // CREATE LATTICE
   cout << "=====================================\n";
   double **Lattice = new double*[dim+2];
   for (int i = 0; i < dim+2; i++){
@@ -60,15 +41,15 @@ int main(int argc, char *argv[]){
       Lattice[i][j] = 1;
     }
   }
+  cout << "Real lattice at start:\n";
   for (int i=0; i<dim+2; i++){
       for (int j=0; j<dim+2; j++){
         cout << setw(8) << setprecision(4) << Lattice[i][j];
       }
     cout << endl;
   }
-  cout << "============================\n";
 
-
+  // CREATE POINTER LATTICE
   double*** PointerLattice = new double**[dim+2];
   for (int i = 0; i < dim+2; i++){
     PointerLattice[i] = new double*[dim+2];
@@ -79,7 +60,7 @@ int main(int argc, char *argv[]){
       PointerLattice[i][j] = &Lattice[i][j];
     }
   }
-
+  cout << "Pointer lattice at start:\n";
   for (int i=0; i<dim+2; i++){
       for (int j=0; j<dim+2; j++){
         // PointerLattice[i][j] = &Lattice[i][j];
@@ -88,7 +69,31 @@ int main(int argc, char *argv[]){
     cout << endl;
   }
   cout << "============================\n";
-  Lattice[0][0] = 1000;
+
+
+
+  // filling four "ghost vectors"
+  for (int i = 1; i < dim+1; i++) {
+    PointerLattice[i][dim+1] = &Lattice[i][1];
+    PointerLattice[i][0] = &Lattice[i][dim];
+    PointerLattice[dim+1][i] = &Lattice[1][i];
+    PointerLattice[0][i] = &Lattice[dim][i];
+  }
+
+
+
+
+  Lattice[1][1] = 1000;
+
+  cout << "Real lattice after change:\n";
+  for (int i=0; i<dim+2; i++){
+    for (int j=0; j<dim+2; j++){
+      // PointerLattice[i][j] = &Lattice[i][j];
+      cout << setw(8) << setprecision(4) << Lattice[i][j];
+    }
+    cout << endl;
+  }
+  cout << "Pointer lattice after change:\n";
   for (int i=0; i<dim+2; i++){
     for (int j=0; j<dim+2; j++){
       // PointerLattice[i][j] = &Lattice[i][j];
