@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <random>
 #include <chrono>
+// #include <mpi.h>
 #include "initializeLattice.h"
 using namespace std;
 using namespace std::chrono;
