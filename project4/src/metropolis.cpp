@@ -35,27 +35,27 @@ void metropolis(int dim, int state, int nCycles, double T){
         E += (double) dE;     // update energy
       }
     }
-    ExpecVal[0] += E;
-    ExpecVal[1] += E*E;
-    ExpecVal[2] += M;
-    ExpecVal[3] += M*M;
+    ExpecVal[0] += E;   ExpecVal[1] += E*E;
+    ExpecVal[2] += M;   ExpecVal[3] += M*M;
     ExpecVal[4] += fabs(M);
   }
   high_resolution_clock::time_point t2 = high_resolution_clock::now();
   duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
   cout << "Time used: " << time_span.count() << " seconds." << endl;
 
-  double EV_E = ExpecVal[0]/nCycles/dim/dim;
-  double EV_E2 = ExpecVal[1]/nCycles/dim/dim;
-  double EV_M = ExpecVal[2]/nCycles/dim/dim;
-  double EV_M2 = ExpecVal[3]/nCycles/dim/dim;
-  double EV_Mabs = ExpecVal[4]/nCycles/dim/dim;
+  double EV_E = ExpecVal[0]/nCycles;
+  double EV_E2 = ExpecVal[1]/nCycles;
+  double EV_M = ExpecVal[2]/nCycles;
+  double EV_M2 = ExpecVal[3]/nCycles;
+  double EV_Mabs = ExpecVal[4]/nCycles;
 
+  double E_variance = (EV_E2 - EV_E*EV_E)/dim/dim;
+  double M_variance = (EV_M2 - EV_M*EV_M)/dim/dim;
 
   cout << "Temperature: " << T << endl;
   cout << "Number of cycles: " << nCycles << endl;
   cout << "<E>: " << EV_E << endl;
-  cout << "CV: " << (EV_E2 - EV_E*EV_E)/(T*T) << endl;
+  cout << "CV: " << E_variance/(T*T) << endl;
 
   // deallocate memory
   for (int i = 0; i < dim+2; i++){
