@@ -12,7 +12,11 @@ void metropolis(int dim, int state, int nCycles, double T){
   for (int i = 0; i < dim+2; i++){
     Lattice[i] = new double[dim+2];
   }
-  initializeLattice(Lattice, dim, state, &E, &M, gen, distribution);
+  double ***PointerLattice = new double**[dim+2];
+  for (int i = 0; i < dim+2; i++){
+    PointerLattice[i] = new double*[dim+2];
+  }
+  initializeLattice(Lattice, PointerLattice, dim, state, &E, &M, gen, distribution);
 
   double *w = new double[17];
   for (int i = 0; i < 17; i+=4) w[i] = exp(-(i-8)/T);
@@ -24,11 +28,8 @@ void metropolis(int dim, int state, int nCycles, double T){
       // Find random indeces x, y
       x = 1 + (int) (distribution(gen)*(double)dim);
       y = 1 + (int) (distribution(gen)*(double)dim);
-      // cout << x << " " << y << endl;
-      dE = 2*Lattice[x][y]*(Lattice[x-1][y]+
-        Lattice[x+1][y]+
-        Lattice[x][y-1]+
-        Lattice[x][y+1]);
+      // dE = 2**PointerLattice[x][y]*(*PointerLattice[x-1][y]+*PointerLattice[x+1][y]+*PointerLattice[x][y-1]+*PointerLattice[x][y+1]);
+      dE = 2*Lattice[x][y]*(Lattice[x-1][y]+Lattice[x+1][y]+Lattice[x][y-1]+Lattice[x][y+1]);
         if (distribution(gen) <= w[dE+8]) {
           Lattice[x][y] *= -1;  // flip the spin
           if (x == 1) Lattice[dim+1][y] *= -1;
@@ -36,9 +37,10 @@ void metropolis(int dim, int state, int nCycles, double T){
           if (y == 1) Lattice[x][dim+1] *= -1;
           if (y == dim) Lattice[x][0] *= -1;
           M += 2*Lattice[x][y]; // update magnetization
+          // M += 2**PointerLattice[x][y]; // update magnetization
           E += (double) dE;     // update energy
         }
-      }
+    }
       ExpecVal[0] += E;
       ExpecVal[1] += E*E;
       ExpecVal[2] += M;
@@ -65,8 +67,10 @@ void metropolis(int dim, int state, int nCycles, double T){
     // deallocate memory
     for (int i = 0; i < dim+2; i++){
       delete [] Lattice[i];
+      delete [] PointerLattice[i];
     }
     delete [] Lattice;
+    delete [] PointerLattice;
     delete [] ExpecVal;
     delete [] w;
 } // end of Metropolis function
