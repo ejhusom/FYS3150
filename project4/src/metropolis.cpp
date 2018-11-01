@@ -28,49 +28,42 @@ void metropolis(int dim, int state, int nCycles, double T){
       // Find random indeces x, y
       x = 1 + (int) (distribution(gen)*(double)dim);
       y = 1 + (int) (distribution(gen)*(double)dim);
-      // dE = 2**PointerLattice[x][y]*(*PointerLattice[x-1][y]+*PointerLattice[x+1][y]+*PointerLattice[x][y-1]+*PointerLattice[x][y+1]);
-      dE = 2*Lattice[x][y]*(Lattice[x-1][y]+Lattice[x+1][y]+Lattice[x][y-1]+Lattice[x][y+1]);
-        if (distribution(gen) <= w[dE+8]) {
-          Lattice[x][y] *= -1;  // flip the spin
-          if (x == 1) Lattice[dim+1][y] *= -1;
-          if (x == dim) Lattice[0][y] *= -1;
-          if (y == 1) Lattice[x][dim+1] *= -1;
-          if (y == dim) Lattice[x][0] *= -1;
-          M += 2*Lattice[x][y]; // update magnetization
-          // M += 2**PointerLattice[x][y]; // update magnetization
-          E += (double) dE;     // update energy
-        }
+      dE = 2**PointerLattice[x][y]*(*PointerLattice[x-1][y]+*PointerLattice[x+1][y]+*PointerLattice[x][y-1]+*PointerLattice[x][y+1]);
+      if (distribution(gen) <= w[dE+8]) {
+        Lattice[x][y] *= -1;  // flip the spin
+        M += 2**PointerLattice[x][y]; // update magnetization
+        E += (double) dE;     // update energy
+      }
     }
-      ExpecVal[0] += E;
-      ExpecVal[1] += E*E;
-      ExpecVal[2] += M;
-      ExpecVal[3] += M*M;
-      ExpecVal[4] += fabs(E);
-    }
-    high_resolution_clock::time_point t2 = high_resolution_clock::now();
-    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
-    cout << "Time used: " << time_span.count() << " seconds." << endl;
+    ExpecVal[0] += E;
+    ExpecVal[1] += E*E;
+    ExpecVal[2] += M;
+    ExpecVal[3] += M*M;
+    ExpecVal[4] += fabs(M);
+  }
+  high_resolution_clock::time_point t2 = high_resolution_clock::now();
+  duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+  cout << "Time used: " << time_span.count() << " seconds." << endl;
 
-    double EV_E = ExpecVal[0]/nCycles;
-    double EV_E2 = ExpecVal[1]/nCycles;
-    double EV_M = ExpecVal[2]/nCycles;
-    double EV_M2 = ExpecVal[3]/nCycles;
-    double EV_Mabs = ExpecVal[4]/nCycles;
+  double EV_E = ExpecVal[0]/nCycles/dim/dim;
+  double EV_E2 = ExpecVal[1]/nCycles/dim/dim;
+  double EV_M = ExpecVal[2]/nCycles/dim/dim;
+  double EV_M2 = ExpecVal[3]/nCycles/dim/dim;
+  double EV_Mabs = ExpecVal[4]/nCycles/dim/dim;
 
 
+  cout << "Temperature: " << T << endl;
+  cout << "Number of cycles: " << nCycles << endl;
+  cout << "<E>: " << EV_E << endl;
+  cout << "CV: " << (EV_E2 - EV_E*EV_E)/(T*T) << endl;
 
-    cout << "Temperature: " << T << endl;
-    cout << "Number of cycles: " << nCycles << endl;
-    cout << "<E>: " << EV_E << endl;
-    cout << "CV: " << (EV_E2 - EV_E*EV_E)/(T*T) << endl;
-
-    // deallocate memory
-    for (int i = 0; i < dim+2; i++){
-      delete [] Lattice[i];
-      delete [] PointerLattice[i];
-    }
-    delete [] Lattice;
-    delete [] PointerLattice;
-    delete [] ExpecVal;
-    delete [] w;
+  // deallocate memory
+  for (int i = 0; i < dim+2; i++){
+    delete [] Lattice[i];
+    delete [] PointerLattice[i];
+  }
+  delete [] Lattice;
+  delete [] PointerLattice;
+  delete [] ExpecVal;
+  delete [] w;
 } // end of Metropolis function
