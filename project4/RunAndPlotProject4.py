@@ -24,17 +24,14 @@ print('Run simulation and produce data files? Enter \'n\' to move on to plotting
 run = input('y/n=')
 
 if (run=="y" ):
-    System = input('Both (0), Solar system (1), Sun/Earth (2) or Sun/Mercury (3)=')
-    MeshPoints = input('Number of mesh points (give zero to use default values for mesh points and simulation years)=')
-    if (MeshPoints!='0'):
-        TimeFinal = input('Number of years to simulate=')
-        os.system('make')
-        print('Running project...')
-        os.system('./runproject3.x ' + System + ' ' + MeshPoints + ' ' + TimeFinal)
-    else:
-        os.system('make')
-        print('Running project...')
-        os.system('./runproject3.x ' + System)
+    print("4b")
+    print("4c")
+    print("4d")
+    print("4e")
+    task = input('Which task=')
+    os.system('make')
+    print('Running project...')
+    os.system('mpirun -n 4 ./runproject4.x ')
 
 
 for i in range(int(columns)):
