@@ -1,12 +1,10 @@
-# =============================================
-# Title:           MAKEFILE
-# Author:          Erik Johannes B. L. G. Husom
-# Date:            2018-09-27
-# Version:         0.1
-# =============================================
+# =======================================================
+# MAKEFILE by Erik Johannes B. L. G. Husom on 2018-09-27
+# Comments:
+# - Using MPI C++ compiler
+# =======================================================
 EXEC 			= runproject4.x
 CPP 			= mpic++
-# Run executable with mpirun -n 10 ./runproject4.x, where n is the number of processes
 CPPflags 	= -Wall -O3 -g
 LIB 			=
 
