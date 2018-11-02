@@ -6,7 +6,7 @@
 #include <iomanip>
 using namespace std;
 
-void analyticalEnergy(double T);
-void analyticalSpecificHeat(double T);
+void analyticalEnergy();
+void analyticalSpecificHeat();
 
 #endif /* ANALYTICAL_H */
