@@ -33,16 +33,18 @@ int main(int argc, char *argv[]){
   int dim = 2;
   int state = 1; // 1: ordered initial state, else: random state
   int nCycles = 1000000;
-  // switch (argc) {
-  //   case 5: T = atof(argv[4]);
-  //   case 4: nCycles = atoi(argv[3]);
-  //   case 3: state = atoi(argv[2]);
-  //   case 2: dim = atoi(argv[1]);
-  // }
+  double temp_init = 4.0;
+  double temp_final = 2.0;
+  double temp_step = 0.02;
 
-  double temp_init = 2.0;
-  double temp_final = 3.0;
-  double temp_step = 0.1;
+  switch (argc) {
+    case 7: temp_step = atof(argv[6]);
+    case 6: temp_final = atof(argv[5]);
+    case 5: temp_init = atof(argv[4]);
+    case 4: nCycles = atoi(argv[3]);
+    case 3: state = atoi(argv[2]);
+    case 2: dim = atoi(argv[1]);
+  }
 
   double *ExpecVal = new double[5];
   double *TotalExpecVal = new double[5];
@@ -72,7 +74,7 @@ int main(int argc, char *argv[]){
     outfile << setw(15) << setprecision(8) << "M";
     outfile << setw(15) << setprecision(8) << "M2";
     outfile << setw(15) << setprecision(8) << "M abs";
-    outfile << setw(15) << setprecision(8) << "M variance";
+    outfile << setw(15) << setprecision(8) << "Chi";
     outfile << setw(15) << setprecision(8) << "C_V";
     outfile << setw(15) << setprecision(8) << "Run time";
     outfile << setw(15) << setprecision(8) << "No. of cycles" << endl;
@@ -97,6 +99,7 @@ int main(int argc, char *argv[]){
   // analyticalSpecificHeat(T);
 
   delete [] ExpecVal;
+  delete [] TotalExpecVal;
 
   return 0;
 } // end of main function
