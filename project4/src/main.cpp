@@ -5,9 +5,10 @@ Description:
 - Boltzmann constant = 1 -> temperature has dimension energy
 - Coupling constant J = 1.
 USAGE:
-- Run executable with mpirun -n 4 ./runproject4.x, where n is the number of processes
+- Run executable with mpirun -n N ./runproject4.x, where N is the number of processes
 =============================================================================*/
 #include <chrono>
+#include <sstream>
 #include <mpi.h>
 #include "metropolis.h"
 #include "analytical.h"
@@ -31,6 +32,7 @@ void output(int dim, double temperature, double *ExpecVal, int nCycles, double t
   outfile << setw(15) << setprecision(8) << nCycles << endl;
 }
 
+
 int main(int argc, char *argv[]){
 
   int dim = 2;
@@ -49,6 +51,10 @@ int main(int argc, char *argv[]){
     case 2: dim = atoi(argv[1]);
   }
 
+  std::random_device rd;
+  std::mt19937_64 gen(rd());
+  std::uniform_real_distribution<double> distribution(0.0,1.0);
+
   double *ExpecVal = new double[5];
   double *TotalExpecVal = new double[5];
   for (int i = 0; i < 5; i++) TotalExpecVal[i] = 0;
@@ -56,8 +62,17 @@ int main(int argc, char *argv[]){
   high_resolution_clock::time_point t1;
   high_resolution_clock::time_point t2;
 
-  int nProcs, my_rank;
+  double E, M;
+  double **Lattice = new double*[dim+2];
+  for (int i = 0; i < dim+2; i++){
+    Lattice[i] = new double[dim+2];
+  }
+  double ***PointerLattice = new double**[dim+2];
+  for (int i = 0; i < dim+2; i++){
+    PointerLattice[i] = new double*[dim+2];
+  }
 
+  int nProcs, my_rank;
   MPI_Init (&argc, &argv);
   MPI_Comm_size (MPI_COMM_WORLD, &nProcs);
   MPI_Comm_rank (MPI_COMM_WORLD, &my_rank);
@@ -72,7 +87,7 @@ int main(int argc, char *argv[]){
   int loopStop = (my_rank+1)*cycleInterval;
 
   if (my_rank == 0){
-    outfile.open("Lattice" + to_string(dim) + "Cycles" + to_string(nCycles) + ".dat");
+    outfile.open("Dim" + to_string(dim) + "State" + to_string(state) + "Cycles" + to_string(nCycles) + "T" + to_string(temp_init) + ".dat");
     outfile << setw(15) << setprecision(8) << "T";
     outfile << setw(15) << setprecision(8) << "E";
     outfile << setw(15) << setprecision(8) << "E2";
@@ -85,9 +100,13 @@ int main(int argc, char *argv[]){
     outfile << setw(15) << setprecision(8) << "No. of cycles" << endl;
   }
   for (double temperature = temp_init; temperature <= temp_final; temperature+=temp_step) {
+
+    initializeLattice(Lattice, PointerLattice, dim, state, &E, &M, gen, distribution);
+    for (int i = 0; i < 5; i++) ExpecVal[i] = 0;
     if (my_rank==0) t1 = high_resolution_clock::now();
-    metropolis(dim, state, loopStart, loopStop, temperature, ExpecVal);
+    metropolis(dim, state, loopStart, loopStop, temperature, &E, &M, ExpecVal, Lattice, PointerLattice, gen, distribution);
     for (int i=0; i<5; i++) MPI_Reduce(&ExpecVal[i], &TotalExpecVal[i], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+
     if (my_rank==0) {
       t2 = high_resolution_clock::now();
       duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
@@ -98,6 +117,13 @@ int main(int argc, char *argv[]){
   }
   outfile.close();
 
+  // deallocate memory
+  for (int i = 0; i < dim+2; i++){
+    delete [] Lattice[i];
+    delete [] PointerLattice[i];
+  }
+  delete [] Lattice;
+  delete [] PointerLattice;
   delete [] ExpecVal;
   delete [] TotalExpecVal;
 

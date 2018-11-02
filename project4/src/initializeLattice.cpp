@@ -10,6 +10,7 @@ void initializeLattice(double **Lattice, double ***PointerLattice, int dim, int 
     }
     *M = dim*dim;
   } else {
+    *M = 0;
     for(int i=1 ; i < dim+1 ; i++) {
       for(int j=1 ; j < dim+1 ; j++) {
         Lattice[i][j] = (distribution(gen) > 0.5) ? 1: -1;
@@ -31,6 +32,7 @@ void initializeLattice(double **Lattice, double ***PointerLattice, int dim, int 
     PointerLattice[0][i] = &Lattice[dim][i];
   }
   // finding initial energy
+  *E = 0;
   for(int i=1 ; i < dim+1 ; i++) {
     for(int j=1 ; j < dim+1 ; j++) {
       *E -= *PointerLattice[i][j]*(*PointerLattice[i+1][j]+*PointerLattice[i][j+1]);
