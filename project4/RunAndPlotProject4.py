@@ -24,14 +24,30 @@ print('Run simulation and produce data files? Enter \'n\' to move on to plotting
 run = input('y/n=')
 
 if (run=="y" ):
+    os.system('make')
     print("4b")
     print("4c")
     print("4d")
     print("4e")
     task = input('Which task=')
-    os.system('make')
-    print('Running project...')
-    os.system('mpirun -n 4 ./runproject4.x ')
+    if (task=='4b'):
+        dim = 2
+        state = 1
+        nCycles = 1000000
+        temp_init = 1.0
+        temp_final = 1.0
+        temp_step = 0.0
+        print('Running project for task ' + task + '...')
+        os.system('mpirun -n 4 ./runproject4.x ' + dim + state + nCycles + temp_init + temp_final + temp_step)
+    if (task=='4c'):
+        dim = 20
+        state = 1
+        nCycles = 1000000
+        temp_init = 1.0
+        temp_final = 1.0
+        temp_step = 0.0
+        os.system('mpirun -n 4 ./runproject4.x ' + dim + state + nCycles + temp_init + temp_final + temp_step)
+
 
 
 for i in range(int(columns)):
