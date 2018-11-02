@@ -1,6 +1,6 @@
 #include "metropolis.h"
 
-void metropolis(int dim, int state, int nCycles, double T, double *ExpecVal, double *timing){
+void metropolis(int dim, int state, int loopStart, int loopStop, double T, double *ExpecVal, double *timing){
   std::random_device rd;
   std::mt19937_64 gen(rd());
   std::uniform_real_distribution<double> distribution(0.0,1.0);
@@ -23,7 +23,7 @@ void metropolis(int dim, int state, int nCycles, double T, double *ExpecVal, dou
 
   int x, y, dE;
   high_resolution_clock::time_point t1 = high_resolution_clock::now();
-  for (int cycle = 0; cycle < nCycles; cycle++) {
+  for (int cycle = loopStart; cycle < loopStop; cycle++) {
     for (int i = 1; i < dim*dim+1; i++) {
       // Find random indeces x, y
       x = 1 + (int) (distribution(gen)*(double)dim);
@@ -43,8 +43,6 @@ void metropolis(int dim, int state, int nCycles, double T, double *ExpecVal, dou
   duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
   // cout << "Time used: " << time_span.count() << " seconds." << endl;
   *timing = time_span.count();
-
-  for (int i = 0; i < 5; i++) ExpecVal[i] /= nCycles;
 
   // deallocate memory
   for (int i = 0; i < dim+2; i++){

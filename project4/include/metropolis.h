@@ -11,6 +11,6 @@
 using namespace std;
 using namespace std::chrono;
 
-void metropolis(int dim, int state, int nCycles, double T, double *ExpecVal, double *timing);
+void metropolis(int dim, int state, int loopStart, int loopStop, double T, double *ExpecVal, double *timing);
 
 #endif /* METROPOLIS_H */
