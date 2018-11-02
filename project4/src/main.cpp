@@ -33,9 +33,9 @@ int main(int argc, char *argv[]){
   int dim = 2;
   int state = 1; // 1: ordered initial state, else: random state
   int nCycles = 1000000;
-  double temp_init = 4.0;
-  double temp_final = 2.0;
-  double temp_step = 0.02;
+  double temp_init = 2.0;
+  double temp_final = 3.0;
+  double temp_step = 0.1;
 
   switch (argc) {
     case 7: temp_step = atof(argv[6]);
