@@ -5,12 +5,9 @@
 #include <cmath>
 #include <iomanip>
 #include <random>
-#include <chrono>
-#include <mpi.h>
 #include "initializeLattice.h"
 using namespace std;
-using namespace std::chrono;
 
-void metropolis(int dim, int state, int loopStart, int loopStop, double T, double *ExpecVal, double *timing);
+void metropolis(int dim, int state, int loopStart, int loopStop, double T, double *ExpecVal);
 
 #endif /* METROPOLIS_H */
