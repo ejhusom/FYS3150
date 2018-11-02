@@ -36,17 +36,21 @@ if (run=="y" ):
         nCycles = 1000000
         temp_init = 1.0
         temp_final = 1.0
-        temp_step = 0.0
+        temp_step = 0.1
         print('Running project for task ' + task + '...')
         os.system('mpirun -n 4 ./runproject4.x ' + dim + state + nCycles + temp_init + temp_final + temp_step)
     if (task=='4c'):
         dim = 20
-        state = 1
-        nCycles = 1000000
-        temp_init = 1.0
-        temp_final = 1.0
-        temp_step = 0.0
-        os.system('mpirun -n 4 ./runproject4.x ' + dim + state + nCycles + temp_init + temp_final + temp_step)
+        states = [0,1]
+        nCycles = [100,1000,10000,100000,1000000,10000000,100000000]
+        temp_init = [1.0,2.4]
+        temp_final = [1.0,2.4]
+        temp_step = 0.1
+        for tI, tF in zip(temp_init, temp_final):
+            for state in states:
+                for N in nCycles:
+                    os.system('mpirun -n 4 ./runproject4.x ' + dim + state + N + temp_init + temp_final + temp_step)
+
 
 
 
