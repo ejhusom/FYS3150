@@ -11,7 +11,7 @@ Numerical solver for eigenvalue problems, used on a buckling beam problem and th
 Simulating the movement of astronomical objects in the solar system, by using the Velocity Verlet Method.
 
 ## Project 4
-N/A
+Simulating phase transitions with the Ising model in two dimensions.
 
 ## Project 5
 N/A
