@@ -5,11 +5,14 @@ Description:
 - Boltzmann constant = 1 -> temperature has dimension energy
 - Coupling constant J = 1.
 USAGE:
-- Run executable with mpirun -n 10 ./runproject4.x, where n is the number of processes
+- Run executable with mpirun -n 4 ./runproject4.x, where n is the number of processes
 =============================================================================*/
+#include <chrono>
+#include <mpi.h>
 #include "metropolis.h"
 #include "analytical.h"
 using namespace std;
+using namespace std::chrono;
 ofstream outfile;
 
 void output(int dim, double temperature, double *ExpecVal, int nCycles, double timing){
@@ -50,6 +53,8 @@ int main(int argc, char *argv[]){
   double *TotalExpecVal = new double[5];
   for (int i = 0; i < 5; i++) TotalExpecVal[i] = 0;
   double timing;
+  high_resolution_clock::time_point t1;
+  high_resolution_clock::time_point t2;
 
   int nProcs, my_rank;
 
@@ -79,27 +84,28 @@ int main(int argc, char *argv[]){
     outfile << setw(15) << setprecision(8) << "Run time";
     outfile << setw(15) << setprecision(8) << "No. of cycles" << endl;
   }
-  double TimeStart, TimeEnd, TotalTime;
-  TimeStart = MPI_Wtime();
   for (double temperature = temp_init; temperature <= temp_final; temperature+=temp_step) {
-    metropolis(dim, state, loopStart, loopStop, temperature, ExpecVal, &timing);
+    if (my_rank==0) t1 = high_resolution_clock::now();
+    metropolis(dim, state, loopStart, loopStop, temperature, ExpecVal);
     for (int i=0; i<5; i++) MPI_Reduce(&ExpecVal[i], &TotalExpecVal[i], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    if (my_rank==0) output(dim, temperature, TotalExpecVal, nCycles, timing);
-    if (my_rank==0) cout << "T=" << temperature << " done...\n";
+    if (my_rank==0) {
+      t2 = high_resolution_clock::now();
+      duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+      timing = time_span.count();
+      output(dim, temperature, TotalExpecVal, nCycles, timing);
+      cout << "T=" << temperature << " done...\n";
+    }
   }
   outfile.close();
-  TimeEnd = MPI_Wtime();
-  TotalTime = TimeEnd-TimeStart;
-  if (my_rank==0) cout << "Time used: " << TotalTime << endl << "No. of processes: " << nProcs << endl;
-
-  MPI_Finalize ();
-
-  // double T = 1;
-  // analyticalEnergy(T);
-  // analyticalSpecificHeat(T);
 
   delete [] ExpecVal;
   delete [] TotalExpecVal;
 
+  if (my_rank==0){
+    analyticalEnergy();
+    analyticalSpecificHeat();
+  }
+
+  MPI_Finalize ();
   return 0;
 } // end of main function
