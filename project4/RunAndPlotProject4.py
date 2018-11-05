@@ -7,6 +7,7 @@
 #==========================================================================
 # IMPORT STATEMENTS
 import numpy as np
+import sys, os
 import matplotlib.pyplot as plt
 # SET PLOT STYLE
 plt.style.use('ggplot')
@@ -20,45 +21,48 @@ rows, columns = os.popen('stty size', 'r').read().split()
 for i in range(int(columns)):
     print('=',end='')
 print("FYS3150 Project 4 -Ising Model")
+task = input('Which task (b, c, d, e, f)=')
 print('Run simulation and produce data files? Enter \'n\' to move on to plotting.')
 run = input('y/n=')
-
-if (run=="y" ):
-    os.system('make')
-    print("4b")
-    print("4c")
-    print("4d")
-    print("4e")
-    task = input('Which task=')
-    if (task=='4b'):
+if (task=='b'):
+    if (run==y):
         dim = 2
         state = 1
         nCycles = 1000000
         temp_init = 1.0
-        temp_final = 1.0
-        temp_step = 0.1
+        temp_final = 1.1
+        temp_step = 1.0
+        os.system('make')
         print('Running project for task ' + task + '...')
-        os.system('mpirun -n 4 ./runproject4.x ' + dim + state + nCycles + temp_init + temp_final + temp_step)
-    if (task=='4c'):
-        dim = 20
-        states = [0,1]
-        nCycles = [100,1000,10000,100000,1000000,10000000,100000000]
-        temp_init = [1.0,2.4]
-        temp_final = [1.0,2.4]
-        temp_step = 0.1
-        for tI, tF in zip(temp_init, temp_final):
-            for state in states:
-                for N in nCycles:
-                    os.system('mpirun -n 4 ./runproject4.x ' + dim + state + N + temp_init + temp_final + temp_step)
-
-
-
-
-for i in range(int(columns)):
-    print('=',end='')
-print("What do you want to plot? Give integer as input, among the following options:")
-print("0: Do not plot, exit program")
-print("1: Solar system in 3D, Verlet method")
-print("2: Two body problem (Sun and Earth) in 2D, Verlet and Euler method")
-print("3: Two body problem (Sun and Mercury) with relativistic force")
-plotchoice = float(input('Input='))
+        os.system('mpirun -n 4 ./runproject4.x ' + str(dim) + ' ' + str(state) + ' ' + str(nCycles) + ' ' + str(temp_init) + ' ' + str(temp_final) + ' ' + str(temp_step))
+if (task=='c'):
+    dim = 20
+    states = [0,1]
+    nCycles = [100,1000,10000,100000,1000000]
+    temp_init = 1.0
+    temp_final = 2.4
+    temp_step = 1.4
+    if (run=="y" ):
+        os.system('make')
+        print('Running project for task ' + task + '...')
+        for state in states:
+            for N in nCycles:
+                a = 2
+                os.system('mpirun -n 4 ./runproject4.x ' + str(dim) + ' ' + str(state) + ' ' + str(N) + ' ' + str(temp_init) + ' ' + str(temp_final) + ' ' + str(temp_step))
+    energy1 = []
+    energy2 = []
+    # for state in states:
+    for N in nCycles:
+        data = np.loadtxt("Dim" + str(dim) + "State" + '1' + "Cycles" + str(N) + "T" + str(temp_init) + "00000.dat", skiprows=1)
+        energy1.append(data[0,1])
+        energy2.append(data[1,1])
+    plt.figure(figsize=(w,h))
+    plt.plot(nCycles,energy1,label='T=1.0')
+    plt.plot(nCycles,energy2,label='T=2.4')
+    plt.title('Title')
+    plt.xlabel('x axis []')
+    plt.ylabel('y axis []')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig("taskc.pdf",dpi=300)
+    plt.show()
