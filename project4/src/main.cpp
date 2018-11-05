@@ -16,22 +16,8 @@ using namespace std;
 using namespace std::chrono;
 ofstream outfile;
 
-void output(int dim, double temperature, double *ExpecVal, int nCycles, double timing){
-  for (int i = 0; i < 5; i++) ExpecVal[i] /= nCycles;
-  double E_variance = (ExpecVal[1] - ExpecVal[0]*ExpecVal[0])/dim/dim;
-  double M_variance = (ExpecVal[3] - ExpecVal[2]*ExpecVal[2])/dim/dim;
-  outfile << setw(15) << setprecision(8) << temperature;
-  outfile << setw(15) << setprecision(8) << ExpecVal[0]/dim/dim;
-  outfile << setw(15) << setprecision(8) << ExpecVal[1]/dim/dim;
-  outfile << setw(15) << setprecision(8) << ExpecVal[2]/dim/dim;
-  outfile << setw(15) << setprecision(8) << ExpecVal[3]/dim/dim;
-  outfile << setw(15) << setprecision(8) << ExpecVal[4]/dim/dim;
-  outfile << setw(15) << setprecision(8) << M_variance/temperature;
-  outfile << setw(15) << setprecision(8) << E_variance/(temperature*temperature);
-  outfile << setw(15) << setprecision(8) << timing;
-  outfile << setw(15) << setprecision(8) << nCycles << endl;
-}
-
+void output(int dim, double temperature, double *ExpecVal, int nCycles, double timing, int totalcounter);
+void getEnergyAndMagnetization(double **Lattice, double ***PointerLattice, int dim, double *E, double *M);
 
 int main(int argc, char *argv[]){
 
@@ -58,7 +44,7 @@ int main(int argc, char *argv[]){
   double *ExpecVal = new double[5];
   double *TotalExpecVal = new double[5];
   for (int i = 0; i < 5; i++) TotalExpecVal[i] = 0;
-  double timing;
+  double timing; int counter; int totalcounter;
   high_resolution_clock::time_point t1;
   high_resolution_clock::time_point t2;
 
@@ -97,21 +83,23 @@ int main(int argc, char *argv[]){
     outfile << setw(15) << setprecision(8) << "Chi";
     outfile << setw(15) << setprecision(8) << "C_V";
     outfile << setw(15) << setprecision(8) << "Run time";
-    outfile << setw(15) << setprecision(8) << "No. of cycles" << endl;
+    outfile << setw(15) << setprecision(8) << "Acceptations";
+    outfile << setw(15) << setprecision(8) << "Cycle count" << endl;
   }
   for (double temperature = temp_init; temperature <= temp_final; temperature+=temp_step) {
-
     initializeLattice(Lattice, PointerLattice, dim, state, &E, &M, gen, distribution);
     for (int i = 0; i < 5; i++) ExpecVal[i] = 0;
+    int counter = 0; int totalcounter = 0;
     if (my_rank==0) t1 = high_resolution_clock::now();
-    metropolis(dim, state, loopStart, loopStop, temperature, &E, &M, ExpecVal, Lattice, PointerLattice, gen, distribution);
+    metropolis(dim, state, loopStart, loopStop, temperature, &E, &M, ExpecVal, Lattice, PointerLattice, gen, distribution, &counter);
     for (int i=0; i<5; i++) MPI_Reduce(&ExpecVal[i], &TotalExpecVal[i], 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-
+    MPI_Reduce(&counter, &totalcounter, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Barrier (MPI_COMM_WORLD);
     if (my_rank==0) {
       t2 = high_resolution_clock::now();
       duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
       timing = time_span.count();
-      output(dim, temperature, TotalExpecVal, nCycles, timing);
+      output(dim, temperature, TotalExpecVal, nCycles, timing, totalcounter);
       cout << "T=" << temperature << " done...\n";
     }
   }
@@ -127,11 +115,39 @@ int main(int argc, char *argv[]){
   delete [] ExpecVal;
   delete [] TotalExpecVal;
 
-  if (my_rank==0){
-    analyticalEnergy();
-    analyticalSpecificHeat();
-  }
+  // if (my_rank==0){
+  //   analyticalEnergy();
+  //   analyticalSpecificHeat();
+  // }
 
   MPI_Finalize ();
   return 0;
 } // end of main function
+
+void output(int dim, double temperature, double *ExpecVal, int nCycles, double timing, int totalcounter){
+  for (int i = 0; i < 5; i++) ExpecVal[i] /= nCycles;
+  double E_variance = (ExpecVal[1] - ExpecVal[0]*ExpecVal[0])/dim/dim;
+  double M_variance = (ExpecVal[3] - ExpecVal[2]*ExpecVal[2])/dim/dim;
+  outfile << setw(15) << setprecision(8) << temperature;
+  outfile << setw(15) << setprecision(8) << ExpecVal[0]/dim/dim;
+  outfile << setw(15) << setprecision(8) << ExpecVal[1]/dim/dim;
+  outfile << setw(15) << setprecision(8) << ExpecVal[2]/dim/dim;
+  outfile << setw(15) << setprecision(8) << ExpecVal[3]/dim/dim;
+  outfile << setw(15) << setprecision(8) << ExpecVal[4]/dim/dim;
+  outfile << setw(15) << setprecision(8) << M_variance/temperature;
+  outfile << setw(15) << setprecision(8) << E_variance/(temperature*temperature);
+  outfile << setw(15) << setprecision(8) << timing;
+  outfile << setw(15) << setprecision(8) << totalcounter;
+  outfile << setw(15) << setprecision(8) << nCycles << endl;
+}
+
+void getEnergyAndMagnetization(double ***PointerLattice, int dim, double *E, double *M){
+  *E = 0;
+  *M = 0;
+  for(int i=1 ; i < dim+1 ; i++) {
+    for(int j=1 ; j < dim+1 ; j++) {
+      *E -= *PointerLattice[i][j]*(*PointerLattice[i+1][j]+*PointerLattice[i][j+1]);
+      *M += *PointerLattice[i][j];
+    }
+  }
+}
