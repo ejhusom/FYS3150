@@ -20,11 +20,11 @@ double analyticalM2() {
 }
 
 double analyticalchi() {
-    return M2()- M()*M();
+    return analyticalM2()- analyticalM()*analyticalM();
 }
 
 double analyticalCv() {
-    return E2() - E()*E();
+    return analyticalE2() - analyticalE()*analyticalE();
 }
 
 double analyticalMabs() {
@@ -33,19 +33,22 @@ double analyticalMabs() {
 }
 
 void printAnalytical(){
+  ofstream outfile;
+  outfile.open("analytical.dat");
   double d = 4.0;
-  cout << setw(15) << setprecision(8) << "E";
-  cout << setw(15) << setprecision(8) << "E2";
-  cout << setw(15) << setprecision(8) << "M";
-  cout << setw(15) << setprecision(8) << "M2";
-  cout << setw(15) << setprecision(8) << "abs M";
-  cout << setw(15) << setprecision(8) << "Cv";
-  cout << setw(15) << setprecision(8) << "chi" << endl;
-  cout << setw(15) << setprecision(8) << analyticalE()/d;
-  cout << setw(15) << setprecision(8) << analyticalE2()/d;
-  cout << setw(15) << setprecision(8) << analyticalM();
-  cout << setw(15) << setprecision(8) << analyticalM2();
-  cout << setw(15) << setprecision(8) << analyticalabsM();
-  cout << setw(15) << setprecision(8) << analyticalCv();
-  cout << setw(15) << setprecision(8) << analyticalchi() << endl;
+  outfile << setw(15) << setprecision(8) << "E";
+  outfile << setw(15) << setprecision(8) << "E2";
+  outfile << setw(15) << setprecision(8) << "M";
+  outfile << setw(15) << setprecision(8) << "M2";
+  outfile << setw(15) << setprecision(8) << "abs M";
+  outfile << setw(15) << setprecision(8) << "Cv";
+  outfile << setw(15) << setprecision(8) << "chi" << endl;
+  outfile << setw(15) << setprecision(8) << analyticalE()/d;
+  outfile << setw(15) << setprecision(8) << analyticalE2()/d;
+  outfile << setw(15) << setprecision(8) << analyticalM()/d;
+  outfile << setw(15) << setprecision(8) << analyticalM2()/d;
+  outfile << setw(15) << setprecision(8) << analyticalMabs()/d;
+  outfile << setw(15) << setprecision(8) << analyticalCv()/d;
+  outfile << setw(15) << setprecision(8) << analyticalchi()/d << endl;
+  outfile.close();
 }
