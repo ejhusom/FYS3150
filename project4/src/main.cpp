@@ -115,10 +115,7 @@ int main(int argc, char *argv[]){
   delete [] ExpecVal;
   delete [] TotalExpecVal;
 
-  // if (my_rank==0){
-  //   analyticalEnergy();
-  //   analyticalSpecificHeat();
-  // }
+  printAnalytical();
 
   MPI_Finalize ();
   return 0;
