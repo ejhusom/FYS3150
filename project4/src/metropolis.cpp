@@ -4,8 +4,8 @@ void metropolis(int dim, int state, int loopStart, int loopStop, double T, doubl
   double *w = new double[17];
   for (int i = 0; i < 17; i+=4) w[i] = exp(-(i-8)/T);
 
-  ofstream dfile;
-  dfile.open("4dState1T" + to_string(T) + ".dat");
+  // ofstream dfile;
+  // dfile.open("4dState1T" + to_string(T) + ".dat");
 
   int x, y, dE;
   for (int cycle = loopStart; cycle < loopStop; cycle++){
@@ -28,8 +28,8 @@ void metropolis(int dim, int state, int loopStart, int loopStop, double T, doubl
     // cout << setw(15) << setprecision(8) << *E/100/dim/dim;
     // cout << setw(15) << setprecision(8) << fabs(*M)/100/dim/dim << endl;
     // Uncomment the next line to produce results for task 4c
-    dfile << setw(15) << setprecision(8) << *E/1000000/dim/dim << endl;
+    // dfile << setw(15) << setprecision(8) << *E/1000000/dim/dim << endl;
   }
-  dfile.close();
+  // dfile.close();
   delete [] w;
 } // end of Metropolis function
