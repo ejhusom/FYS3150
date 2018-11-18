@@ -6,7 +6,13 @@
 #include <iomanip>
 using namespace std;
 
-void analyticalEnergy();
-void analyticalSpecificHeat();
+double analyticalE();
+double analyticalE2();
+double analyticalM();
+double analyticalM2();
+double analyticalchi();
+double analyticalCv();
+double analyticalMabs();
+void printAnalytical();
 
 #endif /* ANALYTICAL_H */
