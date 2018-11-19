@@ -162,28 +162,28 @@ if (task=='d'):
     indices = int(round(len(E1)*0.9))
     Earrays = [E1,E24]
     filename = 1
-    # for E in Earrays:
-    #     plt.figure(figsize=(w,h))
-    #     E = E[indices:]
-    #     a = np.min(E)
-    #     b = np.max(E)
-    #     x = np.linspace(a,b,1000)
-    #     num_bins = 50
-    #     mu, sigma = norm.fit(E)
-    #     n, bins, patches = plt.hist(E, num_bins, density=True, align='mid', alpha=0.75)
-    #     y = mlab.normpdf(bins, mu, sigma)
-    #     plt.plot(bins, y)
-    #     plt.xlabel("Energy")
-    #     plt.ylabel("Probability density")
-    #     if filename = 1:
-    #         plt.locator_params(nbins=4)
-    #     plt.legend(["Normal distribution", "Sampled energy"])
-    #     plt.tight_layout()
-    #     plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taskd_" + str(filename) + ".pdf",dpi=300)
-    #     plt.show()
-    #     filename += 23
+    for E in Earrays:
+        plt.figure(figsize=(w,h))
+        E = E[indices:]
+        a = np.min(E)
+        b = np.max(E)
+        x = np.linspace(a,b,1000)
+        num_bins = 50
+        mu, sigma = norm.fit(E)
+        n, bins, patches = plt.hist(E, num_bins, density=True, align='mid', alpha=0.75)
+        y = mlab.normpdf(bins, mu, sigma)
+        plt.plot(bins, y)
+        plt.xlabel("Energy")
+        plt.ylabel("Probability density")
+        if (filename == 1):
+            plt.locator_params(nbins=4)
+        plt.legend(["Normal distribution", "Sampled energy"])
+        plt.tight_layout()
+        plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taskd_" + str(filename) + ".pdf",dpi=300)
+        plt.show()
+        filename += 23
 if (task=='e'):
-    dim = [40,60,80,100]
+    dim = [40,60,80,100,120]
     state = 1
     nCycles = 100000
     temp_init = 2.24
@@ -198,6 +198,7 @@ if (task=='e'):
     data60 = np.loadtxt("Dim60State1Cycles100000T2.240000.dat", skiprows=1)
     data80 = np.loadtxt("Dim80State1Cycles100000T2.240000.dat", skiprows=1)
     data100 = np.loadtxt("Dim100State1Cycles100000T2.240000.dat", skiprows=1)
+    data120 = np.loadtxt("Dim120State1Cycles100000T2.240000.dat", skiprows=1)
     # data40 = np.loadtxt("Dim40State1Cycles100000T2.000000.dat", skiprows=1)
     # data60 = np.loadtxt("Dim60State1Cycles100000T2.000000.dat", skiprows=1)
     # data80 = np.loadtxt("Dim80State1Cycles100000T2.000000.dat", skiprows=1)
@@ -208,11 +209,12 @@ if (task=='e'):
     plt.plot(data40[:,0],data60[:,1],'x-',label='L=60')
     plt.plot(data40[:,0],data80[:,1],'x-',label='L=80')
     plt.plot(data40[:,0],data100[:,1],'x-',label='L=100')
+    plt.plot(data40[:,0],data120[:,1],'x-',label='L=120')
     plt.xlabel('Temperature [kJ/T]')
     plt.ylabel(r'$\langle E \rangle$')
     plt.legend()
     plt.tight_layout()
-    plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taske_E.pdf",dpi=300)
+    plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taske_E_224.pdf",dpi=300)
     plt.show()
 
     plt.figure(figsize=(w,h))
@@ -220,11 +222,12 @@ if (task=='e'):
     plt.plot(data40[:,0],data60[:,5],'x-',label='L=60')
     plt.plot(data40[:,0],data80[:,5],'x-',label='L=80')
     plt.plot(data40[:,0],data100[:,5],'x-',label='L=100')
+    plt.plot(data40[:,0],data120[:,5],'x-',label='L=120')
     plt.xlabel('Temperature [kJ/T]')
     plt.ylabel(r'$\langle |M| \rangle$')
     plt.legend()
     plt.tight_layout()
-    plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taske_Mabs.pdf",dpi=300)
+    plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taske_Mabs_224.pdf",dpi=300)
     plt.show()
 
     plt.figure(figsize=(w,h))
@@ -232,11 +235,12 @@ if (task=='e'):
     plt.plot(data40[:,0],data60[:,6],'x-',label='L=60')
     plt.plot(data40[:,0],data80[:,6],'x-',label='L=80')
     plt.plot(data40[:,0],data100[:,6],'x-',label='L=100')
+    plt.plot(data40[:,0],data120[:,6],'x-',label='L=120')
     plt.xlabel('Temperature [kJ/T]')
     plt.ylabel(r'$\chi$')
     plt.legend()
     plt.tight_layout()
-    plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taske_Chi.pdf",dpi=300)
+    plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taske_Chi_224.pdf",dpi=300)
     plt.show()
 
     plt.figure(figsize=(w,h))
@@ -244,12 +248,20 @@ if (task=='e'):
     plt.plot(data40[:,0],data60[:,7],'x-',label='L=60')
     plt.plot(data40[:,0],data80[:,7],'x-',label='L=80')
     plt.plot(data40[:,0],data100[:,7],'x-',label='L=100')
+    plt.plot(data40[:,0],data120[:,7],'x-',label='L=120')
     plt.xlabel('Temperature [kJ/T]')
     plt.ylabel(r'$C_V$')
     plt.legend()
     plt.tight_layout()
-    plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taske_CV.pdf",dpi=300)
+    plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taske_CV_224.pdf",dpi=300)
     plt.show()
 if (task=='f'):
-    Tc80 = 0
-    Tc100 = 0
+    L1 = 100
+    L2 = 120
+    TcL1 = 2.26
+    TcL2 = 2.28
+    a = L1*L2*(TcL1-TcL2)/(L2-L1)
+    def Tc(L,TcL):
+        return TcL - a/L
+    print(Tc(L1,TcL1))
+    print(Tc(L2,TcL2))
