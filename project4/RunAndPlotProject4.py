@@ -9,6 +9,8 @@
 import numpy as np
 import sys, os
 import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
+from scipy.stats import norm
 # SET PLOT STYLE
 plt.style.use('ggplot')
 plt.rcParams.update({'font.size': 8})
@@ -21,7 +23,7 @@ rows, columns = os.popen('stty size', 'r').read().split()
 for i in range(int(columns)):
     print('=',end='')
 print("FYS3150 Project 4 - Ising Model")
-task = input('Which task (b, c, c2, c3, d, e, f)=')
+task = input('Which task (b, c1, c2, c3, d, e, f)=')
 print('Run simulation and produce data files? Enter \'n\' to move on to plotting.')
 run = input('y/n=')
 if (task=='b'):
@@ -35,7 +37,7 @@ if (task=='b'):
         os.system('make')
         print('Running project for task ' + task + '...')
         os.system('mpirun -n 4 ./runproject4.x ' + str(dim) + ' ' + str(state) + ' ' + str(nCycles) + ' ' + str(temp_init) + ' ' + str(temp_final) + ' ' + str(temp_step))
-if (task=='c'):
+if (task=='c1'):
     # The two following lines are needed in metropolis.cpp to produce data
     # cout << setw(15) << setprecision(8) << *E/100/dim/dim;
     # cout << setw(15) << setprecision(8) << fabs(*M)/100/dim/dim << endl;
@@ -58,7 +60,7 @@ if (task=='c'):
     plt.plot(rand1[:,0],label='Random lattice')
     plt.plot(ord1[:,0],label='Ordered lattice')
     plt.xlabel('No. of Monte Carlo cycles')
-    plt.ylabel(r'$\langle E \rangle$')
+    plt.ylabel(r'Energy')
     plt.legend()
     plt.tight_layout()
     plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taskc_E1.pdf",dpi=300)
@@ -67,7 +69,7 @@ if (task=='c'):
     plt.plot(rand1[:,1],label='Random lattice')
     plt.plot(ord1[:,1],label='Ordered lattice')
     plt.xlabel('No. of Monte Carlo cycles')
-    plt.ylabel(r'$\langle |M| \rangle$')
+    plt.ylabel(r'Magnetization')
     plt.legend()
     plt.tight_layout()
     plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taskc_M1.pdf",dpi=300)
@@ -76,7 +78,7 @@ if (task=='c'):
     plt.plot(rand24[:,0],label='Random lattice')
     plt.plot(ord24[:,0],label='Ordered lattice')
     plt.xlabel('No. of Monte Carlo cycles')
-    plt.ylabel(r'$\langle E \rangle$')
+    plt.ylabel(r'Energy')
     plt.legend()
     plt.tight_layout()
     plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taskc_E24.pdf",dpi=300)
@@ -85,7 +87,7 @@ if (task=='c'):
     plt.plot(rand24[:,1],label='Random lattice')
     plt.plot(ord24[:,1],label='Ordered lattice')
     plt.xlabel('No. of Monte Carlo cycles')
-    plt.ylabel(r'$\langle |M| \rangle$')
+    plt.ylabel(r'Magnetization')
     plt.legend()
     plt.tight_layout()
     plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taskc_M24.pdf",dpi=300)
@@ -155,3 +157,99 @@ if (task=='d'):
         print('Running project for task ' + task + '...')
         for state in states:
             os.system('mpirun -n 1 ./runproject4.x ' + str(dim) + ' ' + str(state) + ' ' + str(nCycles) + ' ' + str(temp_init) + ' ' + str(temp_final) + ' ' + str(temp_step))
+    E1 = np.loadtxt("4dState1T1.000000.dat")
+    E24 = np.loadtxt("4dState1T2.400000.dat")
+    indices = int(round(len(E1)*0.9))
+    Earrays = [E1,E24]
+    filename = 1
+    # for E in Earrays:
+    #     plt.figure(figsize=(w,h))
+    #     E = E[indices:]
+    #     a = np.min(E)
+    #     b = np.max(E)
+    #     x = np.linspace(a,b,1000)
+    #     num_bins = 50
+    #     mu, sigma = norm.fit(E)
+    #     n, bins, patches = plt.hist(E, num_bins, density=True, align='mid', alpha=0.75)
+    #     y = mlab.normpdf(bins, mu, sigma)
+    #     plt.plot(bins, y)
+    #     plt.xlabel("Energy")
+    #     plt.ylabel("Probability density")
+    #     if filename = 1:
+    #         plt.locator_params(nbins=4)
+    #     plt.legend(["Normal distribution", "Sampled energy"])
+    #     plt.tight_layout()
+    #     plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taskd_" + str(filename) + ".pdf",dpi=300)
+    #     plt.show()
+    #     filename += 23
+if (task=='e'):
+    dim = [40,60,80,100]
+    state = 1
+    nCycles = 100000
+    temp_init = 2.24
+    temp_final = 2.32
+    temp_step = 0.01
+    if (run=="y" ):
+        os.system('make')
+        print('Running project for task ' + task + '...')
+        for d in dim:
+            os.system('mpirun -n 4 ./runproject4.x ' + str(d) + ' ' + str(state) + ' ' + str(nCycles) + ' ' + str(temp_init) + ' ' + str(temp_final) + ' ' + str(temp_step))
+    data40 = np.loadtxt("Dim40State1Cycles100000T2.240000.dat", skiprows=1)
+    data60 = np.loadtxt("Dim60State1Cycles100000T2.240000.dat", skiprows=1)
+    data80 = np.loadtxt("Dim80State1Cycles100000T2.240000.dat", skiprows=1)
+    data100 = np.loadtxt("Dim100State1Cycles100000T2.240000.dat", skiprows=1)
+    # data40 = np.loadtxt("Dim40State1Cycles100000T2.000000.dat", skiprows=1)
+    # data60 = np.loadtxt("Dim60State1Cycles100000T2.000000.dat", skiprows=1)
+    # data80 = np.loadtxt("Dim80State1Cycles100000T2.000000.dat", skiprows=1)
+    # data100 = np.loadtxt("Dim100State1Cycles1000000T2.000000.dat", skiprows=1)
+
+    plt.figure(figsize=(w,h))
+    plt.plot(data40[:,0],data40[:,1],'x-',label='L=40')
+    plt.plot(data40[:,0],data60[:,1],'x-',label='L=60')
+    plt.plot(data40[:,0],data80[:,1],'x-',label='L=80')
+    plt.plot(data40[:,0],data100[:,1],'x-',label='L=100')
+    plt.xlabel('Temperature [kJ/T]')
+    plt.ylabel(r'$\langle E \rangle$')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taske_E.pdf",dpi=300)
+    plt.show()
+
+    plt.figure(figsize=(w,h))
+    plt.plot(data40[:,0],data40[:,5],'x-',label='L=40')
+    plt.plot(data40[:,0],data60[:,5],'x-',label='L=60')
+    plt.plot(data40[:,0],data80[:,5],'x-',label='L=80')
+    plt.plot(data40[:,0],data100[:,5],'x-',label='L=100')
+    plt.xlabel('Temperature [kJ/T]')
+    plt.ylabel(r'$\langle |M| \rangle$')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taske_Mabs.pdf",dpi=300)
+    plt.show()
+
+    plt.figure(figsize=(w,h))
+    plt.plot(data40[:,0],data40[:,6],'x-',label='L=40')
+    plt.plot(data40[:,0],data60[:,6],'x-',label='L=60')
+    plt.plot(data40[:,0],data80[:,6],'x-',label='L=80')
+    plt.plot(data40[:,0],data100[:,6],'x-',label='L=100')
+    plt.xlabel('Temperature [kJ/T]')
+    plt.ylabel(r'$\chi$')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taske_Chi.pdf",dpi=300)
+    plt.show()
+
+    plt.figure(figsize=(w,h))
+    plt.plot(data40[:,0],data40[:,7],'x-',label='L=40')
+    plt.plot(data40[:,0],data60[:,7],'x-',label='L=60')
+    plt.plot(data40[:,0],data80[:,7],'x-',label='L=80')
+    plt.plot(data40[:,0],data100[:,7],'x-',label='L=100')
+    plt.xlabel('Temperature [kJ/T]')
+    plt.ylabel(r'$C_V$')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taske_CV.pdf",dpi=300)
+    plt.show()
+if (task=='f'):
+    Tc80 = 0
+    Tc100 = 0
