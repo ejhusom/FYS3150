@@ -124,7 +124,7 @@ int main(int argc, char *argv[]){
 void output(int dim, double temperature, double *ExpecVal, int nCycles, double timing, int totalcounter){
   for (int i = 0; i < 5; i++) ExpecVal[i] /= nCycles;
   double E_variance = (ExpecVal[1] - ExpecVal[0]*ExpecVal[0])/dim/dim;
-  double M_variance = (ExpecVal[3] - ExpecVal[2]*ExpecVal[2])/dim/dim;
+  double M_variance = (ExpecVal[3] - ExpecVal[4]*ExpecVal[4])/dim/dim;
   outfile << setw(15) << setprecision(8) << temperature;
   outfile << setw(15) << setprecision(8) << ExpecVal[0]/dim/dim;
   outfile << setw(15) << setprecision(8) << ExpecVal[1]/dim/dim;
