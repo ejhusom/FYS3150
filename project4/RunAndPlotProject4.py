@@ -107,20 +107,22 @@ if (task=='c2'):
                 os.system('mpirun -n 4 ./runproject4.x ' + str(dim) + ' ' + str(state) + ' ' + str(N) + ' ' + str(temp_init) + ' ' + str(temp_final) + ' ' + str(temp_step))
     rand_accepts1 = []
     ord_accepts1 = []
-    for N in nCycles:
-        data = np.loadtxt("Dim" + str(dim) + "State" + '0' + "Cycles" + str(N) + "T" + str(temp_init) + "00000.dat", skiprows=1)
-        rand_accepts1.append(data[9])
-    for N in nCycles:
-        data = np.loadtxt("Dim" + str(dim) + "State" + '1' + "Cycles" + str(N) + "T" + str(temp_init) + "00000.dat", skiprows=1)
-        ord_accepts1.append(data[9])
+    # for N in nCycles:
+    #     data = np.loadtxt("Dim" + str(dim) + "State" + '0' + "Cycles" + str(N) + "T" + str(temp_init) + "00000.dat", skiprows=1)
+    #     rand_accepts1.append(data[9])
+    # for N in nCycles:
+    #     data = np.loadtxt("Dim" + str(dim) + "State" + '1' + "Cycles" + str(N) + "T" + str(temp_init) + "00000.dat", skiprows=1)
+        # ord_accepts1.append(data[9])
+    rand_accepts1 = [5068,11585,8335,108483,295495]
+    ord_accepts1 = [20,278,3001,29464,289703]
     plt.figure(figsize=(w,h))
-    plt.semilogx(nCycles,ord_accepts1,'x-',label='Ordered lattice')
-    plt.semilogx(nCycles,rand_accepts1,'x-',label='Random lattice')
+    plt.loglog(nCycles,ord_accepts1,'x-',label='Ordered lattice')
+    plt.loglog(nCycles,rand_accepts1,'x-',label='Random lattice')
     plt.xlabel('No. of Monte Carlo cycles')
     plt.ylabel('No. of accepted config.')
     plt.legend()
     plt.tight_layout()
-    plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taskc_accepts.pdf",dpi=300)
+    plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taskc_accepts_loglog.pdf",dpi=300)
     plt.show()
 if (task=='c3'):
     dim = 20
@@ -174,7 +176,7 @@ if (task=='d'):
         y = mlab.normpdf(bins, mu, sigma)
         plt.plot(bins, y)
         plt.xlabel("Energy")
-        plt.ylabel("Probability density")
+        plt.ylabel("Number of energies")
         if (filename == 1):
             plt.locator_params(nbins=4)
         plt.legend(["Normal distribution", "Sampled energy"])
@@ -199,17 +201,17 @@ if (task=='e'):
     data80 = np.loadtxt("Dim80State1Cycles100000T2.240000.dat", skiprows=1)
     data100 = np.loadtxt("Dim100State1Cycles100000T2.240000.dat", skiprows=1)
     data120 = np.loadtxt("Dim120State1Cycles100000T2.240000.dat", skiprows=1)
-    # data40 = np.loadtxt("Dim40State1Cycles100000T2.000000.dat", skiprows=1)
-    # data60 = np.loadtxt("Dim60State1Cycles100000T2.000000.dat", skiprows=1)
-    # data80 = np.loadtxt("Dim80State1Cycles100000T2.000000.dat", skiprows=1)
+    # data40 = np.loadtxt("Dim40State1Cycles1000000T2.000000.dat", skiprows=1)
+    # data60 = np.loadtxt("Dim60State1Cycles1000000T2.000000.dat", skiprows=1)
+    # data80 = np.loadtxt("Dim80State1Cycles1000000T2.000000.dat", skiprows=1)
     # data100 = np.loadtxt("Dim100State1Cycles1000000T2.000000.dat", skiprows=1)
 
     plt.figure(figsize=(w,h))
     plt.plot(data40[:,0],data40[:,1],'x-',label='L=40')
-    plt.plot(data40[:,0],data60[:,1],'x-',label='L=60')
-    plt.plot(data40[:,0],data80[:,1],'x-',label='L=80')
-    plt.plot(data40[:,0],data100[:,1],'x-',label='L=100')
-    plt.plot(data40[:,0],data120[:,1],'x-',label='L=120')
+    plt.plot(data60[:,0],data60[:,1],'x-',label='L=60')
+    plt.plot(data80[:,0],data80[:,1],'x-',label='L=80')
+    plt.plot(data100[:,0],data100[:,1],'x-',label='L=100')
+    plt.plot(data120[:,0],data120[:,1],'x-',label='L=120')
     plt.xlabel('Temperature [kJ/T]')
     plt.ylabel(r'$\langle E \rangle$')
     plt.legend()
@@ -219,10 +221,10 @@ if (task=='e'):
 
     plt.figure(figsize=(w,h))
     plt.plot(data40[:,0],data40[:,5],'x-',label='L=40')
-    plt.plot(data40[:,0],data60[:,5],'x-',label='L=60')
-    plt.plot(data40[:,0],data80[:,5],'x-',label='L=80')
-    plt.plot(data40[:,0],data100[:,5],'x-',label='L=100')
-    plt.plot(data40[:,0],data120[:,5],'x-',label='L=120')
+    plt.plot(data60[:,0],data60[:,5],'x-',label='L=60')
+    plt.plot(data80[:,0],data80[:,5],'x-',label='L=80')
+    plt.plot(data100[:,0],data100[:,5],'x-',label='L=100')
+    plt.plot(data120[:,0],data120[:,5],'x-',label='L=120')
     plt.xlabel('Temperature [kJ/T]')
     plt.ylabel(r'$\langle |M| \rangle$')
     plt.legend()
@@ -232,10 +234,10 @@ if (task=='e'):
 
     plt.figure(figsize=(w,h))
     plt.plot(data40[:,0],data40[:,6],'x-',label='L=40')
-    plt.plot(data40[:,0],data60[:,6],'x-',label='L=60')
-    plt.plot(data40[:,0],data80[:,6],'x-',label='L=80')
-    plt.plot(data40[:,0],data100[:,6],'x-',label='L=100')
-    plt.plot(data40[:,0],data120[:,6],'x-',label='L=120')
+    plt.plot(data60[:,0],data60[:,6],'x-',label='L=60')
+    plt.plot(data80[:,0],data80[:,6],'x-',label='L=80')
+    plt.plot(data100[:,0],data100[:,6],'x-',label='L=100')
+    plt.plot(data120[:,0],data120[:,6],'x-',label='L=120')
     plt.xlabel('Temperature [kJ/T]')
     plt.ylabel(r'$\chi$')
     plt.legend()
@@ -245,10 +247,10 @@ if (task=='e'):
 
     plt.figure(figsize=(w,h))
     plt.plot(data40[:,0],data40[:,7],'x-',label='L=40')
-    plt.plot(data40[:,0],data60[:,7],'x-',label='L=60')
-    plt.plot(data40[:,0],data80[:,7],'x-',label='L=80')
-    plt.plot(data40[:,0],data100[:,7],'x-',label='L=100')
-    plt.plot(data40[:,0],data120[:,7],'x-',label='L=120')
+    plt.plot(data60[:,0],data60[:,7],'x-',label='L=60')
+    plt.plot(data80[:,0],data80[:,7],'x-',label='L=80')
+    plt.plot(data100[:,0],data100[:,7],'x-',label='L=100')
+    plt.plot(data120[:,0],data120[:,7],'x-',label='L=120')
     plt.xlabel('Temperature [kJ/T]')
     plt.ylabel(r'$C_V$')
     plt.legend()
@@ -256,12 +258,27 @@ if (task=='e'):
     plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taske_CV_224.pdf",dpi=300)
     plt.show()
 if (task=='f'):
-    L1 = 100
-    L2 = 120
-    TcL1 = 2.26
-    TcL2 = 2.28
-    a = L1*L2*(TcL1-TcL2)/(L2-L1)
+    L = np.array([40,60,80,100,120])
+    Tcs = np.array([2.29,2.28,2.28,2.26,2.28])
+    Linv = 1/L
+
+    def a(L1,L2):
+        a = L1*L2*(TcL1-TcL2)/(L2-L1)
+
     def Tc(L,TcL):
         return TcL - a/L
-    print(Tc(L1,TcL1))
-    print(Tc(L2,TcL2))
+
+    deg,res,v1,v2,v3 = np.polyfit(Linv,Tcs,1,full=True);
+    p = np.poly1d(deg);
+    xp = np.linspace(Linv[0],Linv[-1],1000)
+    print(deg)
+
+    plt.figure(figsize=(w,h))
+    plt.plot(Linv,Tcs, 'o',label=r"Global max of $C_V$")
+    plt.plot(xp,p(xp),label="Curve fit")
+    plt.xlabel(r"$1/L$")
+    plt.ylabel(r"$T_C(1/L)$")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig("/home/ejhusom/MEGAsync/FAM/FYS3150/project4/report_project4/taskf.pdf",dpi=300)
+    plt.show()
