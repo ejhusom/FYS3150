@@ -30,6 +30,7 @@ public:
   void forwardEuler();
   void tridiag();
   void solve();
+  void solve2D();
   void output(ofstream &ofile);
   void analytical(double Time);
 };
