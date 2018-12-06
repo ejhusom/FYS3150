@@ -5,7 +5,7 @@
 # Version:         0.1
 # =============================================
 EXEC 			= runproject5.exe
-CPP 			= mpic++
+CPP 			= c++
 CPPflags 	= -Wall -O3 -g
 LIB 			=
 

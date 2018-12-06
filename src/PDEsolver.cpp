@@ -3,7 +3,7 @@
 PDEsolver::PDEsolver(){
 }
 
-PDEsolver::PDEsolver(int N_, double dt_, int Time_, double method_){
+PDEsolver::PDEsolver(int N_, double dt_, double Time_, double method_){
   N = N_;
   dt = dt_;
   Time = Time_;
@@ -111,33 +111,6 @@ void PDEsolver::solve(){
   ofile.close();
 
 }
-
-void PDEsolver::solve2D(){
-  ofstream ofile;
-  ofile.open(methodName + "N" + to_string(N) + ".dat");
-  if (method==0){
-    for (int t = 0; t < T; t++){
-      output(ofile);
-      forwardEuler();
-    }
-  } else if (method==1){
-    for (int t = 0; t < T; t++){
-      output(ofile);
-      tridiag();
-    }
-  } else if (method==0.5){
-    alpha = alpha*0.5;
-    for (int t = 0; t < T; t++){
-      output(ofile);
-      forwardEuler();
-      tridiag();
-    }
-  }
-
-  ofile.close();
-
-}
-
 
 
 void PDEsolver::output(ofstream &ofile){

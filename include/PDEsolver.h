@@ -24,7 +24,7 @@ public:
   double *uOld;
   // Initializers
   PDEsolver();
-  PDEsolver(int N_, double dt_, int T_, double method_);
+  PDEsolver(int N_, double dt_, double T_, double method_);
   ~PDEsolver();
   // Functions
   void forwardEuler();
