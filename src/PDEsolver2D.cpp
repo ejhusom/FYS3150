@@ -17,24 +17,25 @@ PDEsolver2D::PDEsolver2D(int N_, double dt_, double Time_, double method_){
 
   uNew = new double*[N+2];
   uOld = new double*[N+2];
+  uGuess = new double*[N+2];
   for (int i = 0; i < N+2; i++){
     uNew[i] = new double[N+2];
     uOld[i] = new double[N+2];
+    uGuess[i] = new double[N+2];
   }
   for (int i = 0; i < N+2; i++) {
     for (int j = 0; j < N+2; j++) {
       uNew[i][j] = 0.0;
-      uOld[i][j] = 1.0;
+      uGuess[i][j] = 1.0;
     }
   }
   for(int i=0; i < N+2; i++){
     uNew[i][0] = 1.0;
-    uNew[i][N+1] = 1.0;
+    uNew[i][N+1] = 0.0;
     uNew[0][i] = 1.0;
+    uNew[N+1][i] = 0.0;
   }
-  for(int i=0; i < N+2; i++){
-    uNew[N+1][i] = 1.0;
-  }
+  for (int i = 0; i < N+2; i++) for (int j = 0; j < N+2; j++) uOld[i][j] = uNew[i][j];
 
 }
 
@@ -42,33 +43,34 @@ int PDEsolver2D::jacobi() {
   int maxIterations = 100000;
   double diff = 1;
   int iterations = 0;
-  for (int i = 0; i < N+2; i++) for (int j = 0; j < N+2; j++) uOld[i][j] = 1.0;
+  for (int i = 0; i < N+2; i++) for (int j = 0; j < N+2; j++) uGuess[i][j] = 1.0;
 
-  for (int k = 0; k < maxIterations; k++){
-  // while (diff > tolerance && iterations < maxIterations){
-    // diff = 0;
+  // for (int k = 0; k < maxIterations; k++){
+  while (diff > tolerance && iterations < maxIterations){
+    diff = 0;
     for (int i = 1; i < N+1; i++){
       for (int j = 1; j < N+1; j++){
-        uNew[i][j] = (uNew[i][j] + alpha*(uOld[i+1][j] + uOld[i-1][j] + uOld[i][j+1] + uOld[i][j-1]))/(1+4*alpha);
-        // diff += fabs(uNew[i][j] - uOld[i][j]);
+        uNew[i][j] = (uOld[i][j] + alpha*(uGuess[i+1][j] + uGuess[i-1][j] + uGuess[i][j+1] + uGuess[i][j-1]))/(1+4*alpha);
+        diff += fabs(uNew[i][j] - uGuess[i][j]);
       }
     }
-    double sum = 0.0;
+    // double sum = 0.0;
     for (int i = 0; i < N+2; i++){
       for (int j = 0; j < N+2 ;j++){
-        sum += (uOld[i][j]-uNew[i][j])*(uOld[i][j]-uNew[i][j]);
-        uOld[i][j] = uNew[i][j];
+        // sum += (uGuess[i][j]-uNew[i][j])*(uGuess[i][j]-uNew[i][j]);
+        uGuess[i][j] = uNew[i][j];
       }
     }
 
     // cout << "yo   " << diff << endl;
     // diff /= N*N;
     // cout << diff << endl;
-    if(sqrt(sum) < tolerance){
-      return k;
-    }
+    // if(sqrt(sum) < tolerance){
+    //   return k;
+    // }
     iterations++;
   }
+  for (int i = 0; i < N+2; i++) for (int j = 0; j < N+2; j++) uOld[i][j] = uNew[i][j];
   return iterations;
 }
 
@@ -98,8 +100,10 @@ PDEsolver2D::~PDEsolver2D(){
   for (int i = 0; i < N+2; i++){
     delete [] uNew[i];
     delete [] uOld[i];
+    delete [] uGuess[i];
   }
 
   delete [] uNew;
   delete [] uOld;
+  delete [] uGuess;
 }

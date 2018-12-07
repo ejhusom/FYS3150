@@ -20,6 +20,7 @@ public:
   double method;
   double **uNew;
   double **uOld;
+  double **uGuess;
   double tolerance;
   // Initializers
   PDEsolver2D();

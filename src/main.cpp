@@ -1,5 +1,6 @@
 #include "PDEsolver.h"
 #include "PDEsolver2D.h"
+#include "jacobi.h"
 using namespace std;
 
 int main(int argc, char *argv[]){
@@ -30,6 +31,7 @@ int main(int argc, char *argv[]){
     PDEsolver2D problem = PDEsolver2D(N, dt, Time, method);
     problem.solve();
     // MPI_Finalize();
+    // jacobi();
   }
 
 
