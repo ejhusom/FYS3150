@@ -23,6 +23,9 @@ public:
   double **uOld;
   double **uGuess;
   double tolerance;
+  double Q1;
+  double Q2;
+  double Q3;
   // Initializers
   HeatEquation();
   ~HeatEquation();

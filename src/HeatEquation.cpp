@@ -9,11 +9,20 @@ HeatEquation::HeatEquation(){
   Nx = int(Lx/dl);
   Ny = int(Ly/dl);
 
-  dt = 1;
-  Time = 10;
+  dt = 0.1;
+  Time = 1;
   T = int(Time/dt);
   alpha = dt/(dl*dl);
   tolerance = 0.0001;
+
+  double rho = 3.5e3;
+  double cp = 1000;
+  double k = 2.5;
+  double betaSq = k/(rho*cp);
+  Q1 = 1.4e-6*betaSq/k;
+  Q2 = 0.35e-3*betaSq/k;
+  Q3 = 0.05e-3*betaSq/k;
+
 
   uNew = new double*[Nx+2];
   uOld = new double*[Nx+2];
@@ -51,7 +60,7 @@ int HeatEquation::jacobi() {
     diff = 0;
     for (int i = 1; i < Nx+1; i++){
       for (int j = 1; j < Ny+1; j++){
-        uNew[i][j] = (uOld[i][j] + alpha*(uGuess[i+1][j] + uGuess[i-1][j] + uGuess[i][j+1] + uGuess[i][j-1]))/(1+4*alpha);
+        uNew[i][j] = (dt*Q1 + uOld[i][j] + alpha*(uGuess[i+1][j] + uGuess[i-1][j] + uGuess[i][j+1] + uGuess[i][j-1]))/(1+4*alpha);
         diff += fabs(uNew[i][j] - uGuess[i][j]);
       }
     }
@@ -69,7 +78,7 @@ int HeatEquation::jacobi() {
 void HeatEquation::solve(){
   int it;
   ofstream ofile;
-  ofile.open("HeatEquationDl" + to_string(dl) + ".dat");
+  ofile.open("HeatEquation.dat");
   for (int t = 0; t < T; t++){
     output(ofile);
     it = jacobi();

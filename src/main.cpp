@@ -29,12 +29,7 @@ int main(int argc, char *argv[]){
   }
   if (dimension == 3) {
     HeatEquation problem = HeatEquation();
-    for (int i=0; i<problem.Nx+2; i++){
-        for (int j=0; j<problem.Ny+2; j++){
-          cout << setw(6) << setprecision(3) << problem.uNew[i][j];
-        }
-      cout << endl;
-    }
+    problem.solve();
   }
 
   return 0;
