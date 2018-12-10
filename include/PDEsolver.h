@@ -10,7 +10,6 @@ class PDEsolver{
 public:
   // Properties
   string methodName;
-  // ofstream ofile;
   int N;
   double Time;
   int T;
