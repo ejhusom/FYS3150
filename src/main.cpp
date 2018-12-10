@@ -24,19 +24,14 @@ int main(int argc, char *argv[]){
     problem.solve();
   }
   if (dimension == 2) {
-    // int nProcs, myRank;
-    // MPI_Init(&argc, &argv);
-    // MPI_Comm_size(MPI_COMM_WORLD, &nProcs);
-    // MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
     PDEsolver2D problem = PDEsolver2D(N, dt, Time, method);
     problem.solve();
-    // MPI_Finalize();
   }
   if (dimension == 3) {
     HeatEquation problem = HeatEquation();
-    for (int i=0; i<N; i++){
-        for (int j=0; j<N; j++){
-          cout << setw(8) << setprecision(4) << problem.uNew[i][j];
+    for (int i=0; i<problem.Nx+2; i++){
+        for (int j=0; j<problem.Ny+2; j++){
+          cout << setw(6) << setprecision(3) << problem.uNew[i][j];
         }
       cout << endl;
     }

@@ -3,8 +3,8 @@
 HeatEquation::HeatEquation(){
   // Lx = 150;
   // Ly = 120;
-  Ly = 3;
-  Lx = 3;
+  Ly = 10;
+  Lx = 10;
   dl = 1;
   Nx = int(Lx/dl);
   Ny = int(Ly/dl);
@@ -34,8 +34,8 @@ HeatEquation::HeatEquation(){
     uNew[i][Ny+1] = 1300.0;
   }
   for(int i=0; i < Ny+2; i++){
-    uNew[0][i] = 8 + i*dl*1292;
-    uNew[Nx+1][i] = 8 + i*dl*1292;
+    uNew[0][i] = 8 + 1292*i*dl/(Ny+1);
+    uNew[Nx+1][i] = 8 + 1292*i*dl/(Ny+1);
   }
   for (int i = 0; i < Nx+2; i++) for (int j = 0; j < Ny+2; j++) uOld[i][j] = uNew[i][j];
 
