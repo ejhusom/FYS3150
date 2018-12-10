@@ -1,5 +1,6 @@
 #include "PDEsolver.h"
 #include "PDEsolver2D.h"
+#include "HeatEquation.h"
 using namespace std;
 
 int main(int argc, char *argv[]){
@@ -8,7 +9,7 @@ int main(int argc, char *argv[]){
   int N = 100;
   double dt = 0.001;
   double Time = 0.03;
-  int dimension = 2;
+  int dimension = 3;
 
   switch (argc) {
     case 6: dimension = atoi(argv[5]);
@@ -30,7 +31,15 @@ int main(int argc, char *argv[]){
     PDEsolver2D problem = PDEsolver2D(N, dt, Time, method);
     problem.solve();
     // MPI_Finalize();
-    // jacobi();
+  }
+  if (dimension == 3) {
+    HeatEquation problem = HeatEquation();
+    for (int i=0; i<N; i++){
+        for (int j=0; j<N; j++){
+          cout << setw(8) << setprecision(4) << problem.uNew[i][j];
+        }
+      cout << endl;
+    }
   }
 
   return 0;
