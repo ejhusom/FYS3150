@@ -41,25 +41,53 @@ timepoints = np.linspace(0,Time,T+1)
 # plt.colorbar()
 # plt.show()
 
-print(len(data[:,0]))
+# print(len(data[:,0]))
 
 
-fig = plt.figure()
-# plt.pcolormesh(data[0:N,:], vmin=0., vmax=1.)
-# for t in range(T):
+# fig = plt.figure()
+# # plt.pcolormesh(data[0:N,:], vmin=0., vmax=1.)
+# # for t in range(T):
+# #     plt.title('Time: ' + str(timepoints[t]))
+# #     plt.pcolormesh(data[t*N:(t+1)*N,:], vmin=0., vmax=1.)
+# #     plt.colorbar()
+# #     plt.show()
+#
+#
+# plt.pcolormesh(data[0:N,:],vmin=0., vmax=1.)
+# plt.colorbar()
+#
+# def animate(t):
 #     plt.title('Time: ' + str(timepoints[t]))
 #     plt.pcolormesh(data[t*N:(t+1)*N,:], vmin=0., vmax=1.)
-#     plt.colorbar()
-#     plt.show()
+#
+# ani = animation.FuncAnimation(fig, animate, frames = range(T), blit = False, interval=200)
+# ani.save('diffusionMeshAnimation.mp4')
+# plt.show()
 
 
-plt.pcolormesh(data[0:N,:],vmin=0., vmax=1.)
-plt.colorbar()
-
-def animate(t):
-    plt.title('Time: ' + str(timepoints[t]))
-    plt.pcolormesh(data[t*N:(t+1)*N,:], vmin=0., vmax=1.)
-
-ani = animation.FuncAnimation(fig, animate, frames = range(T), blit = False, interval=200)
-ani.save('diffusionMeshAnimation.mp4')
-plt.show()
+#=============================================================================
+# ANALYTICAL 2D SOLUTION
+# x = np.linspace(0,1,80)
+# y = np.linspace(0,1,80)
+# X, Y = np.meshgrid(x,y)
+#
+# t = np.linspace(0,0.2,51)
+#
+# fig = plt.figure()
+#
+# def u(X,Y,t):
+#     return np.sin(np.pi*X)*np.sin(np.pi*Y)*np.exp(-2*np.pi**2*t)
+#
+# plt.pcolormesh(X,Y,u(X,Y,t[0]), vmin=0., vmax=1.)
+# plt.colorbar()
+#
+# def animate(i):
+#     print(t[i])
+#     plt.title('Time: ' + str(t[i]))
+#     plt.pcolormesh(X,Y,u(x,Y,t[i]), vmin=0., vmax=1.)
+#
+# ani = animation.FuncAnimation(fig, animate, frames = range(len(t)), blit = False, interval=200)
+# ani.save('diffusionMeshAnimationAnalytical.mp4')
+#
+#
+# plt.show()
