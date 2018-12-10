@@ -13,10 +13,10 @@ labelSize = fontSize
 print('Run simulation and produce data files? Enter \'n\' to move on to plotting.')
 run = input('y/n=')
 method = 1
-N = 100
-dx = 0.01
-# dt = 0.25*dx*dx;
-dt = 0.001
+L = 1
+N = 50
+dx = L/(N)
+dt = 0.01
 Time = 0.3
 if (run=='y'):
     os.system('make')
@@ -41,13 +41,6 @@ plotchoice = input('0/1=')
 # MESH ANIMATION
 
 if (plotchoice=='0'):
-    plt.pcolormesh(data[-N:,:])
-    plt.colorbar()
-    plt.show()
-
-    print(len(data[:,0]))
-
-
     fig = plt.figure()
     # plt.pcolormesh(data[0:N,:], vmin=0., vmax=1.)
     # for t in range(T):
@@ -70,13 +63,13 @@ if (plotchoice=='0'):
 
 
 #=============================================================================
+# ANALYTICAL 2D SOLUTION
 if (plotchoice=='1'):
-    ANALYTICAL 2D SOLUTION
     x = np.linspace(0,1,80)
     y = np.linspace(0,1,80)
     X, Y = np.meshgrid(x,y)
 
-    t = np.linspace(0,0.2,51)
+    t = np.linspace(0,0.3,51)
 
     fig = plt.figure()
 

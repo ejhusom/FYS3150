@@ -14,7 +14,6 @@ PDEsolver2D::PDEsolver2D(int N_, double dt_, double Time_, double method_){
   methodName = "Implicit";
   tolerance = 0.0001;
 
-
   uNew = new double*[N+2];
   uOld = new double*[N+2];
   uGuess = new double*[N+2];
@@ -25,14 +24,15 @@ PDEsolver2D::PDEsolver2D(int N_, double dt_, double Time_, double method_){
   }
   for (int i = 0; i < N+2; i++) {
     for (int j = 0; j < N+2; j++) {
-      uNew[i][j] = 0.0;
+      // uNew[i][j] = 0.0;
+      uNew[i][j] = sin(M_PI*i/(N+1))*sin(M_PI*j/(N+1)); // analytical solution
       uGuess[i][j] = 1.0;
     }
   }
   for(int i=0; i < N+2; i++){
-    uNew[i][0] = 1.0;
+    uNew[i][0] = 0.0;
     uNew[i][N+1] = 0.0;
-    uNew[0][i] = 1.0;
+    uNew[0][i] = 0.0;
     uNew[N+1][i] = 0.0;
   }
   for (int i = 0; i < N+2; i++) for (int j = 0; j < N+2; j++) uOld[i][j] = uNew[i][j];
@@ -45,7 +45,6 @@ int PDEsolver2D::jacobi() {
   int iterations = 0;
   for (int i = 0; i < N+2; i++) for (int j = 0; j < N+2; j++) uGuess[i][j] = 1.0;
 
-  // for (int k = 0; k < maxIterations; k++){
   while (diff > tolerance && iterations < maxIterations){
     diff = 0;
     for (int i = 1; i < N+1; i++){
@@ -54,20 +53,11 @@ int PDEsolver2D::jacobi() {
         diff += fabs(uNew[i][j] - uGuess[i][j]);
       }
     }
-    // double sum = 0.0;
     for (int i = 0; i < N+2; i++){
       for (int j = 0; j < N+2 ;j++){
-        // sum += (uGuess[i][j]-uNew[i][j])*(uGuess[i][j]-uNew[i][j]);
         uGuess[i][j] = uNew[i][j];
       }
     }
-
-    // cout << "yo   " << diff << endl;
-    // diff /= N*N;
-    // cout << diff << endl;
-    // if(sqrt(sum) < tolerance){
-    //   return k;
-    // }
     iterations++;
   }
   for (int i = 0; i < N+2; i++) for (int j = 0; j < N+2; j++) uOld[i][j] = uNew[i][j];
