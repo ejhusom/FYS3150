@@ -1,14 +1,16 @@
 #include "HeatEquation.h"
 
-HeatEquation::HeatEquation(double *boundaryArray){
+HeatEquation::HeatEquation(){
   // Lx = 150;
   // Ly = 120;
   Lx = 1.25;
   Ly = 1;
+  // dl = 0.1;
   dl = 0.01;
   Nx = int(Lx/dl);
   Ny = int(Ly/dl);
 
+  // dt = 0.1;
   dt = 0.05;
   Time = 1;
   T = int(Time/dt);
@@ -49,10 +51,12 @@ HeatEquation::HeatEquation(double *boundaryArray){
     }
   }
   for(int i=0; i < Ny+2; i++){
-    // uNew[0][i] = i*dl/(Ny+1);
-    uNew[0][i] = boundaryArray[i];
-    // uNew[Nx+1][i] = i*dl/(Ny+1);
-    uNew[Nx+1][i] = boundaryArray[i];
+    uNew[0][i] = i/double(Ny+1);
+    // uNew[0][i] = 0;
+    // uNew[0][i] = boundaryArray[i];
+    // uNew[Nx+1][i] = 0;
+    uNew[Nx+1][i] = i/double(Ny+1);
+    // uNew[Nx+1][i] = boundaryArray[i];
   }
   for(int i=0; i < Nx+2; i++){
     uNew[i][0] = 0;
@@ -60,16 +64,9 @@ HeatEquation::HeatEquation(double *boundaryArray){
   }
   for (int i = 0; i < Nx+2; i++) for (int j = 0; j < Ny+2; j++) uOld[i][j] = uNew[i][j];
 
-  for (int i=0; i<Nx+2; i++){
-      for (int j=0; j<Ny+2; j++){
-        cout << setw(8) << setprecision(4) << uNew[i][j];
-      }
-    cout << endl;
-  }
-
 }
 
-int HeatEquation::jacobi() {
+int HeatEquation::jacobi(int t, double **boundaryMatrix) {
   int maxIterations = 100000;
   double diff = 1;
   int iterations = 0;
@@ -91,16 +88,22 @@ int HeatEquation::jacobi() {
     iterations++;
   }
   for (int i = 0; i < Nx+2; i++) for (int j = 0; j < Ny+2; j++) uOld[i][j] = uNew[i][j];
+
+  // for(int i=0; i < Ny+2; i++){
+  //   uNew[0][i] = boundaryMatrix[t][i];
+  //   uNew[Nx+1][i] = boundaryMatrix[t][i];
+  // }
+
   return iterations;
 }
 
-void HeatEquation::solve(){
+void HeatEquation::solve(double **boundaryMatrix){
   int it;
   ofstream ofile;
   ofile.open("HeatEquation.dat");
   for (int t = 0; t < T; t++){
     output(ofile);
-    it = jacobi();
+    it = jacobi(t, boundaryMatrix);
     cout << "t:" << double(t)/double(T)*double(Time) << endl;
     cout << "Number of iterations: " << it << endl;
   }

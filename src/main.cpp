@@ -29,10 +29,19 @@ int main(int argc, char *argv[]){
     problem.solve();
   }
   if (dimension == 3) {
-    PDEsolver problem1D = PDEsolver(100, 0.001, 1, 2, 0.0, 1);
+    PDEsolver problem1D = PDEsolver(100, 0.01, 1, 2, 0.0, 1);
     problem1D.solve();
-    HeatEquation problem = HeatEquation(problem1D.uNew);
-    // problem.solve();
+    HeatEquation problem = HeatEquation();
+    problem.solve(problem1D.u);
+    //
+    // double *bc;
+    // bc = new double[problem.Ny + 2];
+    // for (int i=0; i<N; i++){
+    //   bc[i] = problem.uNew[int((problem.Ny + 2)/2)][i];
+    // }
+    //
+    // HeatEquation problem2 = HeatEquation(bc);
+    // problem2.solve();
   }
 
   return 0;

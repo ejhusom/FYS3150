@@ -25,11 +25,11 @@ public:
   double tolerance;
   double *Q;
   // Initializers
-  HeatEquation(double *boundaryArray);
+  HeatEquation();
   ~HeatEquation();
   // Functions
-  int jacobi();
-  void solve();
+  int jacobi(int t, double **boundaryMatrix);
+  void solve(double **boundaryMatrix);
   void output(ofstream &ofile);
 };
 

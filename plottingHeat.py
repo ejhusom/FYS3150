@@ -14,7 +14,7 @@ print('Run simulation and produce data files? Enter \'n\' to move on to plotting
 run = input('y/n=')
 method = 1
 L = 1
-N = 50
+N = 100
 dx = L/(N)
 dt = 0.001
 Time = 0.5
@@ -37,7 +37,7 @@ timepoints = np.linspace(0,Time,T+1)
 #===========================================================================
 # MESH ANIMATION
 
-
+# Uncomment if you want frame by frame
 # fig = plt.figure()
 # plt.pcolormesh(data[0:Nx,:])
 # for t in range(T):
@@ -47,13 +47,17 @@ timepoints = np.linspace(0,Time,T+1)
 #     plt.show()
 
 fig = plt.figure()
-plt.pcolormesh(data[0:Nx,:])#,vmin=0., vmax=1.)
+mat = np.transpose(data[0:Nx,:])
+mat = np.flip(mat,0)
+plt.pcolormesh(mat)
 plt.colorbar()
 
 def animate(t):
     plt.title('Time: ' + str(timepoints[t]))
-    plt.pcolormesh(data[t*Nx:(t+1)*Nx,:])#, vmin=0., vmax=1.)
+    mat = np.transpose(data[t*Nx:(t+1)*Nx,:])
+    mat = np.flip(mat,0)
+    plt.pcolormesh(mat)#, vmin=0., vmax=1.)
 
 ani = animation.FuncAnimation(fig, animate, frames = range(T), blit = False, interval=150)
-ani.save('heatMeshAnimation.mp4')
+ani.save('heatMeshAnimationQ.mp4')
 plt.show()

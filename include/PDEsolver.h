@@ -21,6 +21,7 @@ public:
   double method;
   double *uNew;
   double *uOld;
+  double **u;
   double u_i;
   double u_f;
   double *diagArray;
@@ -31,7 +32,7 @@ public:
   // Functions
   void forwardEuler();
   void tridiag();
-  void tridiagHeat();
+  void tridiagHeat(int t);
   void solve();
   void solve2D();
   void output(ofstream &ofile);

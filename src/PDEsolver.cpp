@@ -37,8 +37,11 @@ PDEsolver::PDEsolver(int N_, double dt_, double Time_, double method_, double u_
     double Q2 = 0.35e-3*l*l/k;
     double Q3 = 0.05e-3*l*l/k;
 
-    // diag = 1 + 2*alpha;
-    // cout << "diag: " << diag << endl;
+    u  = new double*[T];
+    for (int i = 0; i < T; i++){
+      u[i] = new double[N+2];
+    }
+
     diagArray = new double[N+2];
     for (int i = 0; i < int((N+2)/6); i++) {
       diagArray[i] = 1 + 2*alpha + Q1;
@@ -114,7 +117,7 @@ void PDEsolver::tridiag(){
 
 }
 
-void PDEsolver::tridiagHeat(){
+void PDEsolver::tridiagHeat(int t){
 
     double diagNew[N+2];
     double uOldTemp[N+2];
@@ -126,7 +129,6 @@ void PDEsolver::tridiagHeat(){
     }
 
     diagNew[1] = diagArray[1];
-    // diagNew[1] = diag;
     uOldTemp[1] = uOld[1];
 
 
@@ -148,6 +150,7 @@ void PDEsolver::tridiagHeat(){
     }
 
     for (int i = 0; i < N+2; i++) uOld[i] = uNew[i];
+    for (int i = 0; i < N+2; i++) u[t][i] = uNew[i];
 
 }
 
@@ -175,7 +178,7 @@ void PDEsolver::solve(){
   } else if (method==2){
     for (int t = 0; t < T; t++){
       output(ofile);
-      tridiagHeat();
+      tridiagHeat(t);
     }
   }
 
