@@ -61,3 +61,20 @@ def animate(t):
 ani = animation.FuncAnimation(fig, animate, frames = range(T), blit = False, interval=150)
 # ani.save('heatMeshAnimationQ.mp4')
 plt.show()
+
+#============================================================================
+# 1D line slice
+
+lastState = data[-Nx:,:]
+lineSlice = lastState[int(Ny/2),:]
+
+plt.figure()
+plt.plot(lineSlice)
+
+plt.xticks(size=tickSize, rotation=30)
+plt.yticks(size=tickSize, rotation=30)
+plt.xlabel(r"x", size=labelSize)
+plt.ylabel(r"u", size=labelSize)
+plt.legend(fontsize=legendSize)
+plt.tight_layout()
+plt.show()
