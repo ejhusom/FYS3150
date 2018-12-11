@@ -23,11 +23,9 @@ public:
   double **uOld;
   double **uGuess;
   double tolerance;
-  double Q1;
-  double Q2;
-  double Q3;
+  double *Q;
   // Initializers
-  HeatEquation();
+  HeatEquation(double *boundaryArray);
   ~HeatEquation();
   // Functions
   int jacobi();

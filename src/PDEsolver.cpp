@@ -3,7 +3,7 @@
 PDEsolver::PDEsolver(){
 }
 
-PDEsolver::PDEsolver(int N_, double dt_, double Time_, double method_){
+PDEsolver::PDEsolver(int N_, double dt_, double Time_, double method_, double u_i_, double u_f_){
   N = N_;
   dt = dt_;
   Time = Time_;
@@ -11,6 +11,8 @@ PDEsolver::PDEsolver(int N_, double dt_, double Time_, double method_){
   dx = 1/double(N+1);
   method = method_;
   alpha = dt/(dx*dx);
+  u_i = u_i_;
+  u_f = u_f_;
 
   if (method==0){
     diag = 1 - 2*alpha;
@@ -25,11 +27,35 @@ PDEsolver::PDEsolver(int N_, double dt_, double Time_, double method_){
 
     diag = 1 + 2*alpha;
     offDiag = -alpha;
-
-
-    // diag = 2 + 2*alpha;
-    // offDiag = -alpha;
     methodName = "Crank";
+  } else if (method==2){
+    double rho = 3.5e3;
+    double cp = 1000;
+    double k = 2.5;
+    double l = 120;
+    double Q1 = 1.4e-6*l*l/k;
+    double Q2 = 0.35e-3*l*l/k;
+    double Q3 = 0.05e-3*l*l/k;
+
+    // diag = 1 + 2*alpha;
+    // cout << "diag: " << diag << endl;
+    diagArray = new double[N+2];
+    for (int i = 0; i < int((N+2)/6); i++) {
+      diagArray[i] = 1 + 2*alpha + Q1;
+    }
+    for (int i = int((N+2)/6); i < int(2*(N+2)/6); i++) {
+      diagArray[i] = 1 + 2*alpha + Q2;
+    }
+    for (int i = int(2*(N+2)/6); i < N+2; i++) {
+      diagArray[i] = 1 + 2*alpha + Q3;
+    }
+    offDiag = -alpha;
+    methodName = "Heat1D";
+
+    // for (int i=0; i<N+2; i++){
+    //   cout << setw(12) << setprecision(6) << diagArray[i] << endl;
+    // }
+
   }
 
   uNew = new double[N+2];
@@ -39,8 +65,10 @@ PDEsolver::PDEsolver(int N_, double dt_, double Time_, double method_){
     uOld[i] = 0.0;
   }
   //initial condition
-  uOld[N+1] = 1.0;
-  uNew[N+1] = 1.0;
+  uOld[0] = u_i;
+  uNew[0] = u_i;
+  uOld[N+1] = u_f;
+  uNew[N+1] = u_f;
 }
 
 
@@ -73,9 +101,46 @@ void PDEsolver::tridiag(){
       uOldTemp[i] = uOld[i] - uOldTemp[i-1]*K;
     }
 
-    uNew[0] = 0;
+    uNew[0] = u_i;
     uNew[N] = uOldTemp[N]/diagNew[N];
-    uNew[N+1] = 1.0;
+    uNew[N+1] = u_f;
+
+    //Backward substitution
+    for(int i = (N); i > 0; i--){
+        uNew[i] = (uOldTemp[i] - offDiag*uNew[i+1])/diagNew[i];
+    }
+
+    for (int i = 0; i < N+2; i++) uOld[i] = uNew[i];
+
+}
+
+void PDEsolver::tridiagHeat(){
+
+    double diagNew[N+2];
+    double uOldTemp[N+2];
+    double K;
+
+    for(int i = 0; i < N+2; i++){
+      diagNew[i] = 0;
+      uOldTemp[i] = 0;
+    }
+
+    diagNew[1] = diagArray[1];
+    // diagNew[1] = diag;
+    uOldTemp[1] = uOld[1];
+
+
+    //Forward substitution
+    for(int i = 2; i < (N+1); i++){
+      K = offDiag/diagNew[i-1];
+      // diagNew[i] = diag - offDiag*K;
+      diagNew[i] = diagArray[i] - offDiag*K;
+      uOldTemp[i] = uOld[i] - uOldTemp[i-1]*K;
+    }
+
+    uNew[0] = u_i;
+    uNew[N] = uOldTemp[N]/diagNew[N];
+    uNew[N+1] = u_f;
 
     //Backward substitution
     for(int i = (N); i > 0; i--){
@@ -95,6 +160,7 @@ void PDEsolver::solve(){
       forwardEuler();
     }
   } else if (method==1){
+    // cout << "test\n";
     for (int t = 0; t < T; t++){
       output(ofile);
       tridiag();
@@ -105,6 +171,11 @@ void PDEsolver::solve(){
       output(ofile);
       forwardEuler();
       tridiag();
+    }
+  } else if (method==2){
+    for (int t = 0; t < T; t++){
+      output(ofile);
+      tridiagHeat();
     }
   }
 
@@ -139,4 +210,5 @@ void PDEsolver::analytical(double Time){
 PDEsolver::~PDEsolver(){
   delete [] uNew;
   delete [] uOld;
+  delete [] diagArray;
 }

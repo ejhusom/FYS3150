@@ -1,15 +1,15 @@
 #include "HeatEquation.h"
 
-HeatEquation::HeatEquation(){
+HeatEquation::HeatEquation(double *boundaryArray){
   // Lx = 150;
   // Ly = 120;
-  Ly = 10;
-  Lx = 10;
-  dl = 1;
+  Lx = 1.25;
+  Ly = 1;
+  dl = 0.01;
   Nx = int(Lx/dl);
   Ny = int(Ly/dl);
 
-  dt = 0.1;
+  dt = 0.05;
   Time = 1;
   T = int(Time/dt);
   alpha = dt/(dl*dl);
@@ -18,10 +18,20 @@ HeatEquation::HeatEquation(){
   double rho = 3.5e3;
   double cp = 1000;
   double k = 2.5;
-  double betaSq = k/(rho*cp);
-  Q1 = 1.4e-6*betaSq/k;
-  Q2 = 0.35e-3*betaSq/k;
-  Q3 = 0.05e-3*betaSq/k;
+  double l = 120;
+  double Q1 = 1.4e-6*l*l/k;
+  double Q2 = 0.35e-3*l*l/k;
+  double Q3 = 0.05e-3*l*l/k;
+  Q = new double[Ny+2];
+  for (int i = 0; i < int((Ny+2)/6); i++) {
+    Q[i] = Q1;
+  }
+  for (int i = int((Ny+2)/6); i < int(2*(Ny+2)/6); i++) {
+    Q[i] = Q2;
+  }
+  for (int i = int(2*(Ny+2)/6); i < Ny+2; i++) {
+    Q[i] = Q3;
+  }
 
 
   uNew = new double*[Nx+2];
@@ -38,15 +48,24 @@ HeatEquation::HeatEquation(){
       uGuess[i][j] = 1.0;
     }
   }
-  for(int i=0; i < Nx+2; i++){
-    uNew[i][0] = 8.0;
-    uNew[i][Ny+1] = 1300.0;
-  }
   for(int i=0; i < Ny+2; i++){
-    uNew[0][i] = 8 + 1292*i*dl/(Ny+1);
-    uNew[Nx+1][i] = 8 + 1292*i*dl/(Ny+1);
+    // uNew[0][i] = i*dl/(Ny+1);
+    uNew[0][i] = boundaryArray[i];
+    // uNew[Nx+1][i] = i*dl/(Ny+1);
+    uNew[Nx+1][i] = boundaryArray[i];
+  }
+  for(int i=0; i < Nx+2; i++){
+    uNew[i][0] = 0;
+    uNew[i][Ny+1] = 1;
   }
   for (int i = 0; i < Nx+2; i++) for (int j = 0; j < Ny+2; j++) uOld[i][j] = uNew[i][j];
+
+  for (int i=0; i<Nx+2; i++){
+      for (int j=0; j<Ny+2; j++){
+        cout << setw(8) << setprecision(4) << uNew[i][j];
+      }
+    cout << endl;
+  }
 
 }
 
@@ -60,7 +79,7 @@ int HeatEquation::jacobi() {
     diff = 0;
     for (int i = 1; i < Nx+1; i++){
       for (int j = 1; j < Ny+1; j++){
-        uNew[i][j] = (dt*Q1 + uOld[i][j] + alpha*(uGuess[i+1][j] + uGuess[i-1][j] + uGuess[i][j+1] + uGuess[i][j-1]))/(1+4*alpha);
+        uNew[i][j] = (dt*Q[i] + uOld[i][j] + alpha*(uGuess[i+1][j] + uGuess[i-1][j] + uGuess[i][j+1] + uGuess[i][j-1]))/(1+4*alpha);
         diff += fabs(uNew[i][j] - uGuess[i][j]);
       }
     }

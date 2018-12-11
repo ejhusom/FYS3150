@@ -11,6 +11,7 @@ int main(int argc, char *argv[]){
   double Time = 0.03;
   int dimension = 3;
 
+
   switch (argc) {
     case 6: dimension = atoi(argv[5]);
     case 5: Time = atof(argv[4]);
@@ -20,7 +21,7 @@ int main(int argc, char *argv[]){
   }
 
   if (dimension == 1) {
-    PDEsolver problem = PDEsolver(N, dt, Time, method);
+    PDEsolver problem = PDEsolver(N, dt, Time, method, 0.0, 1.0);
     problem.solve();
   }
   if (dimension == 2) {
@@ -28,8 +29,10 @@ int main(int argc, char *argv[]){
     problem.solve();
   }
   if (dimension == 3) {
-    HeatEquation problem = HeatEquation();
-    problem.solve();
+    PDEsolver problem1D = PDEsolver(100, 0.001, 1, 2, 0.0, 1);
+    problem1D.solve();
+    HeatEquation problem = HeatEquation(problem1D.uNew);
+    // problem.solve();
   }
 
   return 0;

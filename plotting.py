@@ -24,16 +24,16 @@ if (method=='0'):
         Time = 1
         os.system('make')
         print('Running project...')
-        os.system('./runproject5.exe ' + method + ' ' + str(N) + ' ' + str(dt) + ' ' + str(Time))
+        os.system('./runproject5.exe ' + method + ' ' + str(N) + ' ' + str(dt) + ' ' + str(Time) + '1')
     data = np.loadtxt("ExplicitN100.dat")
 if (method=='1'):
     if (run=='y'):
         N = 100
-        dt = 0.00001
+        dt = 0.0001
         Time = 1
         os.system('make')
         print('Running project...')
-        os.system('./runproject5.exe ' + method + ' ' + str(N) + ' ' + str(dt) + ' ' + str(Time))
+        os.system('./runproject5.exe ' + method + ' ' + str(N) + ' ' + str(dt) + ' ' + str(Time) + ' 1')
     data = np.loadtxt("ImplicitN100.dat")
 if (method=='0.5'):
     if (run=='y'):
@@ -42,9 +42,10 @@ if (method=='0.5'):
         Time = 1
         os.system('make')
         print('Running project...')
-        os.system('./runproject5.exe ' + method + ' ' + str(N) + ' ' + str(dt) + ' ' + str(Time))
+        os.system('./runproject5.exe ' + method + ' ' + str(N) + ' ' + str(dt) + ' ' + str(Time) + '1')
     data = np.loadtxt("CrankN100.dat")
 
+# data = np.loadtxt("Heat1DN100.dat")
 # Plotting
 N = len(data[0,:])
 Tindex = len(data[:,0])-1
@@ -63,6 +64,7 @@ plt.legend(fontsize=legendSize)
 plt.tight_layout()
 plt.plot()
 plt.show()
+
 
 #===========================================================================
 # LINE ANIMATION

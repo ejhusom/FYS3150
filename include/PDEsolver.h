@@ -21,13 +21,17 @@ public:
   double method;
   double *uNew;
   double *uOld;
+  double u_i;
+  double u_f;
+  double *diagArray;
   // Initializers
   PDEsolver();
-  PDEsolver(int N_, double dt_, double T_, double method_);
+  PDEsolver(int N_, double dt_, double T_, double method_, double u_i_, double u_f_);
   ~PDEsolver();
   // Functions
   void forwardEuler();
   void tridiag();
+  void tridiagHeat();
   void solve();
   void solve2D();
   void output(ofstream &ofile);
