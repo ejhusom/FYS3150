@@ -49,14 +49,14 @@ timepoints = np.linspace(0,Time,T+1)
 fig = plt.figure()
 mat = np.transpose(data[0:Nx,:])
 mat = np.flip(mat,0)
-plt.pcolormesh(mat)
+plt.pcolormesh(mat, vmin=0., vmax=1.5)
 plt.colorbar()
 
 def animate(t):
     plt.title('Time: ' + str(timepoints[t]))
     mat = np.transpose(data[t*Nx:(t+1)*Nx,:])
     mat = np.flip(mat,0)
-    plt.pcolormesh(mat)#, vmin=0., vmax=1.)
+    plt.pcolormesh(mat, vmin=0., vmax=1.5)
 
 ani = animation.FuncAnimation(fig, animate, frames = range(T), blit = False, interval=150)
 # ani.save('heatMeshAnimationQ.mp4')

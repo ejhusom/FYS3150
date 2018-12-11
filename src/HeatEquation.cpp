@@ -37,6 +37,7 @@ HeatEquation::HeatEquation(int _slab){
     Q[i] = Q3;
   }
 
+  if(slab == 1) decay();
 
 
 
@@ -109,6 +110,7 @@ void HeatEquation::decay(){
     double t = tp/(double) T;
     for(int i = 0; i < 3; i++){
       sumQ4 += weights[i]*pow(0.5, t/halfTimes[i]);
+      // cout << sumQ4 << endl;
     }
     Q4[tp] = sumQ4;
   }
@@ -122,14 +124,15 @@ void HeatEquation::solve(double **boundaryMatrix){
     if(slab == 1){
       for (int i = int(2*(Ny+2)/6); i < Ny+2; i++) {
         Q[i] += Q4[t];
-        cout << "Q4= " << Q4[t] << endl;
+        // cout << "Q4= " << Q4[t] << endl;
       }
     }
     output(ofile);
     it = jacobi(t, boundaryMatrix);
-    // cout << "t:" << double(t)/double(T)*double(Time) << endl;
-    // cout << "Number of iterations: " << it << endl;
+    cout << "t:" << double(t)/double(T)*double(Time) << endl;
+    cout << "Number of iterations: " << it << endl;
   }
+  output(ofile);
   ofile.close();
 }
 
