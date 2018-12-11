@@ -1,6 +1,6 @@
 #include "HeatEquation.h"
 
-HeatEquation::HeatEquation(){
+HeatEquation::HeatEquation(int _slab){
   // Lx = 150;
   // Ly = 120;
   Lx = 1.25;
@@ -9,6 +9,7 @@ HeatEquation::HeatEquation(){
   dl = 0.01;
   Nx = int(Lx/dl);
   Ny = int(Ly/dl);
+  slab = _slab;
 
   // dt = 0.1;
   dt = 0.05;
@@ -25,6 +26,7 @@ HeatEquation::HeatEquation(){
   double Q2 = 0.35e-3*l*l/k;
   double Q3 = 0.05e-3*l*l/k;
   Q = new double[Ny+2];
+  Q4 = new double[T];
   for (int i = 0; i < int((Ny+2)/6); i++) {
     Q[i] = Q1;
   }
@@ -34,6 +36,8 @@ HeatEquation::HeatEquation(){
   for (int i = int(2*(Ny+2)/6); i < Ny+2; i++) {
     Q[i] = Q3;
   }
+
+
 
 
   uNew = new double*[Nx+2];
@@ -97,15 +101,34 @@ int HeatEquation::jacobi(int t, double **boundaryMatrix) {
   return iterations;
 }
 
+void HeatEquation::decay(){
+  double halfTimes[3] = {4.47, 14.0, 1.25};
+  double weights[3] = {0.2, 0.2, 0.1};
+  for(int tp = 0; tp < T; tp++){
+    double sumQ4 = 0;
+    double t = tp/(double) T;
+    for(int i = 0; i < 3; i++){
+      sumQ4 += weights[i]*pow(0.5, t/halfTimes[i]);
+    }
+    Q4[tp] = sumQ4;
+  }
+}
+
 void HeatEquation::solve(double **boundaryMatrix){
   int it;
   ofstream ofile;
   ofile.open("HeatEquation.dat");
   for (int t = 0; t < T; t++){
+    if(slab == 1){
+      for (int i = int(2*(Ny+2)/6); i < Ny+2; i++) {
+        Q[i] += Q4[t];
+        cout << "Q4= " << Q4[t] << endl;
+      }
+    }
     output(ofile);
     it = jacobi(t, boundaryMatrix);
-    cout << "t:" << double(t)/double(T)*double(Time) << endl;
-    cout << "Number of iterations: " << it << endl;
+    // cout << "t:" << double(t)/double(T)*double(Time) << endl;
+    // cout << "Number of iterations: " << it << endl;
   }
   ofile.close();
 }

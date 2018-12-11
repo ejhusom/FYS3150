@@ -59,5 +59,5 @@ def animate(t):
     plt.pcolormesh(mat)#, vmin=0., vmax=1.)
 
 ani = animation.FuncAnimation(fig, animate, frames = range(T), blit = False, interval=150)
-ani.save('heatMeshAnimationQ.mp4')
+# ani.save('heatMeshAnimationQ.mp4')
 plt.show()

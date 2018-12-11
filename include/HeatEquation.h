@@ -24,13 +24,16 @@ public:
   double **uGuess;
   double tolerance;
   double *Q;
+  double *Q4;
+  int slab;
   // Initializers
-  HeatEquation();
+  HeatEquation(int _slab);
   ~HeatEquation();
   // Functions
   int jacobi(int t, double **boundaryMatrix);
   void solve(double **boundaryMatrix);
   void output(ofstream &ofile);
+  void decay();
 };
 
 #endif /* HEATEQUATION_H */

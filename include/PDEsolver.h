@@ -25,6 +25,7 @@ public:
   double u_i;
   double u_f;
   double *diagArray;
+  double *Q4;
   // Initializers
   PDEsolver();
   PDEsolver(int N_, double dt_, double T_, double method_, double u_i_, double u_f_);
