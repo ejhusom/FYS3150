@@ -89,6 +89,17 @@ HeatEquation::HeatEquation(int _slab, int _radioactive){
     uNew[i][0] = 0;
     uNew[i][Ny+1] = 1;
   }
+
+  if(slab == 12){
+    mat uMatrix = zeros<mat>(Nx+2, Ny+2);
+    uMatrix.load("HeatEquationSteadyStateQ.dat");
+    for (int i = 0; i < Nx+2; i++) {
+      for (int j = 0; j < Ny+2; j++) {
+        uNew[i][j] = uMatrix(i, j);
+      }
+    }
+  }
+
   for (int i = 0; i < Nx+2; i++) for (int j = 0; j < Ny+2; j++) uOld[i][j] = uNew[i][j];
 
 }
@@ -164,6 +175,9 @@ void HeatEquation::solve(double **boundaryMatrix){
     }
     output(ofile);
     it = jacobi(t, boundaryMatrix);
+    ///
+
+    ///
     cout << "t:" << double(t)/double(T)*double(Time) << endl;
     cout << "Number of iterations: " << it << endl;
   }

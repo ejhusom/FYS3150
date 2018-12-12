@@ -35,6 +35,9 @@ int main(int argc, char *argv[]){
     problem1D.solve();
     HeatEquation problem = HeatEquation(slab, radioactive);
     problem.solve(problem1D.u);
+
+
+
     //
     // double *bc;
     // bc = new double[problem.Ny + 2];
