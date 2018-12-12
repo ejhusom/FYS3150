@@ -17,7 +17,7 @@ L = 1
 N = 100
 dx = L/(N)
 dt = 0.001
-Time = 0.5
+Time = 1.0
 if (run=='y'):
     os.system('make')
     print('Running project...')
@@ -42,28 +42,28 @@ timepoints = np.linspace(0,Time,T)
 
 # Uncomment if you want frame by frame
 # fig = plt.figure()
-# plt.pcolormesh(data[0:Nx,:])
+# plt.pcolormesh(data3[0:Nx,:])
 # for t in range(T):
 #     plt.title('Time: ' + str(timepoints[t]))
-#     plt.pcolormesh(data[t*Nx:(t+1)*Nx,:])
+#     plt.pcolormesh(data3[t*Nx:(t+1)*Nx,:])
 #     plt.colorbar()
 #     plt.show()
 
-# fig = plt.figure()
-# mat = np.transpose(data1[0:Nx,:])
-# mat = np.flip(mat,0)
-# plt.pcolormesh(mat, vmin=0., vmax=1.5)
-# plt.colorbar()
-#
-# def animate(t):
-#     plt.title('Time: ' + str(timepoints[t]))
-#     mat = np.transpose(data1[t*Nx:(t+1)*Nx,:])
-#     mat = np.flip(mat,0)
-#     plt.pcolormesh(mat, vmin=0., vmax=1.5)
-#
-# ani = animation.FuncAnimation(fig, animate, frames = range(T), blit = False, interval=150)
-# ani.save('heatMeshAnimationQ.gif', writer='imagemagick')
-# plt.show()
+fig = plt.figure()
+mat = np.transpose(data3[0:Nx,:])
+mat = np.flip(mat,0)
+plt.pcolormesh(mat, vmin=0., vmax=3)
+plt.colorbar()
+
+def animate(t):
+    plt.title('Time: ' + str(timepoints[t]))
+    mat = np.transpose(data3[t*Nx:(t+1)*Nx,:])
+    mat = np.flip(mat,0)
+    plt.pcolormesh(mat, vmin=0., vmax=3)
+
+ani = animation.FuncAnimation(fig, animate, frames = range(T), blit = False, interval=150)
+ani.save('heatMeshAnimationQ.gif', writer='imagemagick')
+plt.show()
 
 #============================================================================
 # 1D line slice
