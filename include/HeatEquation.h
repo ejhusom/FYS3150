@@ -19,6 +19,8 @@ public:
   int Ny;
   double dt;
   double alpha;
+  double beta;
+  double gamma;
   double **uNew;
   double **uOld;
   double **uGuess;
@@ -26,8 +28,9 @@ public:
   double *Q;
   double *Q4;
   int slab;
+  int radioactive;
   // Initializers
-  HeatEquation(int _slab);
+  HeatEquation(int _slab, int _radioactive);
   ~HeatEquation();
   // Functions
   int jacobi(int t, double **boundaryMatrix);

@@ -10,7 +10,8 @@ int main(int argc, char *argv[]){
   double dt = 0.001;
   double Time = 0.03;
   int dimension = 3;
-  int slab = 0;
+  int slab = 1;
+  int radioactive = 1;
 
 
   switch (argc) {
@@ -32,7 +33,7 @@ int main(int argc, char *argv[]){
   if (dimension == 3) {
     PDEsolver problem1D = PDEsolver(100, 0.01, 1, 2, 0.0, 1);
     problem1D.solve();
-    HeatEquation problem = HeatEquation(slab);
+    HeatEquation problem = HeatEquation(slab, radioactive);
     problem.solve(problem1D.u);
     //
     // double *bc;

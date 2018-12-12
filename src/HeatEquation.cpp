@@ -1,6 +1,6 @@
 #include "HeatEquation.h"
 
-HeatEquation::HeatEquation(int _slab){
+HeatEquation::HeatEquation(int _slab, int _radioactive){
   // Lx = 150;
   // Ly = 120;
   Lx = 1.25;
@@ -10,9 +10,11 @@ HeatEquation::HeatEquation(int _slab){
   Nx = int(Lx/dl);
   Ny = int(Ly/dl);
   slab = _slab;
+  radioactive = _radioactive;
+  if (radioactive == 0) slab = 0;
 
-  // dt = 0.1;
-  dt = 0.05;
+  dt = 0.1;
+  // dt = 0.05;
   Time = 1;
   T = int(Time/dt);
   alpha = dt/(dl*dl);
@@ -21,12 +23,30 @@ HeatEquation::HeatEquation(int _slab){
   double rho = 3.5e3;
   double cp = 1000;
   double k = 2.5;
+  double uc = 1300;
+  // double tc = 1e9;
+  double tc = 3.15576e16;
   // double l = 26.7;
-  // double l = 120;
-  double l = 0;
-  double Q1 = 1.4e-6*l*l/k;
-  double Q2 = 0.35e-6*l*l/k;
-  double Q3 = 0.05e-6*l*l/k;
+  double l = 120000;
+  // double l = 0;
+
+  beta = tc*k/(rho*cp*l*l);
+  gamma = tc/(rho*cp*uc);
+  // beta = rho*cp*l*l/(k*tc);
+
+  double Q1 = 1.4e-6*tc/(rho*cp*uc);
+  double Q2 = 0.35e-6*tc/(rho*cp*uc);
+  double Q3 = 0.05e-6*tc/(rho*cp*uc);
+  // double Q1 = 1.4e-6*l*l/k;
+  // double Q2 = 0.35e-6*l*l/k;
+  // double Q3 = 0.05e-6*l*l/k;
+
+  if (radioactive == 0){
+    Q1 = 0;
+    Q2 = 0;
+    Q3 = 0;
+  }
+
   Q = new double[Ny+2];
   Q4 = new double[T];
   for (int i = 0; i < int((Ny+2)/6); i++) {
@@ -66,8 +86,8 @@ HeatEquation::HeatEquation(int _slab){
     // uNew[Nx+1][i] = boundaryArray[i];
   }
   for(int i=0; i < Nx+2; i++){
-    uNew[i][0] = 8;
-    uNew[i][Ny+1] = 1300;
+    uNew[i][0] = 0;
+    uNew[i][Ny+1] = 1;
   }
   for (int i = 0; i < Nx+2; i++) for (int j = 0; j < Ny+2; j++) uOld[i][j] = uNew[i][j];
 
@@ -83,7 +103,8 @@ int HeatEquation::jacobi(int t, double **boundaryMatrix) {
     diff = 0;
     for (int i = 1; i < Nx+1; i++){
       for (int j = 1; j < Ny+1; j++){
-        uNew[i][j] = (dt*Q[i] + uOld[i][j] + alpha*(uGuess[i+1][j] + uGuess[i-1][j] + uGuess[i][j+1] + uGuess[i][j-1]))/(1+4*alpha);
+        uNew[i][j] = (dt*Q[i] + uOld[i][j] + beta*alpha*(uGuess[i+1][j] + uGuess[i-1][j] + uGuess[i][j+1] + uGuess[i][j-1]))/(1+4*alpha*beta);
+        // uNew[i][j] = (dt*Q[i] + uOld[i][j] + alpha*(uGuess[i+1][j] + uGuess[i-1][j] + uGuess[i][j+1] + uGuess[i][j-1]))/(1+4*alpha);
         diff += fabs(uNew[i][j] - uGuess[i][j]);
       }
     }
@@ -107,7 +128,7 @@ int HeatEquation::jacobi(int t, double **boundaryMatrix) {
 void HeatEquation::decay(double l, double k){
   double halfTimes[3] = {4.47, 14.0, 1.25};
   double weights[3] = {0.2, 0.2, 0.1};
-  for(int i = 0; i < 3; i++) weights[i] *= 1e-6*l*l/k;
+  for(int i = 0; i < 3; i++) weights[i] *= 1e-6*gamma;
   for(int tp = 0; tp < T; tp++){
     double sumQ4 = 0;
     double t = tp/(double) T;

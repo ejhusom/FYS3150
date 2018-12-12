@@ -31,10 +31,10 @@ data3 = np.loadtxt("HeatEquationSlab.dat")
 
 
 # Plotting
-Ny = int(len(data1[0,:]))
+Ny = int(len(data3[0,:]))
 Nx = int(1.25*(Ny-2) +2)
-T = int(len(data1[:,0])/Nx)
-timepoints = np.linspace(0,Time,T+1)
+T = int(len(data3[:,0])/Nx)
+timepoints = np.linspace(0,Time,T)
 
 
 #===========================================================================
@@ -50,19 +50,19 @@ timepoints = np.linspace(0,Time,T+1)
 #     plt.show()
 
 # fig = plt.figure()
-# mat = np.transpose(data[0:Nx,:])
+# mat = np.transpose(data1[0:Nx,:])
 # mat = np.flip(mat,0)
 # plt.pcolormesh(mat, vmin=0., vmax=1.5)
 # plt.colorbar()
 #
 # def animate(t):
 #     plt.title('Time: ' + str(timepoints[t]))
-#     mat = np.transpose(data[t*Nx:(t+1)*Nx,:])
+#     mat = np.transpose(data1[t*Nx:(t+1)*Nx,:])
 #     mat = np.flip(mat,0)
 #     plt.pcolormesh(mat, vmin=0., vmax=1.5)
 #
 # ani = animation.FuncAnimation(fig, animate, frames = range(T), blit = False, interval=150)
-# # ani.save('heatMeshAnimationQ.mp4')
+# ani.save('heatMeshAnimationQ.gif', writer='imagemagick')
 # plt.show()
 
 #============================================================================
