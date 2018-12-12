@@ -4,10 +4,10 @@
 #include <fstream>
 #include <cmath>
 #include <iomanip>
-#include <armadillo>
+// #include <armadillo>
 // #include <mpi.h>
 using namespace std;
-using namespace arma;
+// using namespace arma;
 
 class HeatEquation{
 public:

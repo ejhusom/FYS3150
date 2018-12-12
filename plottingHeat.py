@@ -25,10 +25,10 @@ if (run=='y'):
     os.system('./runproject5.exe ' + str(method) + ' ' + str(N) + ' ' + str(dt) + ' ' + str(Time) + ' 3')
     print("Done! Moving on to plotting...")
 
-data1 = np.loadtxt("HeatEquationNoQ.dat")
-data2 = np.loadtxt("HeatEquationNoSlab.dat")
-data3 = np.loadtxt("HeatEquationSlab.dat")
-data4 = np.loadtxt("HeatEquationSlabFromSS.dat")
+# data1 = np.loadtxt("HeatEquationNoQ.dat")
+data3 = np.loadtxt("HeatEquationNoSlab.dat")
+# data3 = np.loadtxt("HeatEquationSlab.dat")
+# data4 = np.loadtxt("HeatEquationSlabFromSS.dat")
 
 
 # Plotting
@@ -42,13 +42,14 @@ timepoints = np.linspace(0,Time,T)
 # MESH ANIMATION
 
 # Uncomment if you want frame by frame
-# fig = plt.figure()
-# plt.pcolormesh(data3[0:Nx,:])
-# for t in range(T):
-#     plt.title('Time: ' + str(timepoints[t]))
-#     plt.pcolormesh(data3[t*Nx:(t+1)*Nx,:])
-#     plt.colorbar()
-#     plt.show()
+fig = plt.figure()
+plt.pcolormesh(data3[0:Nx,:])
+plt.show()
+for t in range(T):
+    plt.title('Time: ' + str(timepoints[t]))
+    plt.pcolormesh(data3[t*Nx:(t+1)*Nx,:])
+    plt.colorbar()
+    plt.show()
 
 # fig = plt.figure()
 # mat = np.transpose(data3[0:Nx,:])
@@ -74,9 +75,9 @@ timepoints = np.linspace(0,Time,T)
 
 # np.savetxt("HeatEquationSteadyStateQ.dat", steadyStateQ)
 
-maxDiff = []
+# maxDiff = []
 
-for()
+# for()
 
 # lastState1 = data1[-Nx:,:]
 # lineSlice1 = lastState1[int(Ny/2),:]
@@ -98,20 +99,20 @@ for()
 #
 # diff = abs(u2 - u3);
 
-plt.figure()
-plt.plot(yVals, diff)
-# plt.plot(yVals, u1, label=r"No $Q$")
-# plt.plot(yVals, u2, label="$Q$")
-# plt.plot(yVals, u3, label="Slab")
-
-plt.xticks(size=tickSize, rotation=30)
-plt.yticks(size=tickSize, rotation=30)
+# plt.figure()
+# plt.plot(yVals, diff)
+# # plt.plot(yVals, u1, label=r"No $Q$")
+# # plt.plot(yVals, u2, label="$Q$")
+# # plt.plot(yVals, u3, label="Slab")
+#
+# plt.xticks(size=tickSize, rotation=30)
+# plt.yticks(size=tickSize, rotation=30)
+# # plt.xlabel(r"$y$ [km]", size=labelSize)
+# # plt.ylabel(r"$u$ [$^\circ$C]", size=labelSize)
+# plt.ylabel(r"$\Delta u$ [$^\circ$C]", size=labelSize)
 # plt.xlabel(r"$y$ [km]", size=labelSize)
-# plt.ylabel(r"$u$ [$^\circ$C]", size=labelSize)
-plt.ylabel(r"$\Delta u$ [$^\circ$C]", size=labelSize)
-plt.xlabel(r"$y$ [km]", size=labelSize)
-plt.legend(fontsize=legendSize)
-plt.tight_layout()
-
-
-plt.show()
+# plt.legend(fontsize=legendSize)
+# plt.tight_layout()
+#
+#
+# plt.show()
