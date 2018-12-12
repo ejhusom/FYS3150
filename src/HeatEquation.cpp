@@ -34,9 +34,9 @@ HeatEquation::HeatEquation(int _slab, int _radioactive){
   gamma = tc/(rho*cp*uc);
   // beta = rho*cp*l*l/(k*tc);
 
-  double Q1 = 1.4e-6*tc/(rho*cp*uc);
-  double Q2 = 0.35e-6*tc/(rho*cp*uc);
-  double Q3 = 0.05e-6*tc/(rho*cp*uc);
+  double Q1 = 1.4e-6*gamma;
+  double Q2 = 0.35e-6*gamma;
+  double Q3 = 0.05e-6*gamma;
   // double Q1 = 1.4e-6*l*l/k;
   // double Q2 = 0.35e-6*l*l/k;
   // double Q3 = 0.05e-6*l*l/k;
@@ -86,11 +86,11 @@ HeatEquation::HeatEquation(int _slab, int _radioactive){
     // uNew[Nx+1][i] = boundaryArray[i];
   }
   for(int i=0; i < Nx+2; i++){
-    uNew[i][0] = 0;
+    uNew[i][0] = 0.0061538;
     uNew[i][Ny+1] = 1;
   }
 
-  if(slab == 12){
+  if(slab == 1){
     mat uMatrix = zeros<mat>(Nx+2, Ny+2);
     uMatrix.load("HeatEquationSteadyStateQ.dat");
     for (int i = 0; i < Nx+2; i++) {
