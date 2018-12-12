@@ -10,7 +10,7 @@ int main(int argc, char *argv[]){
   double dt = 0.001;
   double Time = 0.03;
   int dimension = 3;
-  int slab = 1;
+  int slab = 0;
 
 
   switch (argc) {

@@ -21,10 +21,12 @@ HeatEquation::HeatEquation(int _slab){
   double rho = 3.5e3;
   double cp = 1000;
   double k = 2.5;
-  double l = 120;
+  // double l = 26.7;
+  // double l = 120;
+  double l = 0;
   double Q1 = 1.4e-6*l*l/k;
-  double Q2 = 0.35e-3*l*l/k;
-  double Q3 = 0.05e-3*l*l/k;
+  double Q2 = 0.35e-6*l*l/k;
+  double Q3 = 0.05e-6*l*l/k;
   Q = new double[Ny+2];
   Q4 = new double[T];
   for (int i = 0; i < int((Ny+2)/6); i++) {
@@ -37,7 +39,7 @@ HeatEquation::HeatEquation(int _slab){
     Q[i] = Q3;
   }
 
-  if(slab == 1) decay();
+  if(slab == 1) decay(l, k);
 
 
 
@@ -64,8 +66,8 @@ HeatEquation::HeatEquation(int _slab){
     // uNew[Nx+1][i] = boundaryArray[i];
   }
   for(int i=0; i < Nx+2; i++){
-    uNew[i][0] = 0;
-    uNew[i][Ny+1] = 1;
+    uNew[i][0] = 8;
+    uNew[i][Ny+1] = 1300;
   }
   for (int i = 0; i < Nx+2; i++) for (int j = 0; j < Ny+2; j++) uOld[i][j] = uNew[i][j];
 
@@ -102,9 +104,10 @@ int HeatEquation::jacobi(int t, double **boundaryMatrix) {
   return iterations;
 }
 
-void HeatEquation::decay(){
+void HeatEquation::decay(double l, double k){
   double halfTimes[3] = {4.47, 14.0, 1.25};
   double weights[3] = {0.2, 0.2, 0.1};
+  for(int i = 0; i < 3; i++) weights[i] *= 1e-6*l*l/k;
   for(int tp = 0; tp < T; tp++){
     double sumQ4 = 0;
     double t = tp/(double) T;
@@ -119,7 +122,18 @@ void HeatEquation::decay(){
 void HeatEquation::solve(double **boundaryMatrix){
   int it;
   ofstream ofile;
-  ofile.open("HeatEquation.dat");
+  if(slab == 1){
+    ofile.open("HeatEquationSlab.dat");
+    cout << "Slab" << endl;
+  }
+  if(slab == 0 && Q[0] != 0){
+    ofile.open("HeatEquationNoSlab.dat");
+    cout << "Q, but no slab" << endl;
+  }
+  if(Q[0] == 0 && slab == 0){
+    ofile.open("HeatEquationNoQ.dat");
+    cout << "No Q" << endl;
+  }
   for (int t = 0; t < T; t++){
     if(slab == 1){
       for (int i = int(2*(Ny+2)/6); i < Ny+2; i++) {

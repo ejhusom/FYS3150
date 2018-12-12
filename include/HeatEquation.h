@@ -33,7 +33,7 @@ public:
   int jacobi(int t, double **boundaryMatrix);
   void solve(double **boundaryMatrix);
   void output(ofstream &ofile);
-  void decay();
+  void decay(double l, double k);
 };
 
 #endif /* HEATEQUATION_H */

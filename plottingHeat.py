@@ -25,12 +25,15 @@ if (run=='y'):
     os.system('./runproject5.exe ' + str(method) + ' ' + str(N) + ' ' + str(dt) + ' ' + str(Time) + ' 3')
     print("Done! Moving on to plotting...")
 
-data = np.loadtxt("HeatEquation.dat")
+data1 = np.loadtxt("HeatEquationNoQ.dat")
+data2 = np.loadtxt("HeatEquationNoSlab.dat")
+data3 = np.loadtxt("HeatEquationSlab.dat")
+
 
 # Plotting
-Ny = int(len(data[0,:]))
+Ny = int(len(data1[0,:]))
 Nx = int(1.25*(Ny-2) +2)
-T = int(len(data[:,0])/Nx)
+T = int(len(data1[:,0])/Nx)
 timepoints = np.linspace(0,Time,T+1)
 
 
@@ -46,30 +49,38 @@ timepoints = np.linspace(0,Time,T+1)
 #     plt.colorbar()
 #     plt.show()
 
-fig = plt.figure()
-mat = np.transpose(data[0:Nx,:])
-mat = np.flip(mat,0)
-plt.pcolormesh(mat, vmin=0., vmax=1.5)
-plt.colorbar()
-
-def animate(t):
-    plt.title('Time: ' + str(timepoints[t]))
-    mat = np.transpose(data[t*Nx:(t+1)*Nx,:])
-    mat = np.flip(mat,0)
-    plt.pcolormesh(mat, vmin=0., vmax=1.5)
-
-ani = animation.FuncAnimation(fig, animate, frames = range(T), blit = False, interval=150)
-# ani.save('heatMeshAnimationQ.mp4')
-plt.show()
+# fig = plt.figure()
+# mat = np.transpose(data[0:Nx,:])
+# mat = np.flip(mat,0)
+# plt.pcolormesh(mat, vmin=0., vmax=1.5)
+# plt.colorbar()
+#
+# def animate(t):
+#     plt.title('Time: ' + str(timepoints[t]))
+#     mat = np.transpose(data[t*Nx:(t+1)*Nx,:])
+#     mat = np.flip(mat,0)
+#     plt.pcolormesh(mat, vmin=0., vmax=1.5)
+#
+# ani = animation.FuncAnimation(fig, animate, frames = range(T), blit = False, interval=150)
+# # ani.save('heatMeshAnimationQ.mp4')
+# plt.show()
 
 #============================================================================
 # 1D line slice
 
-lastState = data[-Nx:,:]
-lineSlice = lastState[int(Ny/2),:]
+lastState1 = data1[-Nx:,:]
+lineSlice1 = lastState1[int(Ny/2),:]
+
+lastState2 = data2[-Nx:,:]
+lineSlice2 = lastState2[int(Ny/2),:]
+
+lastState3 = data3[-Nx:,:]
+lineSlice3 = lastState3[int(Ny/2),:]
 
 plt.figure()
-plt.plot(lineSlice)
+plt.plot(lineSlice1, label="No Q")
+plt.plot(lineSlice2, label="Q, no slab")
+plt.plot(lineSlice3, label="Slab")
 
 plt.xticks(size=tickSize, rotation=30)
 plt.yticks(size=tickSize, rotation=30)
