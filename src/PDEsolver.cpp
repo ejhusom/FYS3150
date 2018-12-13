@@ -55,9 +55,6 @@ PDEsolver::PDEsolver(int N_, double dt_, double Time_, double method_, double u_
     offDiag = -alpha;
     methodName = "Heat1D";
 
-    // for (int i=0; i<N+2; i++){
-    //   cout << setw(12) << setprecision(6) << diagArray[i] << endl;
-    // }
 
   }
 
@@ -194,21 +191,26 @@ void PDEsolver::output(ofstream &ofile){
   ofile << endl;
 }
 
-void PDEsolver::analytical(double Time){
+void PDEsolver::analytical(double Time, int xPoints){
   ofstream outfile;
-  //tror vi har feil analytical solution. Den skal jo være u(0, t) = 0 i x=0 og u(L, t) = 1 i x=L.
-  //våres analytiske er 0 i begge ender..
-  outfile.open("analytical.dat");
-  for (int i=0; i < N; i++){
-    double x = double(i)/N;
-    // // double u = sin(M_PI*x)*exp(M_PI*M_PI*Time);
-
-    double u = 100*exp(-Time)*sin(M_PI*x);
+  int nFourier = 10000;
+  outfile.open("analytical_t=" + to_string(Time) + "_xPoints=" + to_string(xPoints) + ".txt");
+  for(int i = 0; i < xPoints+1; i++){
+    double x = ((double) i)/((double) xPoints);
+    double u = 0;
+    for(int j = 1; j < nFourier+1; j++){
+      double nPi = M_PI*j;
+      double nPi2 = nPi*nPi;
+      double an = 2*(nPi*cos(nPi) - sin(nPi))/(nPi2);
+      u += an*exp(-nPi2*Time)*sin(nPi*x);
+    }
+    u += x;
     outfile << setw(15) << setprecision (8) << x;
     outfile << setw(15) << setprecision (8) << u << endl;
   }
   outfile.close();
 }
+
 
 PDEsolver::~PDEsolver(){
   delete [] uNew;

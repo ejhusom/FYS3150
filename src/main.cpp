@@ -10,7 +10,7 @@ int main(int argc, char *argv[]){
   double dt = 0.001;
   double Time = 0.03;
   int dimension = 3;
-  int slab = 0;
+  int slab = 1;
   int radioactive = 1;
 
 
@@ -37,16 +37,6 @@ int main(int argc, char *argv[]){
     problem.solve(problem1D.u);
 
 
-
-    //
-    // double *bc;
-    // bc = new double[problem.Ny + 2];
-    // for (int i=0; i<N; i++){
-    //   bc[i] = problem.uNew[int((problem.Ny + 2)/2)][i];
-    // }
-    //
-    // HeatEquation problem2 = HeatEquation(bc);
-    // problem2.solve();
   }
 
   return 0;
