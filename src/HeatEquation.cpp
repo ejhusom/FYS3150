@@ -1,6 +1,7 @@
 #include "HeatEquation.h"
 
 HeatEquation::HeatEquation(int _slab, int _radioactive){
+  //solves the 2D heat equation with jacobis method
   Lx = 1.25;
   Ly = 1;
   dl = 0.01;

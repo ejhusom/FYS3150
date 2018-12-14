@@ -4,6 +4,7 @@ PDEsolver2D::PDEsolver2D(){
 }
 
 PDEsolver2D::PDEsolver2D(int N_, double dt_, double Time_, double method_){
+  //solves the 2D dimensional diffusion equation with jacobis method
   N = N_;
   dt = dt_;
   Time = Time_;

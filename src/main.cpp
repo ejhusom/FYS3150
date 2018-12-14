@@ -22,14 +22,17 @@ int main(int argc, char *argv[]){
     case 2: method = atof(argv[1]);
   }
 
+  //1D diffusion equation
   if (dimension == 1) {
     PDEsolver problem = PDEsolver(N, dt, Time, method, 0.0, 1.0);
     problem.solve();
   }
+  //2D diffusion equation
   if (dimension == 2) {
     PDEsolver2D problem = PDEsolver2D(N, dt, Time, method);
     problem.solve();
   }
+  //2D heat equation
   if (dimension == 3) {
     PDEsolver problem1D = PDEsolver(100, 0.01, 1, 2, 0.0, 1);
     problem1D.solve();

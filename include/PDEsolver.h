@@ -37,7 +37,7 @@ public:
   void solve();
   void solve2D();
   void output(ofstream &ofile);
-  void analytical(double Time);
+  void analytical(double Time, int xPoints);
 };
 
 #endif /* PDESOLVER_H */

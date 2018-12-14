@@ -4,6 +4,9 @@ PDEsolver::PDEsolver(){
 }
 
 PDEsolver::PDEsolver(int N_, double dt_, double Time_, double method_, double u_i_, double u_f_){
+  //initializes problem parameters for solving the 1D diffusion equation
+  //with either the explicit (0), implicit (1) or crank-nicholson scheme (0.5), specified by
+  //the input parameter method_
   N = N_;
   dt = dt_;
   Time = Time_;
@@ -64,7 +67,7 @@ PDEsolver::PDEsolver(int N_, double dt_, double Time_, double method_, double u_
     uNew[i] = 0.0;
     uOld[i] = 0.0;
   }
-  //initial condition
+  //initial conditions
   uOld[0] = u_i;
   uNew[0] = u_i;
   uOld[N+1] = u_f;
@@ -73,6 +76,7 @@ PDEsolver::PDEsolver(int N_, double dt_, double Time_, double method_, double u_
 
 
 void PDEsolver::forwardEuler(){
+  //Forward euler
   for (int i = 1; i < N+1; i++) {
     uNew[i] = alpha*uOld[i-1] + (1-2*alpha)*uOld[i] + alpha*uOld[i+1];
   }
@@ -80,7 +84,7 @@ void PDEsolver::forwardEuler(){
 }
 
 void PDEsolver::tridiag(){
-
+    //Solves a tridiagonal matrix by forward and backward substitution
     double diagNew[N+2];
     double uOldTemp[N+2];
     double K;
@@ -132,7 +136,6 @@ void PDEsolver::tridiagHeat(int t){
     //Forward substitution
     for(int i = 2; i < (N+1); i++){
       K = offDiag/diagNew[i-1];
-      // diagNew[i] = diag - offDiag*K;
       diagNew[i] = diagArray[i] - offDiag*K;
       uOldTemp[i] = uOld[i] - uOldTemp[i-1]*K;
     }
@@ -160,7 +163,6 @@ void PDEsolver::solve(){
       forwardEuler();
     }
   } else if (method==1){
-    // cout << "test\n";
     for (int t = 0; t < T; t++){
       output(ofile);
       tridiag();
@@ -192,6 +194,7 @@ void PDEsolver::output(ofstream &ofile){
 }
 
 void PDEsolver::analytical(double Time, int xPoints){
+  //analytical solution to the 1D diffusion equation
   ofstream outfile;
   int nFourier = 10000;
   outfile.open("analytical_t=" + to_string(Time) + "_xPoints=" + to_string(xPoints) + ".txt");
