@@ -13,7 +13,7 @@ Simulating the movement of astronomical objects in the solar system, by using th
 ## Project 4 - The Ising Model
 Modelling phase transitions with the Ising model in two dimensions, using the Metropolis algorithm.
 
-## Project 5 - Diffusion Equation (see own repository: [FYS3150_Project5](https://github.com/ejhusom/FYS3150_Project5))
+## Project 5 - Diffusion Equation
 
 The  purpose  of  this  project  is  to  test  different  numerical  schemes  to
 solve the diffusion equation and use it to look for evidence that support
