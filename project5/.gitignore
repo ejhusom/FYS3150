@@ -1,0 +1,6 @@
+*.dat
+*.o
+*build
+*.exe
+*.x
+*.png
